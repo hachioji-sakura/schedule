@@ -1234,7 +1234,7 @@ if (!$pdf_mode) {
 <th name="worktime_detail" style="display:none;">時給別授業時間</th>
 <th name="worktime_detail" style="display:none;">時給条件別授業時間</th>
 <?php } ?>
-<th>時給×授業時間</th><th>立替経費</th><th>給料調整（課税）</th><th>給料調整（非課税）</th><th>交通費</th><th>支給額合計</th>
+<th>時給×授業時間</th><th>立替経費</th><th>給料調整<br>(課税)</th><th>給料調整<br>(非課税)</th><th>交通費</th><th>支給額合計</th>
 <th>源泉徴収税</th><th>住民税</th><th>控除額合計</th><th>差引支給額</th>
 <?php if (!$pdf_mode) { ?>
 <th name="absent_detail" style="display:none;">休み１の時間</th><th name="absent_detail" style="display:none;">休み２の時間</th><th name="absent_detail" style="display:none;">グループの休み１</th><th name="absent_detail" style="display:none;">グループの休み２</th><th name="absent_detail" style="display:none;">面談</th>
@@ -1303,18 +1303,18 @@ foreach ($tmp_teacher_list as &$teacher) {
 			$str0 .= "<td align=\"right\" $str1>".count($teacher["working_days"])."</td>";
 			if (!$yuge_flag) $total_working_days += count($teacher["working_days"]);
 		}
-		$str0 .= "<td align=\"right\">{$teacher['working'][$lesson_id]}</td>";
+		$str0 .= "<td align=\"right\">".(floor($teacher['working'][$lesson_id]*100)/100)."</td>";
 		if (!$yuge_flag) $total_working_hours += $teacher['working'][$lesson_id];
 		if (!$pdf_mode)	{
 			$str0 .= "<td align=\"right\" name=\"worktime_detail\" style=\"display:none;\">";
 			foreach ($teacher["wage_worktime1"][$lesson_id] as $key=>$val) {
-				if ($val) { $str0 .= "{$val}H ({$key})<br>"; }
+				if ($val) { $str0 .= (floor($val*100)/100)."H ({$key})<br>"; }
 			}
 			$str0 .= "</td>";
 			$str0 .= "<td align=\"right\" name=\"worktime_detail\" style=\"display:none;\">";
 			foreach ($teacher["wage_worktime2"][$lesson_id] as $key=>$val) {
 				$array = explode(':',$key);
-				if ($val) { $str0 .= "{$val}H ({$wage_type_list[$array[0]][$array[1]]})<br>"; }
+				if ($val) { $str0 .= (floor($val*100)/100)."H ({$wage_type_list[$array[0]][$array[1]]})<br>"; }
 			}
 			$str0 .= "</td>";
 		}
@@ -1524,13 +1524,13 @@ foreach ($tmp_teacher_list as &$teacher) {
 					$htmlout .= "<tr><th width=\"150\" colspan=\"2\">出勤日数</th><td width=\"50\" align=\"right\">"  .count($teacher["working_days"])         ."</td></tr>\n";
 					$htmlout .= "<tr><th width=\"150\" colspan=\"2\">勤務時間</th><td width=\"50\" align=\"right\">$working_hours</td></tr>\n";
 					$htmlout .= "<tr><th width=\"30\" rowspan=\"".(($payadj?5:4)+($payadj_tax_free?1:0))."\">支給</th>".
-														"<th width=\"120\">時間給合計（課税）</th><td width=\"50\" align=\"right\">"    .number_format($teacher['pay0'])        ."</td></tr>\n";
+														"<th width=\"120\">時間給合計(課税)</th><td width=\"50\" align=\"right\">"    .number_format($teacher['pay0'])        ."</td></tr>\n";
 					if ($payadj)
-						$htmlout .= "<tr><th width=\"120\">給料調整（課税）</th><td width=\"50\" align=\"right\">"      .number_format($payadj)                 ."</td></tr>\n";
-					$htmlout .= "<tr><th width=\"120\">交通費（非課税）</th><td width=\"50\" align=\"right\">"        .number_format($total_transport_cost)   ."</td></tr>\n";
+						$htmlout .= "<tr><th width=\"120\">給料調整(課税)</th><td width=\"50\" align=\"right\">"      .number_format($payadj)                 ."</td></tr>\n";
+					$htmlout .= "<tr><th width=\"120\">交通費(非課税)</th><td width=\"50\" align=\"right\">"        .number_format($total_transport_cost)   ."</td></tr>\n";
 					if ($payadj_tax_free)
-						$htmlout .= "<tr><th width=\"120\">給料調整（非課税）</th><td width=\"50\" align=\"right\">"  .number_format($payadj_tax_free)        ."</td></tr>\n";
-					$htmlout .= "<tr><th width=\"120\">立替経費（非課税）</th><td width=\"50\" align=\"right\">"      .number_format($tatekae_total)          ."</td></tr>\n";
+						$htmlout .= "<tr><th width=\"120\">給料調整(非課税)</th><td width=\"50\" align=\"right\">"  .number_format($payadj_tax_free)        ."</td></tr>\n";
+					$htmlout .= "<tr><th width=\"120\">立替経費(非課税)</th><td width=\"50\" align=\"right\">"      .number_format($tatekae_total)          ."</td></tr>\n";
 					$htmlout .= "<tr><th width=\"120\">支給額合計</th><td width=\"50\" align=\"right\">"              .number_format($pay)                    ."</td></tr>\n";
 					$htmlout .= "<tr><th width=\"30\" rowspan=\"3\">控除</th><th width=\"120\">源泉徴収税</th><td width=\"50\" align=\"right\">"  .number_format($tax1)    ."</td></tr>\n";
 					$htmlout .= "<tr><th width=\"120\">住民税</th><td width=\"50\" align=\"right\">"                  .number_format($tax2)                   ."</td></tr>\n";
@@ -1551,7 +1551,7 @@ foreach ($tmp_teacher_list as &$teacher) {
 					if ($payadj) {
 						$payadj_detail0 = array_filter($teacher['payadj_detail'], function($item){return $item['tax_flag']==1;});
 						$htmlout .= "<table border=\"1\">";
-						$htmlout .= "<tr><th width=\"350\" colspan=\"3\">給料調整（課税）内訳</th></tr>\n";
+						$htmlout .= "<tr><th width=\"350\" colspan=\"3\">給料調整(課税)内訳</th></tr>\n";
 						$htmlout .= "<tr><th width=\"100\">項目</th><th width=\"50\">金額</th><th width=\"200\">備考</th></tr>\n";
 						foreach ($payadj_detail0 as $item0) {
 							$htmlout .= "<tr><td width=\"100\">{$item0['name']}</td><td width=\"50\" align=\"right\">".number_format($item0['price'])."</td><td width=\"200\">{$lesson_list[$item0['lesson_id']]} {$item0['memo']}</td></tr>\n";
@@ -1561,7 +1561,7 @@ foreach ($tmp_teacher_list as &$teacher) {
 					if ($payadj_tax_free) {
 						$payadj_detail0 = array_filter($teacher['payadj_detail'], function($item){return $item['tax_flag']==0;});
 						$htmlout .= "<table border=\"1\">";
-						$htmlout .= "<tr><th width=\"350\" colspan=\"3\">給料調整（非課税）内訳</th></tr>\n";
+						$htmlout .= "<tr><th width=\"350\" colspan=\"3\">給料調整(非課税)内訳</th></tr>\n";
 						$htmlout .= "<tr><th width=\"100\">項目</th><th width=\"50\">金額</th><th width=\"200\">備考</th></tr>\n";
 						foreach ($payadj_detail0 as $item0) {
 							$htmlout .= "<tr><td width=\"100\">{$item0['name']}</td><td width=\"50\" align=\"right\">".number_format($item0['price'])."</td><td width=\"200\">{$lesson_list[$item0['lesson_id']]} {$item0['memo']}</td></tr>\n";
@@ -1617,7 +1617,7 @@ $total_payadj_tax_free_teacher = $total_payadj_tax_free;
 
 ?>
 <tr>
-<td>合計</td><td></td><td align="right"><?=$total_working_days?></td><td align="right"><?=$total_working_hours?></td>
+<td>合計</td><td></td><td align="right"><?=$total_working_days?></td><td align="right"><?=(floor($total_working_hours*100)/100)?></td>
 <?php if (!$pdf_mode) { ?>
 <td name="worktime_detail" style="display:none;"></td>
 <td name="worktime_detail" style="display:none;"></td>
@@ -1643,7 +1643,7 @@ $total_payadj_tax_free_teacher = $total_payadj_tax_free;
 <table border="1">
 <tr>
 <th>名前</th><th>出勤日数</th><th>勤務時間</th><th>時給</th><th>時給×勤務時間</th><th>立替経費</th>
-<th>給料調整（課税）</th><th>給料調整（非課税）</th><th>交通費</th><th>支給額合計</th>
+<th>給料調整<br>(課税)</th><th>給料調整<br>(非課税)</th><th>交通費</th><th>支給額合計</th>
 <th>源泉徴収税</th><th>住民税</th><th>控除額合計</th><th>差引支給額</th>
 </tr>
 <?php
@@ -1660,7 +1660,7 @@ foreach ($staff_list as &$staff) {
 	$total_working_days += $work_days;
 	
 	$work_times = $staff['work_times'] + 0;
-	echo "<td align=\"right\">{$work_times}</td>";
+	echo "<td align=\"right\">".(floor($work_times*100)/100)."</td>";
 	$total_working_hours += $work_times;
 
 	$wages = $staff['wages'];
@@ -1796,15 +1796,15 @@ foreach ($staff_list as &$staff) {
 				$htmlout .= "<table border=\"1\">";
 				$htmlout .= "<tr><th width=\"200\" colspan=\"3\">給料明細</th></tr>\n";
 				$htmlout .= "<tr><th width=\"150\" colspan=\"2\">出勤日数</th><td width=\"50\" align=\"right\">"  .$work_days         ."</td></tr>\n";
-				$htmlout .= "<tr><th width=\"150\" colspan=\"2\">勤務時間</th><td width=\"50\" align=\"right\">$work_times</td></tr>\n";
+				$htmlout .= "<tr><th width=\"150\" colspan=\"2\">勤務時間</th><td width=\"50\" align=\"right\">".(floor($work_times*100)/100)."</td></tr>\n";
 				$htmlout .= "<tr><th width=\"30\" rowspan=\"".(($payadj?5:4)+($payadj_tax_free?1:0))."\">支給</th>".
-													"<th width=\"120\">時間給合計（課税）</th><td width=\"50\" align=\"right\">"    .number_format($staff['pay0'])        ."</td></tr>\n";
+													"<th width=\"120\">時間給合計(課税)</th><td width=\"50\" align=\"right\">"    .number_format($staff['pay0'])        ."</td></tr>\n";
 				if ($payadj)
-					$htmlout .= "<tr><th width=\"120\">給料調整（課税）</th><td width=\"50\" align=\"right\">"      .number_format($payadj)                 ."</td></tr>\n";
-				$htmlout .= "<tr><th width=\"120\">交通費（非課税）</th><td width=\"50\" align=\"right\">"        .number_format($total_transport_cost)   ."</td></tr>\n";
+					$htmlout .= "<tr><th width=\"120\">給料調整(課税)</th><td width=\"50\" align=\"right\">"      .number_format($payadj)                 ."</td></tr>\n";
+				$htmlout .= "<tr><th width=\"120\">交通費(非課税)</th><td width=\"50\" align=\"right\">"        .number_format($total_transport_cost)   ."</td></tr>\n";
 				if ($payadj_tax_free)
-					$htmlout .= "<tr><th width=\"120\">給料調整（非課税）</th><td width=\"50\" align=\"right\">"  .number_format($payadj_tax_free)        ."</td></tr>\n";
-				$htmlout .= "<tr><th width=\"120\">立替経費（非課税）</th><td width=\"50\" align=\"right\">"      .number_format($tatekae_total)          ."</td></tr>\n";
+					$htmlout .= "<tr><th width=\"120\">給料調整(非課税)</th><td width=\"50\" align=\"right\">"  .number_format($payadj_tax_free)        ."</td></tr>\n";
+				$htmlout .= "<tr><th width=\"120\">立替経費(非課税)</th><td width=\"50\" align=\"right\">"      .number_format($tatekae_total)          ."</td></tr>\n";
 				$htmlout .= "<tr><th width=\"120\">支給額合計</th><td width=\"50\" align=\"right\">"              .number_format($total_pay)                    ."</td></tr>\n";
 				$htmlout .= "<tr><th width=\"30\" rowspan=\"3\">控除</th><th width=\"120\">源泉徴収税</th><td width=\"50\" align=\"right\">"  .number_format($tax1)    ."</td></tr>\n";
 				$htmlout .= "<tr><th width=\"120\">住民税</th><td width=\"50\" align=\"right\">"                  .number_format($tax2)                   ."</td></tr>\n";
@@ -1821,7 +1821,7 @@ foreach ($staff_list as &$staff) {
 				if ($payadj) {
 					$payadj_detail0 = array_filter($staff['payadj_detail'], function($item){return $item['tax_flag']==1;});
 					$htmlout .= "<table border=\"1\">";
-					$htmlout .= "<tr><th width=\"350\" colspan=\"3\">給料調整（課税）内訳</th></tr>\n";
+					$htmlout .= "<tr><th width=\"350\" colspan=\"3\">給料調整(課税)内訳</th></tr>\n";
 					$htmlout .= "<tr><th width=\"100\">項目</th><th width=\"50\">金額</th><th width=\"200\">備考</th></tr>\n";
 					foreach ($payadj_detail0 as $item0) {
 						$htmlout .= "<tr><td width=\"100\">{$item0['name']}</td><td width=\"50\" align=\"right\">".number_format($item0['price'])."</td><td width=\"200\">{$lesson_list[$item0['lesson_id']]} {$item0['memo']}</td></tr>\n";
@@ -1831,7 +1831,7 @@ foreach ($staff_list as &$staff) {
 				if ($payadj_tax_free) {
 					$payadj_detail0 = array_filter($staff['payadj_detail'], function($item){return $item['tax_flag']==0;});
 					$htmlout .= "<table border=\"1\">";
-					$htmlout .= "<tr><th width=\"350\" colspan=\"3\">給料調整（非課税）内訳</th></tr>\n";
+					$htmlout .= "<tr><th width=\"350\" colspan=\"3\">給料調整(非課税)内訳</th></tr>\n";
 					$htmlout .= "<tr><th width=\"100\">項目</th><th width=\"50\">金額</th><th width=\"200\">備考</th></tr>\n";
 					foreach ($payadj_detail0 as $item0) {
 						$htmlout .= "<tr><td width=\"100\">{$item0['name']}</td><td width=\"50\" align=\"right\">".number_format($item0['price'])."</td><td width=\"200\">{$lesson_list[$item0['lesson_id']]} {$item0['memo']}</td></tr>\n";
@@ -1899,7 +1899,7 @@ $total_payadj_tax_free_staff = $total_payadj_tax_free;
 
 ?>
 <tr>
-<td>合計</td><td align="right"><?=$total_working_days?></td><td align="right"><?=$total_working_hours?></td><td align="right"><?=number_format($total_wage)?></td>
+<td>合計</td><td align="right"><?=$total_working_days?></td><td align="right"><?=(floor($total_working_hours*100)/100)?></td><td align="right"><?=number_format($total_wage)?></td>
 <td align="right"><?=number_format($total_pay1)?></td><td align="right"><?=number_format($total_tatekae_total_staff)?></td>
 <td align="right"><?=number_format($total_payadj)?></td><td align="right"><?=number_format($total_payadj_tax_free)?></td>
 <td align="right"><?= number_format($total_transport_cost_sum2) ?></td><td align="right"><?= number_format($total_pay_sum2) ?></td>
@@ -1913,7 +1913,7 @@ $total_payadj_tax_free_staff = $total_payadj_tax_free;
 <table border="1">
 <tr>
 <th>名前</th><th>出勤日数</th><th>勤務時間</th><th>時給×勤務時間</th><th>立替経費</th>
-<th>給料調整（課税）</th><th>給料調整（非課税）</th><th>交通費</th><th>支給額合計</th>
+<th>給料調整<br>(課税)</th><th>給料調整<br>(非課税)</th><th>交通費</th><th>支給額合計</th>
 <th>源泉徴収税</th><th>住民税</th><th>控除額合計</th><th>差引支給額</th>
 </tr>
 <?php
@@ -1943,7 +1943,7 @@ foreach ($teacher_and_staff_list as $key_name=>&$teacher_and_staff) {
 	echo "<td align=\"right\">{$work_days}</td>";
 	$total_working_days += $work_days;
 	
-	echo "<td align=\"right\">{$work_times}</td>";
+	echo "<td align=\"right\">".(floor($work_times*100)/100)."</td>";
 	$total_working_hours += $work_times;
 	
 	$pay = $teacher['pay0']+$staff['pay0'];
@@ -2027,15 +2027,15 @@ foreach ($teacher_and_staff_list as $key_name=>&$teacher_and_staff) {
 		$htmlout .= "<table border=\"1\">";
 		$htmlout .= "<tr><th width=\"200\" colspan=\"3\">給料明細</th></tr>\n";
 		$htmlout .= "<tr><th width=\"150\" colspan=\"2\">出勤日数</th><td width=\"50\" align=\"right\">"  .$work_days         ."</td></tr>\n";
-		$htmlout .= "<tr><th width=\"150\" colspan=\"2\">勤務時間</th><td width=\"50\" align=\"right\">$work_times</td></tr>\n";
+		$htmlout .= "<tr><th width=\"150\" colspan=\"2\">勤務時間</th><td width=\"50\" align=\"right\">".(floor($work_times*100)/100)."</td></tr>\n";
 		$htmlout .= "<tr><th width=\"30\" rowspan=\"".(($payadj?5:4)+($payadj_tax_free?1:0))."\">支給</th>".
-											"<th width=\"120\">時間給合計（課税）</th><td width=\"50\" align=\"right\">"    .number_format($teacher['pay0']+$staff['pay0'])."</td></tr>\n";
+											"<th width=\"120\">時間給合計(課税)</th><td width=\"50\" align=\"right\">"    .number_format($teacher['pay0']+$staff['pay0'])."</td></tr>\n";
 		if ($payadj)
-			$htmlout .= "<tr><th width=\"120\">給料調整（課税）</th><td width=\"50\" align=\"right\">"      .number_format($payadj)                 ."</td></tr>\n";
-		$htmlout .= "<tr><th width=\"120\">交通費（非課税）</th><td width=\"50\" align=\"right\">"        .number_format($total_transport_cost)   ."</td></tr>\n";
+			$htmlout .= "<tr><th width=\"120\">給料調整(課税)</th><td width=\"50\" align=\"right\">"      .number_format($payadj)                 ."</td></tr>\n";
+		$htmlout .= "<tr><th width=\"120\">交通費(非課税)</th><td width=\"50\" align=\"right\">"        .number_format($total_transport_cost)   ."</td></tr>\n";
 		if ($payadj_tax_free)
-			$htmlout .= "<tr><th width=\"120\">給料調整（非課税）</th><td width=\"50\" align=\"right\">"  .number_format($payadj_tax_free)        ."</td></tr>\n";
-		$htmlout .= "<tr><th width=\"120\">立替経費（非課税）</th><td width=\"50\" align=\"right\">"      .number_format($tatekae_total)          ."</td></tr>\n";
+			$htmlout .= "<tr><th width=\"120\">給料調整(非課税)</th><td width=\"50\" align=\"right\">"  .number_format($payadj_tax_free)        ."</td></tr>\n";
+		$htmlout .= "<tr><th width=\"120\">立替経費(非課税)</th><td width=\"50\" align=\"right\">"      .number_format($tatekae_total)          ."</td></tr>\n";
 		$htmlout .= "<tr><th width=\"120\">支給額合計</th><td width=\"50\" align=\"right\">"              .number_format($total_pay)              ."</td></tr>\n";
 		$htmlout .= "<tr><th width=\"30\" rowspan=\"3\">控除</th><th width=\"120\">源泉徴収税</th><td width=\"50\" align=\"right\">"  .number_format($tax1)    ."</td></tr>\n";
 		$htmlout .= "<tr><th width=\"120\">住民税</th><td width=\"50\" align=\"right\">"                  .number_format($tax2)                   ."</td></tr>\n";
@@ -2057,7 +2057,7 @@ foreach ($teacher_and_staff_list as $key_name=>&$teacher_and_staff) {
 		if ($payadj) {
 			$payadj_detail0 = array_filter($payadj_detail, function($item){return $item['tax_flag']==1;});
 			$htmlout .= "<table border=\"1\">";
-			$htmlout .= "<tr><th width=\"350\" colspan=\"3\">給料調整（課税）内訳</th></tr>\n";
+			$htmlout .= "<tr><th width=\"350\" colspan=\"3\">給料調整(課税)内訳</th></tr>\n";
 			$htmlout .= "<tr><th width=\"100\">項目</th><th width=\"50\">金額</th><th width=\"200\">備考</th></tr>\n";
 			foreach ($payadj_detail0 as $item0) {
 				$htmlout .= "<tr><td width=\"100\">{$item0['name']}</td><td width=\"50\" align=\"right\">".number_format($item0['price'])."</td><td width=\"200\">{$lesson_list[$item0['lesson_id']]} {$item0['memo']}</td></tr>\n";
@@ -2067,7 +2067,7 @@ foreach ($teacher_and_staff_list as $key_name=>&$teacher_and_staff) {
 		if ($payadj_tax_free) {
 			$payadj_detail0 = array_filter($payadj_detail, function($item){return $item['tax_flag']==0;});
 			$htmlout .= "<table border=\"1\">";
-			$htmlout .= "<tr><th width=\"350\" colspan=\"3\">給料調整（非課税）内訳</th></tr>\n";
+			$htmlout .= "<tr><th width=\"350\" colspan=\"3\">給料調整(非課税)内訳</th></tr>\n";
 			$htmlout .= "<tr><th width=\"100\">項目</th><th width=\"50\">金額</th><th width=\"200\">備考</th></tr>\n";
 			foreach ($payadj_detail0 as $item0) {
 				$htmlout .= "<tr><td width=\"100\">{$item0['name']}</td><td width=\"50\" align=\"right\">".number_format($item0['price'])."</td><td width=\"200\">{$lesson_list[$item0['lesson_id']]} {$item0['memo']}</td></tr>\n";
@@ -2094,7 +2094,7 @@ unset($teacher_and_staff);
 
 ?>
 <tr>
-<td>合計</td><td align="right"><?=$total_working_days?></td><td align="right"><?=$total_working_hours?></td>
+<td>合計</td><td align="right"><?=$total_working_days?></td><td align="right"><?=(floor($total_working_hours*100)/100)?></td>
 <td align="right"><?=number_format($total_pay1)?></td><td align="right"><?=number_format($total_tatekae)?></td>
 <td align="right"><?=number_format($total_payadj)?></td><td align="right"><?=number_format($total_payadj_tax_free)?></td>
 <td align="right"><?= number_format($total_transport_cost_sum3) ?></td><td align="right"><?= number_format($total_pay_sum3) ?></td>
@@ -2201,7 +2201,7 @@ echo "</table>";
 <th name="worktime_detail" style="display:none;">時給条件別授業時間</th>
 <?php } ?>
 <th>時給×授業時間</th><th>立替経費</th>
-<th>給料調整（課税）</th><th>給料調整（非課税）</th><th>交通費</th><th>支給額合計</th>
+<th>給料調整<br>(課税)</th><th>給料調整<br>(非課税)</th><th>交通費</th><th>支給額合計</th>
 <th>源泉徴収税</th><th>住民税</th><th>控除額合計</th><th>差引支給額</th>
 <?php if (!$pdf_mode) { ?>
 <th name="absent_detail" style="display:none;">休み１の時間</th><th name="absent_detail" style="display:none;">休み２の時間</th><th name="absent_detail" style="display:none;">グループの休み１</th><th name="absent_detail" style="display:none;">グループの休み２</th><th name="absent_detail" style="display:none;">面談</th>
