@@ -390,7 +390,26 @@ function blankCheck() {
 			</form>
 	<br>
 	<br>
+	<h4>■ カレンダーDB取り込み</h4>
+	<form method="post" action="load_calender_data.php">
+	<input type="text" name="year" value="<?php echo $year1; ?>" size="4">年&nbsp;
+	<input type="text" name="month" value="<?php echo $month1; ?>" size="4">月分&nbsp;
+	限定する生徒番号（全生徒の場合空白）：
+	<input type="text" name="user_id" value="" size="4">&nbsp;
+	置換モード（replace）：
+	<input type="text" name="replace" value="" size="4">&nbsp;
+	<input type="submit" value="実行">
+	</form>
 	<br>
+       <h4>■ 季節講習・土日講習スケジュール取り込み</h4>
+        <form method="post" action="upload_season_calender.php">
+	開始年：<input type="text" name="startyear" value="<?php echo $year1; ?>" size="4">年&nbsp;
+        開始月：<input type="text" name="startmonth" value="" size="4">月&nbsp;
+        終了月（開始月の翌月）：<input type="text" name="endmonth" value="" size="4">月&nbsp;
+        更新の場合（replace)：<input type="text" name="mode" value="" size="4">モード&nbsp;
+        <input type="submit" value="実行">
+        </form>
+        <br>	<br>
 	<br>
 <!--
 	<h4>■ サポートセンター</h4>

@@ -788,8 +788,10 @@ if ($teacher_id==$log_tid && $event['date']==$log_date) {var_dump($event);echo"<
 		}
 		if ($event['absent_flag']<$absent_flag_min) { $absent_flag_min = $event['absent_flag']; }
 		$lastdate=$event["date"]; $lasttime=$event["time"]; $last_cal_evt_summary = $event["cal_evt_summary"];
+		$lastteacher_id=$event["teacher_id"]; 
 		$next_event = next($event_list);
-	} while (($next_event) && ($next_event["date"] == $lastdate) && ($next_event["time"] == $lasttime) && ($next_event["cal_evt_summary"] == $last_cal_evt_summary));
+//	} while (($next_event) && ($next_event["date"] == $lastdate) && ($next_event["time"] == $lasttime) && ($next_event["cal_evt_summary"] == $last_cal_evt_summary));
+	} while (($next_event) && ($next_event["date"] == $lastdate) && ($next_event["time"] == $lasttime) && ($next_event["teacher_id"] == $last_teacher_id) && $event["course_id"] != 1); // changes for sakuraonenet.
 			
 	if ($absent_flag_min>0 && !$todayFlag) { $member_count = 0; $event = $next_event; continue; }
 	
