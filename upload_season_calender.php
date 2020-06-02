@@ -273,13 +273,13 @@ foreach ( $season_entry_date_array as $season_entry_date_row ) {
 	foreach ( $season_class_entry_date_array as $season_class_entry_date_row ) {
        		$place_char = $season_class_entry_date_row['place'] ;
 		if (mb_strpos($place_char,'八王子北口校舎')!== FALSE) {
-                      $place_id = 5;
+                      $place_id = 4;
 		      break;
                } else if (mb_strpos($place_char,'国立校舎')!== FALSE) {
-                      $place_id = 11;
+                      $place_id = 6;
 		      break;
                } else if (mb_strpos($place_char,'豊田校舎')!== FALSE) {
-                      $place_id = 8;
+                      $place_id = 1;
 		      break;
                } 
 	}
@@ -494,7 +494,7 @@ foreach ( $season_teacherattend_array as $row ) {
 		$starttime_str = date("H:i:s",$start_timestamp);
 		$endtime_str = date("H:i:s",$end_timestamp);
 
-		$sql = "SELECT place_id FROM tbl_schedule_onetime WHERE ymd=? AND teacher_id=? AND starttime >=?  AND endtime <=?"; 
+		$sql = "SELECT place_id FROM tbl_schedule_onetime WHERE ymd=? AND teacher_id=? AND starttime >=?  AND endtime <=? and delflag=0"; 
 							// select from tbl_schedule_onetime.
 		$stmt = $dbh->prepare($sql);
 		$stmt->bindValue(1, $datewithhyphen, PDO::PARAM_STR);

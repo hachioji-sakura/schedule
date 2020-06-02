@@ -53,6 +53,14 @@ define('CONST_SEASONSS','：季節講習演習');
 define('CONST_SEASON','：季節講習');
 define('CONST_NOTDEFINED','不定科目');
 
+	// for english lessons.
+
+define('CONST_ABSENT_ENG','Absent:');
+define('CONST_ABSENT1_ENG','Absent1:');
+define('CONST_ABSENT2_ENG','Absent2:');
+define('CONST_ABSENTOFF_ENG','No Class');
+define('CONST_ABSENTLATE_ENG','Today');
+define('CONST_ALTERNATE_ENG','make-up');
 
 $teacher_list = get_teacher_list($db);
 
@@ -107,25 +115,10 @@ mb_regex_encoding("UTF-8");
 $teacher_list = get_teacher_list($db);
 $member_list = get_member_list($db);
 $now = date('Y-m-d H:i:s');
+$request_year_str = (string)$request_year;
+$request_month_str = (string)$request_month;
 
 try{
-	$sql = "SELECT insert_timestamp FROM tbl_fixed WHERE year=? AND month=?";
-	$stmt = $db->prepare($sql);
-	$stmt->bindValue(1, $request_year, PDO::PARAM_INT);
-	$stmt->bindValue(2, $request_month, PDO::PARAM_INT);
-	$stmt->execute();
-	$rslt = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-	if (!$rslt){ 		// not found
-		$err_flag = true;
-		$message = 'Error: target data is not commited.';
-		array_push($errArray,$message);
-		goto exit_label;
-	}
-
-	$request_year_str = (string)$request_year;
-	$request_month_str = (string)$request_month;
-
 	if ($request_user_id > 0) {
 				// 当該月の当該user_idのデータをtbl_eventから削除する
 
@@ -297,14 +290,26 @@ try{
 							// 休み処理
 		if ($cancel == 'a1') { 
 			$absent_flag = '1'; 
-			$evt_summary = $evt_summary.CONST_ABSENT1;
+			if ($lesson_id == 2 ) {		// English lesson.
+				$evt_summary = $evt_summary.CONST_ABSENT1_ENG;
+			} else {			// not English.
+				$evt_summary = $evt_summary.CONST_ABSENT1;
+			}
 			$event_diff_hours = 0;
 		} else if ($cancel == 'a2') { 
 			$absent_flag = '2';
-			$evt_summary = $evt_summary.CONST_ABSENT2;
+			if ($lesson_id == 2 ) {		// English lesson.
+				$evt_summary = $evt_summary.CONST_ABSENT2_ENG;
+			} else {			// not English.
+				$evt_summary = $evt_summary.CONST_ABSENT2;
+			}
 		} else if ($cancel == 'a') { 
 			$absent_flag = '1'; 
-			$evt_summary = $evt_summary.CONST_ABSENT;
+			if ($lesson_id == 2 ) {		// English lesson.
+				$evt_summary = $evt_summary.CONST_ABSENT_ENG;
+			} else {			// not English.
+				$evt_summary = $evt_summary.CONST_ABSENT;
+			}
 			$event_diff_hours = 0;
 		} else { $absent_flag = '0'; }
 							// 振替処理
@@ -315,7 +320,11 @@ try{
 			$alternative_flag = '1' ;  
 			$recurringEvent = '0';
 			$event_diff_hours = 0;
-			$evt_summary = $evt_summary.CONST_ALTERNATE;
+			if ($lesson_id == 2 ) {		// English lesson.
+				$evt_summary = $evt_summary.CONST_ALTERNATE_ENG;
+			} else {			// not English.
+				$evt_summary = $evt_summary.CONST_ALTERNATE;
+			}
 		} else {
 			$alternative_flag = '';
 		} 
@@ -393,10 +402,18 @@ try{
 			}  
 			if ($cancel_reason == CONST_ABSENTLATE ) { 
 				$evt_summary = $evt_summary.CONST_COLON;
-				$evt_summary = $evt_summary.CONST_ABSENTLATE;
+				if ($lesson_id == 2 ) {		// English lesson.
+					$evt_summary = $evt_summary.CONST_ABSENTLATE_ENG;
+				} else {			// not English.
+					$evt_summary = $evt_summary.CONST_ABSENTLATE;
+				}
 			} else if ($cancel_reason == CONST_ABSENTOFF ) { 
 				$evt_summary = $evt_summary.CONST_COLON;
-				$evt_summary = $evt_summary.CONST_ABSENTOFF;
+				if ($lesson_id == 2 ) {		// English lesson.
+					$evt_summary = $evt_summary.CONST_ABSENTOFF_ENG;
+				} else {			// not English.
+					$evt_summary = $evt_summary.CONST_ABSENTOFF;
+				}
 			} 
 			$evt_summary = $evt_summary.CONST_CLOSING ;
 		}
@@ -426,10 +443,18 @@ try{
 			}  
 			if ($cancel_reason == CONST_ABSENTLATE ) { 
 				$evt_summary = $evt_summary.CONST_COLON;
-				$evt_summary = $evt_summary.CONST_ABSENTLATE;
+				if ($lesson_id == 2 ) {		// English lesson.
+					$evt_summary = $evt_summary.CONST_ABSENTLATE_ENG;
+				} else {			// not English.
+					$evt_summary = $evt_summary.CONST_ABSENTLATE;
+				}
 			} else if ($cancel_reason == CONST_ABSENTOFF ) { 
 				$evt_summary = $evt_summary.CONST_COLON;
-				$evt_summary = $evt_summary.CONST_ABSENTOFF;
+				if ($lesson_id == 2 ) {		// English lesson.
+					$evt_summary = $evt_summary.CONST_ABSENTOFF_ENG;
+				} else {			// not English.
+					$evt_summary = $evt_summary.CONST_ABSENTOFF;
+				}
 			} 
 		} 
 
@@ -445,6 +470,38 @@ try{
 		}
 		if ($work_id==11) {			// 季節講習演習の文字列をセット 
 			$evt_summary = $evt_summary.CONST_SEASONSS ;
+		}
+		switch ($place_id) {			// tbl_schedule_onetime のplace_idからtbl_eventのplace_idをセット 
+		case '1':		// Toyoda
+			$new_place_id = 8 ;
+			break;
+		case '2':		// north exit 2nd floor.
+			$new_place_id = 11 ;
+			break;
+		case '3':		// north exit 3rd floor.
+			$new_place_id = 3 ;
+			break;
+		case '4':		// north exit 4th floor.
+			$new_place_id = 4 ;
+			break;
+		case '5':		// south exit 
+			$new_place_id = 2 ;
+			break;
+		case '6':		// kunitachi
+			$new_place_id = 10 ;
+			break;
+		case '7':		// koyasu
+			$new_place_id = 9 ;
+			break;
+		case '8':		// Dattocchi
+			$new_place_id = 7 ;
+			break;
+		case '9':		// arrowore
+			$new_place_id = 6 ;
+			break;
+		case '10':		// home
+			$new_place_id = 0 ;
+			break;
 		}
 
 		if ($user_id > 200000 ) {	// スタッフの場合
@@ -487,7 +544,7 @@ try{
 			$stmt->bindValue(15, $googlecal_evt_description, PDO::PARAM_STR);  // NULL値をセット 
 			$stmt->bindValue(16, $now, PDO::PARAM_STR);   
 			$stmt->bindValue(17, $now, PDO::PARAM_STR);   
-			$stmt->bindValue(18, $place_id, PDO::PARAM_INT);  // setting place_floors. 
+			$stmt->bindValue(18, $new_place_id, PDO::PARAM_INT);  // setting place_floors. 
 			$stmt->execute();
                
 		 }  else {			// スタッフでない場合
@@ -565,8 +622,8 @@ try{
 			$stmt->bindValue(17, $subject_id, PDO::PARAM_STR);  
 			$stmt->bindValue(18, $course_id, PDO::PARAM_STR);  
 			$stmt->bindValue(19, $teacher_id, PDO::PARAM_STR);
-			$stmt->bindValue(20, $place_id, PDO::PARAM_INT); 	// setting place_floors column . 
-			$stmt->bindValue(21, $place_id, PDO::PARAM_INT); 	// setting place_floors column . 
+			$stmt->bindValue(20, $new_place_id, PDO::PARAM_INT); 	// setting place_floors column . 
+			$stmt->bindValue(21, $new_place_id, PDO::PARAM_INT); 	// setting place_floors column . 
 			$stmt->bindValue(22, $absent_flag, PDO::PARAM_STR);
 			$stmt->bindValue(23, $trial_flag, PDO::PARAM_STR);  
 			$stmt->bindValue(24, $interview_flag, PDO::PARAM_STR);  
