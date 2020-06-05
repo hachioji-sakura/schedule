@@ -207,6 +207,7 @@ try{
 	"comment,".
 	"googlecal_id,".
 	"googleevent_id,".
+	"subject_expr,".
 	"recurrence_id".
 	" FROM tbl_schedule_onetime WHERE delflag!=1 AND (cancel IS NULL OR cancel!='c') AND ymd BETWEEN ? AND ? ";
 	if ($request_user_id > 0) {
@@ -248,6 +249,7 @@ try{
 		$updated_timestamp	=	$row[updatetime];
 		$googlecal_id	=	$row[googlecal_id];
 		$googleevent_id =	$row[googleevent_id];
+		$subject_expr 	=	$row[subject_expr];
 		$recurrence_id	=	$row[recurrence_id];
 						// DB データの変換処理
 		if ( $temporary > 0 && $temporary < 110 ) {
@@ -420,7 +422,8 @@ try{
 
 		if ($subject_id > 0 ) {		// setting subject name 
 			$evt_summary = $evt_summary.CONST_COLON ;
-			$evt_summary = $evt_summary.$subject_list[$subject_id];
+//			$evt_summary = $evt_summary.$subject_list[$subject_id];
+			$evt_summary = $evt_summary.$subject_expr;
 		}
 
 		if ( $user_id < 100000 ) {			// setting teacher name 
