@@ -49,9 +49,9 @@ $student_list = array();
 
 try{
 
-	$stmt = $db->query("SELECT fixed FROM tbl_fixed WHERE year=\"$year\" AND month=\"$month\"");
-	$rslt = $stmt->fetch(PDO::FETCH_ASSOC);
-	if (!$rslt['fixed']) throw new Exception("{$year}年{$month}月分の出席簿登録が確定されていないため、スプレッドシート出力できません。（PDF出力のみ実行しました。）");
+//	$stmt = $db->query("SELECT fixed FROM tbl_fixed WHERE year=\"$year\" AND month=\"$month\"");
+//	$rslt = $stmt->fetch(PDO::FETCH_ASSOC);
+//	if (!$rslt['fixed']) throw new Exception("{$year}年{$month}月分の出席簿登録が確定されていないため、スプレッドシート出力できません。（PDF出力のみ実行しました。）");
 
 	// Google Driveを使うための準備（認証など）
 	$drive = new google_drive_util();

@@ -34,6 +34,8 @@ define('NORMAL_CLASS',1);
 define('SEASON_CLASS',2);
 define('SATSUN_CLASS',3);
 
+$global_event_list = 'empty';
+
 $lesson_list = get_lesson_list($db);
 $subject_list = get_subject_list($db);
 $type_list = get_type_list($db);
@@ -298,7 +300,17 @@ $sat_sun_class_date_list = array(
 "2020/05/28",
 "2020/05/29",
 "2020/05/30",
-"2020/05/31"
+"2020/05/31",
+
+"2020/06/06",
+"2020/06/07",
+"2020/06/13",
+"2020/06/14",
+"2020/06/20",
+"2020/06/21",
+"2020/06/27",
+"2020/06/28"
+
 );
 foreach ($sat_sun_class_date_list as $i=>$item) { if ($i==0) { $sat_sun_class_date_list_string = "('$item'"; } else { $sat_sun_class_date_list_string = $sat_sun_class_date_list_string.",'$item'"; } }
 $sat_sun_class_date_list_string = $sat_sun_class_date_list_string.")";
@@ -1420,8 +1432,8 @@ function get_event_list($db, $param_array=array(), $value_array=array(), $order_
 		$cmd .= "	order by tbl_event.event_id";
 	}
 	$stmt = $db->prepare($cmd);
-//echo $cmd;
-//var_dump($value_array);
+//echo $cmd;echo"<BR>";
+//var_dump($value_array);echo"<BR><BR>";
 	$stmt->execute($value_array);
 	$event_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	if ($stmt->errorCode()) {

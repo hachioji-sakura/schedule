@@ -5,10 +5,12 @@ define( "NOT_CONFIRMED_ERR_MSG2", "「(Not Defined)」入力エラー" );
 define( "NOT_CONFIRMED_ERR_MSG3", "「(Not Confirmed)」入力エラー" );
 define( "NOT_CONFIRMED_ERR_MSG4", "「(temporary)」入力エラー" );
 
-$sql = "SELECT * FROM tbl_season_schedule s LEFT OUTER JOIN tbl_member m ON s.member_no=m.no WHERE s.date IN {$date_list_string}";
-$stmt = $db->prepare($sql);
-$stmt->execute();
-$season_schedules = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if (!$date_list_string) {
+	$sql = "SELECT * FROM tbl_season_schedule s LEFT OUTER JOIN tbl_member m ON s.member_no=m.no WHERE s.date IN {$date_list_string}";
+	$stmt = $db->prepare($sql);
+	$stmt->execute();
+	$season_schedules = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 if ($nocheck) $result=true;
 

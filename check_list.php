@@ -88,9 +88,9 @@ if (file_exists($PDFfile)) {
 
 $pdf_mode = $_GET["pdf"];
 
-$stmt = $db->query("SELECT fixed FROM tbl_fixed WHERE year=\"$year\" AND month=\"$month\"");
-$rslt = $stmt->fetch(PDO::FETCH_ASSOC);
-if (!$rslt['fixed']) throw new Exception("{$year}年{$month}月分の出席簿登録を確定してください。");
+//$stmt = $db->query("SELECT fixed FROM tbl_fixed WHERE year=\"$year\" AND month=\"$month\"");
+//$rslt = $stmt->fetch(PDO::FETCH_ASSOC);
+//if (!$rslt['fixed']) throw new Exception("{$year}年{$month}月分の出席簿登録を確定してください。");
 
 $year1 = $year-1988;
 $month1 = $month;
@@ -1461,6 +1461,7 @@ foreach ($tmp_teacher_list as &$teacher) {
 		} else {
 			$str0 .= "<td><font color=\"red\">未確定</font></td>";
 			$errFlag = 1;
+			$total_transport_cost = 0; $divide_transport_cost = 0;
 		}
 		
 		$pay += $divide_transport_cost + $payadj_tax_free1 + $tatekae_total1;
@@ -1879,6 +1880,7 @@ foreach ($staff_list as &$staff) {
 		} else {
 			echo "<td><font color=\"red\">未確定</font></td>";
 			$errFlag = 1;
+			$total_transport_cost = 0; $divide_transport_cost = 0;
 		}
 		$total_transport_cost_sum2 += $divide_transport_cost;
 
@@ -1976,6 +1978,7 @@ foreach ($teacher_and_staff_list as $key_name=>&$teacher_and_staff) {
 	} else {
 		echo "<td><font color=\"red\">未確定</font></td>";
 		$errFlag = 1;
+		$total_transport_cost = 0; $divide_transport_cost = 0;
 	}
 	
 	$total_pay = $pay + $total_transport_cost + $payadj_tax_free + $tatekae_total;

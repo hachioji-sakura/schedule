@@ -83,6 +83,17 @@ function blankCheck() {
 <div align="left"> 
 	<h4>■ 月謝計算</h4>
 		<ol>
+			<li><b>SakuraOneNet カレンダーデータの取り込み</b><br>
+				<form method="post" action="load_calender_data.php">
+				<input type="text" name="year" value="<?php echo $year1; ?>" size="4">年&nbsp;
+				<input type="text" name="month" value="<?php echo $month1; ?>" size="4">月分&nbsp;
+				限定する生徒番号（全生徒の場合空白）：
+				<input type="text" name="user_id" value="" size="4">&nbsp;
+				置換モード（replace）：
+				<input type="text" name="replace" value="replace" size="4">&nbsp;
+				<input type="submit" value="実行">
+				</form>
+<!--
 			<li><b>カレンダーデータの取り込み</b><br>
 				<form name="form1" method="post" action="get_calender_data.php">
 				<input type="text" name="y" value="<?php echo $year1; ?>" size="4">年&nbsp;
@@ -92,6 +103,7 @@ function blankCheck() {
 				<input type="submit" value="取り込む" onclick="return updateAlert();">
 				<font color="red" size="-1">* 処理結果が表示されるまでしばらくお待ちください</font>
 				</form>
+-->
 			<li><b>生徒の登録</b><br>
 <!--
 				<form method="post" action="student_fee_add.php">
@@ -389,17 +401,6 @@ function blankCheck() {
 　　　<input type="submit" value="パスワード変更">
 			</form>
 	<br>
-	<br>
-	<h4>■ カレンダーDB取り込み</h4>
-	<form method="post" action="load_calender_data.php">
-	<input type="text" name="year" value="<?php echo $year1; ?>" size="4">年&nbsp;
-	<input type="text" name="month" value="<?php echo $month1; ?>" size="4">月分&nbsp;
-	限定する生徒番号（全生徒の場合空白）：
-	<input type="text" name="user_id" value="" size="4">&nbsp;
-	置換モード（replace）：
-	<input type="text" name="replace" value="" size="4">&nbsp;
-	<input type="submit" value="実行">
-	</form>
 	<br>
        <h4>■ 季節講習・土日講習スケジュール取り込み</h4>
         <form method="post" action="upload_season_calender.php">

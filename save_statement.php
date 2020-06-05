@@ -504,7 +504,8 @@ $event = array("date" => date("n月j日", $start_datetime),
 		}catch (PDOException $e){
 			$errFlag = 1;
 			//throw $e;
-		  print('Error:'.$e->getMessage());
+			var_dump($event_array);echo"<BR>";
+		  print('Error:'.$e->getMessage()."<BR>");
 		}
 		if ($errFlag == 0) {
 			return true;
