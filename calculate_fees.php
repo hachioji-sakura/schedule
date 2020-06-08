@@ -547,7 +547,7 @@ try{
 		$tmp_event_list = get_event_list($db, $param_array, $value_array, $order_array);
 */
 //		if ($month==1 || ($year==2017 && $month==3) || $month==4 || $month==8) {
-			$event_item = array(
+			$event_item0 = array(
 				'event_id'				=>'0',
 				'member_no'				=>$member['no'],
 				'year'						=>'',
@@ -663,10 +663,15 @@ try{
 
 //foreach ($tmp_event_list as $temp_item) { var_dump($temp_item); echo "<BR><BR>"; }				
 //foreach ($this->season_class_list2 as $temp_item) { var_dump($temp_item); echo "<BR><br>"; }				
-//				$last_date = '';
+				$last_date = '';
 //				foreach ($this->season_class_list2 as $item) {
-				foreach ($tmp_event_list as &$event_item) {
-					if (strpos($event_item['cal_evt_summary'],'季節講習')===false) continue;
+				$tmp_event_list1 = array();
+				foreach ($tmp_event_list as $event_item) {
+					if (strpos($event_item['cal_evt_summary'],'季節講習')===false)  {
+						array_push( $tmp_event_list1, $event_item );
+						continue;
+					}
+					if (strpos($event_item['cal_evt_summary'],'季節講習演習')!==false) continue;
 					$item = null;
 					foreach ($this->season_class_list2 as $item0) {
 						$date0 = date('Y/m/d',$event_item['start_timestamp']);
@@ -711,54 +716,57 @@ try{
 					if ($lesson_fee1 && $lesson_fee1!=0 && $lesson_fee1 < $lesson_fee0) { $lesson_fee0 = $lesson_fee1; }
 					if ($member['fee_free']) { $lesson_fee0 = 0; $exercise_fee = 0; }
 					
-//					if ($item['date'] != $last_date) {
-					if (strpos($event_item['cal_evt_summary'],'季節講習演習')!==false) {
+					if ($item['date'] != $last_date) {
+//					if (strpos($event_item['cal_evt_summary'],'季節講習演習')!==false) {
 						// 演習計算
-//						$last_date = $item['date'];
-//						$var_array1 = explode( '/',$item['date'] );
-//						$var_array2 = explode( ':',$item['student_stime'] );
-//						$var_array3 = explode( ':',$item['student_etime'] );
-//						$event_item['year']						=	$var_array1[0];
-//						$event_item['month']					=	$var_array1[1]+0;
-//						$event_item['day']						=	$var_array1[2]+0;
-//						$event_item['start_timestamp']=	mktime( $var_array2[0],$var_array2[1],0,$var_array1[1],$var_array1[2],$var_array1[0] );
-//						$event_item['start_hour']			=	$var_array2[0];
-//						$event_item['start_minute']		=	$var_array2[1];
-//						$event_item['end_timestamp']	=	mktime( $var_array3[0],$var_array3[1],0,$var_array1[1],$var_array1[2],$var_array1[0] );
-//						$event_item['end_hour']				=	$var_array3[0];
-//						$event_item['end_minute']			=	$var_array3[1];
-//						$event_item['diff_hours']			=	($event_item['end_timestamp']-$event_item['start_timestamp']) / (60.0*60.0);
-						$event_item['lesson_id']			=	1;
-						$event_item['subject_id']			=	0;
-						$event_item['teacher_id']			=	"";
-						$event_item['fee'] = $exercise_fee;
-						$event_item["absent_flag"] = 0;
+						$event_item1 = $event_item0;
+						$last_date = $item['date'];
+						$var_array1 = explode( '/',$item['date'] );
+						$var_array2 = explode( ':',$item['student_stime'] );
+						$var_array3 = explode( ':',$item['student_etime'] );
+						$event_item1['year']					=	$var_array1[0];
+						$event_item1['month']					=	$var_array1[1]+0;
+						$event_item1['day']						=	$var_array1[2]+0;
+						$event_item1['start_timestamp']=	mktime( $var_array2[0],$var_array2[1],0,$var_array1[1],$var_array1[2],$var_array1[0] );
+						$event_item1['start_hour']		=	$var_array2[0];
+						$event_item1['start_minute']	=	$var_array2[1];
+						$event_item1['end_timestamp']	=	mktime( $var_array3[0],$var_array3[1],0,$var_array1[1],$var_array1[2],$var_array1[0] );
+						$event_item1['end_hour']			=	$var_array3[0];
+						$event_item1['end_minute']		=	$var_array3[1];
+						$event_item1['diff_hours']		=	($event_item1['end_timestamp']-$event_item1['start_timestamp']) / (60.0*60.0);
+						$event_item1['lesson_id']			=	1;
+						$event_item1['subject_id']		=	"";
+						$event_item1['teacher_id']		=	"";
+						$event_item1['fee'] = $exercise_fee;
+						$event_item1["absent_flag"] = 0;
 						if (strpos($event_item['cal_evt_summary'],'休み1:')!==false) {
-							$event_item["absent_flag"] = 1;
-							$event_item['diff_hours'] = 0;
+							$event_item1["absent_flag"] = 1;
+							$event_item1['diff_hours'] = 0;
 						} else 
 						if (strpos($event_item['cal_evt_summary'],'休み2:')!==false) {
-							$event_item["absent_flag"] = 2;
+							$event_item1["absent_flag"] = 2;
 						}
 						if (strpos($event_item['cal_evt_summary'],'振替:')!==false) {
-							$event_item["alternative_flag"] = 1;
-							$event_item['diff_hours'] = 0;
+							$event_item1["alternative_flag"] = 1;
+							$event_item1['diff_hours'] = 0;
 						} else {
-							$event_item["alternative_flag"] = 0;
+							$event_item1["alternative_flag"] = 0;
 						}
-						$event_item['sat_sun_flag'] = $sat_sun_flag;
+						$event_item1['sat_sun_flag'] = $sat_sun_flag;
 						if ($sat_sun_flag) {
-							$event_item['course_id']=null;
+							$event_item1['course_id']=null;
 						} else {
 							switch ($season_course_id) {
-							case 5: $event_item['course_id']=5; break;
-							case 6: $event_item['course_id']=6; break;
-							case 4: $event_item['course_id']=4; break;
-							default:$event_item['course_id']=''; break;
+							case 5: $event_item1['course_id']=5; break;
+							case 6: $event_item1['course_id']=6; break;
+							case 4: $event_item1['course_id']=4; break;
+							default:$event_item1['course_id']=''; break;
 							}
 						}
-//						$exercise_index = array_push( $tmp_event_list, $event_item )-1;
-					} else {
+						$event_item1['season_course_id'] = $item['season_course_id'];
+						$exercise_index = array_push( $tmp_event_list1, $event_item1 )-1;
+					}
+//					} else {
 //						$var_array1 = explode( '/',$item['date'] );
 //						$var_array2 = explode( ':',$item['stime'] );
 //						$var_array3 = explode( ':',$item['etime'] );
@@ -772,47 +780,47 @@ try{
 //						$event_item['end_hour']				=	$var_array3[0];
 //						$event_item['end_minute']			=	$var_array3[1];
 //						$event_item['diff_hours']			=	($event_item['end_timestamp']-$event_item['start_timestamp']) / (60.0*60.0);
-						$event_item['lesson_id']			=	1;
-						$event_item['subject_id']			=	$item['subject_id'];
-						$event_item['teacher_id']			=	$item['teacher_no'];
-						$lesson_fee = $lesson_fee0;
-						// 代表の授業は+1,000円
-						if ($event_item['teacher_id']==1 && $member['yuge_price']) { $lesson_fee += 1000; }
-						$event_item['fee'] = $lesson_fee;
-						
-						$event_item["absent_flag"] = 0;
-						if (strpos($event_item['cal_evt_summary'],'休み1:')!==false) {
-							$event_item['diff_hours'] = 0;
-							$event_item["absent_flag"] = 1;
-						} else 
-						if (strpos($event_item['cal_evt_summary'],'休み2:')!==false) {
-							$event_item["absent_flag"] = 2;
-						}
-						if (strpos($event_item['cal_evt_summary'],'振替:')!==false) {
-							$event_item["alternative_flag"] = 1;
-							$event_item['diff_hours'] = 0;
-						} else {
-							$event_item["alternative_flag"] = 0;
-						}
-						
-						$event_item['sat_sun_flag'] = $sat_sun_flag;
-						if ($sat_sun_flag) {
-							$event_item['course_id']=null;
-						} else {
-							switch ($season_course_id) {
-							case 5: $event_item['course_id']=5; break;
-							case 6: $event_item['course_id']=6; break;
-							case 4: $event_item['course_id']=4; break;
-							default:$event_item['course_id']=''; break;
-							}
+					$event_item['lesson_id']			=	1;
+					$event_item['subject_id']			=	$item['subject_id'];
+					$event_item['teacher_id']			=	$item['teacher_no'];
+					$lesson_fee = $lesson_fee0;
+					// 代表の授業は+1,000円
+					if ($event_item['teacher_id']==1 && $member['yuge_price']) { $lesson_fee += 1000; }
+					$event_item['fee'] = $lesson_fee;
+					
+					$event_item["absent_flag"] = 0;
+					if (strpos($event_item['cal_evt_summary'],'休み1:')!==false) {
+						$event_item['diff_hours'] = 0;
+						$event_item["absent_flag"] = 1;
+					} else 
+					if (strpos($event_item['cal_evt_summary'],'休み2:')!==false) {
+						$event_item["absent_flag"] = 2;
+					}
+					if (strpos($event_item['cal_evt_summary'],'振替:')!==false) {
+						$event_item["alternative_flag"] = 1;
+						$event_item['diff_hours'] = 0;
+					} else {
+						$event_item["alternative_flag"] = 0;
+					}
+					
+					$event_item['sat_sun_flag'] = $sat_sun_flag;
+					if ($sat_sun_flag) {
+						$event_item['course_id']=null;
+					} else {
+						switch ($season_course_id) {
+						case 5: $event_item['course_id']=5; break;
+						case 6: $event_item['course_id']=6; break;
+						case 4: $event_item['course_id']=4; break;
+						default:$event_item['course_id']=''; break;
 						}
 					}
+//					}
 						
-//					$tmp_event_list[$exercise_index]['diff_hours'] -= $event_item['diff_hours']	;
+					$tmp_event_list1[$exercise_index]['diff_hours'] -= $event_item['diff_hours']	;
 										
-//					array_push( $tmp_event_list, $event_item );
+					array_push( $tmp_event_list1, $event_item );
 				}
-				unset($event_item);
+				$tmp_event_list = $tmp_event_list1;
 			}
 			
 			usort( $tmp_event_list,array("calculate_fees","eventCmp") );
@@ -1092,6 +1100,11 @@ try{
 						$subject_name = "　";
 					} else {
 						$subject_name = $subject_list[$tmp_event["subject_id"]];
+						if (preg_match("/:Subject\?(.*)\?/ui",$tmp_event['cal_evt_summary'],$matches)) {
+							$subject_expr = preg_replace("/\([^)]*\)/","",$matches[1]);
+							if ($subject_expr == '0') $subject_expr = '　';
+							if ($subject_name != $subject_expr) $subject_name = $subject_expr;
+						}
 					}
 				}
 				// タイプ

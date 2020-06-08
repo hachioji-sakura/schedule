@@ -558,6 +558,8 @@ try{
 				$teacher_id = $teacher_id - 100000 ;
 			} 
 			$member_kind = 'student';
+			
+			$evt_summary .= ":Subject?$subject_expr?";
 
 			$repeat_flag = $repeattimes;  
 
