@@ -398,6 +398,7 @@ function get_payment_price(&$db, $payment_array, &$errArray) {
 
   foreach ($tmp_lesson_detail_list as $lesson_detail) {
 		foreach ($lesson_detail["event_list"] as $event) {
+			if (!$event["course_id"]) $event["course_id"] = 9;
 			$tmp_fees = str_replace(",", "", $event["fees"]);
 			if (($payment_array["lesson_id"]=='' || $event["lesson_id"] == $payment_array["lesson_id"]) && 
 					$event["course_id"] == $payment_array["type_id"]) {

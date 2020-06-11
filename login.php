@@ -53,7 +53,10 @@ if (isset($_POST['button'])) {
 	</tr>
 </table>
 </form>
-
+<!--
+現在メンテナンス中です。<br>
+ご不便をおかけし申し訳ありません。<br>
+-->
 </div>
 
 </body></html>

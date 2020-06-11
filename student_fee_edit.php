@@ -431,14 +431,14 @@ function default_fee(obj,fee) {
 			<input type="hidden" name="furigana" value="<?=$student["furigana"]?>"><?=$student["furigana"]?>
 		</td>
 	</tr>
-	<tr <?=$display?>>
+	<tr>
 	<th><font color="red">*</font>&nbsp;月会費</th>
 	<td>
 		<input type="text" name="membership_fee" size="20" value="<?=$student["membership_fee"]?>">円
 		<font color="red" size="-1">税種別が税込の場合は税込金額を、税種別が税抜の場合は税抜金額を入力してください。</font>
 	</td>
 	</tr>
-	<tr <?=$display?>>
+	<tr>
 	<th>生年月日</th><td>
 	<input type="hidden" name="birth_year" value="<?=$student["birth_year"]?>"><?=$student["birth_year"]?>年
 	<input type="hidden" name="birth_month" value="<?=$student["birth_month"]?>"><?=$student["birth_month"]?>月
@@ -452,26 +452,26 @@ function default_fee(obj,fee) {
 	<input type="checkbox" <?= $student["jyukensei"]?"checked":"" ?> disabled>受験生
 	</td>
 	</tr>
-	<tr <?=$display?>><th>性別</th><td>
+	<tr><th>性別</th><td>
 	<input type="hidden" name="gender" value="<?=$student['gender']?>">
 	<?= ($student['gender']=='M')?'男':'' ?><?= ($student['gender']=='F')?'女':'' ?>
 	</td></tr>
-	<tr <?=$display?>>
+	<tr>
 	<th>授業料の税種別</th><td>
 	<input type="hidden" name="tax_flag" value="<?=$student["tax_flag"]?>">
 	<?= ($student["tax_flag"]==1)?'税抜':'' ?><?= ($student["tax_flag"]==0)?'税込':'' ?>
 	</td>
 	</tr>
-	<tr <?=$display?>>
+	<tr>
 	<th>メールアドレス</th><td><input type="hidden" name="mail_address" value="<?=$student["mail_address"]?>"><?=$student["mail_address"]?></td>
-	</tr <?=$display?>>
+	</tr>
 	<tr <?=$display?>>
 	<th <?=$display?>>CID</th><td><input type="hidden" name="cid" value="<?=$student["cid"]?>"><?=$student["cid"]?></td>
 	</tr>
 	<tr <?=$display?>>
 	<th>スプレッドシートID</th><td><input type="hidden" name="sheet_id" value="<?=$student["sheet_id"]?>"><?=$student["sheet_id"]?></td>
 	</tr>
-	<tr <?=$display?>>
+	<tr>
 	<th>ステータス</th><td>
 		<input type="hidden" name="del_flag" value="<?=$student["del_flag"]?>">
 		<?= ($student["del_flag"] == 0)?'現生徒':'' ?><?= ($student["del_flag"] == 2)?'前生徒':'' ?>

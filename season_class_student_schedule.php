@@ -181,6 +181,7 @@ try {
 			else												{ $date_count_index=0; }
 		}
 		$exercise_fee = $exercise_fee_table[$season_fee_type][$member['season_course_id'][0]][$date_count_index];
+		if ($year==2020 && $month==6)	$exercise_fee=1200;
 		
 		if ($member_list[$member_no]['fee_free']) { $exercise_fee = 0; }
 		
