@@ -322,7 +322,7 @@ $event = array("date" => date("n月j日", $start_datetime),
 	}
 }
 
-
+errMsgFileCheck($errArray);
 
 ?>
 <html>
@@ -358,16 +358,6 @@ function search_reset()
 			<font color="red" size="3"><?= $error ?></font><br><br>
 <?php
 		}
-		if ($errFlag == 1) {
-?>
-	<a href="./student_list.php?y=<?=$year?>&m=<?=$month?>">生徒一覧へ戻る</a>&nbsp;&nbsp;
-<?php
-		}
-?>
-	<a href="./menu.php">メニューへ戻る</a>
-	<br>
-<?php
-	exit();
 	}
 ?>
 

@@ -39,6 +39,9 @@ $divided_payment_list = $calculator->get_divided_payment_list();
 if ($divided_price > 0) {
 //$total_fees = $total_fees - ($divided_price*5);
 }
+
+errMsgFileCheck($errArray);
+
 ?>
 <html>
 <head>
@@ -89,6 +92,11 @@ function back() {
 <!--
 <div class="pagebreak">
 -->
+<?php
+	if (count($errArray) > 0)
+		foreach( $errArray as $error)
+			echo "<font color=\"red\" size=\"3\">$error</font><br>";
+?>
 <div>
 <h3><?= $member_array["name"] ?>様</h3>
 <table>
