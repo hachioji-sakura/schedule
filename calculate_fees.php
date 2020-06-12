@@ -685,7 +685,7 @@ try{
 					}
 					if (!$item) {
 						if (strpos($event_item['cal_evt_summary'],'季節講習演習')===false) {
-							errMsgFileLog ("季節講習データ不一致<BR>".
+							errMsgFileLog ("注意：季節講習データ不一致<BR>".
 								"事務DB：{$item1['date']} {$item1['stime']},{$item1['teacher_no']},{$item1['$member_no']}<br>".
 								"SON：$date0 $time0 {$event_item['cal_evt_summary']}");
 //							continue;
