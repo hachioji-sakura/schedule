@@ -28,20 +28,31 @@ if ($class_type == 'sat_sun_class') {
 	if (is_null($year) === true || empty($year) === true)   { $year = date("Y",strtotime("first day of next month")); }
 	if (is_null($month) === true || empty($month) === true) { $month = date("n",strtotime("first day of next month")); }
 
-	if ($_POST['button'] == '前月') {
-		$y1=$year; $m1=$month-2; if ($m1<1) { $y1--; $m1=11; }
-		$year = $y1; $month = $m1;
-	}
-	if ($_POST['button'] == '翌月') {
-		$y2=$year; $m2=$month+2; if ($m2>12) { $y2++; $m2=1; }
-		$year = $y2; $month = $m2;
-	}
+	if (($year==2020 && $month>=5) || $year>2020) {
+		
+		$str0 = sprintf('%04d/%02d',$year,$month);
+		$date_list = array_values(array_filter( $date_list, function($s)use($str0){$v=substr($s,0,7);return ($v==$str0);} ));
+		
+	} else {
+		
+		if ($month%2==0) $month--;
+		if ($_POST['button'] == '前月') {
+			$y1=$year; $m1=$month-2; if ($m1<1) { $y1--; $m1=11; }
+			$year = $y1; $month = $m1;
+		}
+		if ($_POST['button'] == '翌月') {
+			$y2=$year; $m2=$month+2; if ($m2>12) { $y2++; $m2=1; }
+			$year = $y2; $month = $m2;
+		}
 
-	$str0 = sprintf('%04d/%02d',$year,$month);
-	$y3=$year; $m3=$month+1; if ($m3>12) { $y3++; $m3=1; }
-	$str1 = sprintf('%04d/%02d',$y3,$m3);
-	$array0 = array($str0,$str1);
-	$date_list = array_values(array_filter( $date_list, function($s)use($array0){$v=substr($s,0,7);return ($v==$array0[0] || $v==$array0[1]);} ));
+		$str0 = sprintf('%04d/%02d',$year,$month);
+		$y3=$year; $m3=$month+1; if ($m3>12) { $y3++; $m3=1; }
+		$str1 = sprintf('%04d/%02d',$y3,$m3);
+		$array0 = array($str0,$str1);
+		$date_list = array_values(array_filter( $date_list, function($s)use($array0){$v=substr($s,0,7);return ($v==$array0[0] || $v==$array0[1]);} ));
+
+	}
+	
 	$date_list_string = ($date_list)? "('".implode("','",$date_list)."')" : "";
 
 } else {

@@ -7,24 +7,30 @@ $result = check_user($db, "1");
 $year = date("Y");
 $month = date("n");
 $selectm1 = '';
+$selectm2 = '';
 $selectm3 = '';
+$selectm4 = '';
 $selectm5 = '';
+$selectm6 = '';
 $selectm7 = '';
+$selectm8 = '';
 $selectm9 = '';
+$selectm10 = '';
 $selectm11 = '';
+$selectm12 = '';
 switch ($month) {
-	case 1:
-	case 2:	$selectm1 = 'selected'; break;
-	case 3:
-	case 4:	$selectm3 = 'selected'; break;
-	case 5:
-	case 6:	$selectm5 = 'selected'; break;
-	case 7:
-	case 8:	$selectm7 = 'selected'; break;
-	case 9:
-	case 10:	$selectm9 = 'selected'; break;
-	case 11:
-	case 12:	$selectm11 = 'selected'; break;
+	case 1:	$selectm1 = 'selected'; break;
+	case 2:	$selectm2 = 'selected'; break;
+	case 3:	$selectm3 = 'selected'; break;
+	case 4:	$selectm4 = 'selected'; break;
+	case 5:	$selectm5 = 'selected'; break;
+	case 6:	$selectm6 = 'selected'; break;
+	case 7:	$selectm7 = 'selected'; break;
+	case 8:	$selectm8 = 'selected'; break;
+	case 9:	$selectm9 = 'selected'; break;
+	case 10:	$selectm10 = 'selected'; break;
+	case 11:	$selectm11 = 'selected'; break;
+	case 12:	$selectm12 = 'selected'; break;
 }
 
 $year1 = $year;
@@ -331,12 +337,18 @@ function blankCheck() {
 				<form method="get" action="season_class_schedule.php">
 				<input type="text" name="y" value="<?php echo $year1; ?>" size="4">年&nbsp;
 				<select name="m">
-				<option value="1" <?= $selectm1 ?>>1-2月</option>
-				<option value="3" <?= $selectm3 ?>>3-4月</option>
-				<option value="5" <?= $selectm5 ?>>5-6月</option>
-				<option value="7" <?= $selectm7 ?>>7-8月</option>
-				<option value="9" <?= $selectm9 ?>>9-10月</option>
-				<option value="11" <?= $selectm11 ?>>11-12月</option>
+				<option value="1" <?= $selectm1 ?>>1月</option>
+				<option value="2" <?= $selectm2 ?>>2月</option>
+				<option value="3" <?= $selectm3 ?>>3月</option>
+				<option value="4" <?= $selectm4 ?>>4月</option>
+				<option value="5" <?= $selectm5 ?>>5月</option>
+				<option value="6" <?= $selectm6 ?>>6月</option>
+				<option value="7" <?= $selectm7 ?>>7月</option>
+				<option value="8" <?= $selectm8 ?>>8月</option>
+				<option value="9" <?= $selectm9 ?>>9月</option>
+				<option value="10" <?= $selectm10 ?>>10月</option>
+				<option value="11" <?= $selectm11 ?>>11月</option>
+				<option value="12" <?= $selectm12 ?>>12月</option>
 				</select>&nbsp;
 				<input type="hidden" name="class_type" value="sat_sun_class">
 				<input type="hidden" name="edit" value="1">
@@ -345,12 +357,18 @@ function blankCheck() {
 				<form method="get" action="season_class_schedule.php">
 				<input type="text" name="y" value="<?php echo $year1; ?>" size="4">年&nbsp;
 				<select name="m">
-				<option value="1" <?= $selectm1 ?>>1-2月</option>
-				<option value="3" <?= $selectm3 ?>>3-4月</option>
-				<option value="5" <?= $selectm5 ?>>5-6月</option>
-				<option value="7" <?= $selectm7 ?>>7-8月</option>
-				<option value="9" <?= $selectm9 ?>>9-10月</option>
-				<option value="11" <?= $selectm11 ?>>11-12月</option>
+				<option value="1" <?= $selectm1 ?>>1月</option>
+				<option value="2" <?= $selectm2 ?>>2月</option>
+				<option value="3" <?= $selectm3 ?>>3月</option>
+				<option value="4" <?= $selectm4 ?>>4月</option>
+				<option value="5" <?= $selectm5 ?>>5月</option>
+				<option value="6" <?= $selectm6 ?>>6月</option>
+				<option value="7" <?= $selectm7 ?>>7月</option>
+				<option value="8" <?= $selectm8 ?>>8月</option>
+				<option value="9" <?= $selectm9 ?>>9月</option>
+				<option value="10" <?= $selectm10 ?>>10月</option>
+				<option value="11" <?= $selectm11 ?>>11月</option>
+				<option value="12" <?= $selectm12 ?>>12月</option>
 				</select>&nbsp;
 				<input type="hidden" name="class_type" value="sat_sun_class">
 				<input type="hidden" name="view_type" value="student">
@@ -360,12 +378,18 @@ function blankCheck() {
 				<form method="get" action="season_class_student_schedule.php">
 				<input type="text" name="y" value="<?php echo $year1; ?>" size="4">年&nbsp;
 				<select name="m">
-				<option value="1" <?= $selectm1 ?>>1-2月</option>
-				<option value="3" <?= $selectm3 ?>>3-4月</option>
-				<option value="5" <?= $selectm5 ?>>5-6月</option>
-				<option value="7" <?= $selectm7 ?>>7-8月</option>
-				<option value="9" <?= $selectm9 ?>>9-10月</option>
-				<option value="11" <?= $selectm11 ?>>11-12月</option>
+				<option value="1" <?= $selectm1 ?>>1月</option>
+				<option value="2" <?= $selectm2 ?>>2月</option>
+				<option value="3" <?= $selectm3 ?>>3月</option>
+				<option value="4" <?= $selectm4 ?>>4月</option>
+				<option value="5" <?= $selectm5 ?>>5月</option>
+				<option value="6" <?= $selectm6 ?>>6月</option>
+				<option value="7" <?= $selectm7 ?>>7月</option>
+				<option value="8" <?= $selectm8 ?>>8月</option>
+				<option value="9" <?= $selectm9 ?>>9月</option>
+				<option value="10" <?= $selectm10 ?>>10月</option>
+				<option value="11" <?= $selectm11 ?>>11月</option>
+				<option value="12" <?= $selectm12 ?>>12月</option>
 				</select>&nbsp;
 				<input type="hidden" name="class_type" value="sat_sun_class">
 				<input type="submit" value="表示">
@@ -374,12 +398,18 @@ function blankCheck() {
 				<form method="post" action="season_class_student_schedule.php">
 				<input type="text" name="y" value="<?php echo $year1; ?>" size="4">年&nbsp;
 				<select name="m">
-				<option value="1" <?= $selectm1 ?>>1-2月</option>
-				<option value="3" <?= $selectm3 ?>>3-4月</option>
-				<option value="5" <?= $selectm5 ?>>5-6月</option>
-				<option value="7" <?= $selectm7 ?>>7-8月</option>
-				<option value="9" <?= $selectm9 ?>>9-10月</option>
-				<option value="11" <?= $selectm11 ?>>11-12月</option>
+				<option value="1" <?= $selectm1 ?>>1月</option>
+				<option value="2" <?= $selectm2 ?>>2月</option>
+				<option value="3" <?= $selectm3 ?>>3月</option>
+				<option value="4" <?= $selectm4 ?>>4月</option>
+				<option value="5" <?= $selectm5 ?>>5月</option>
+				<option value="6" <?= $selectm6 ?>>6月</option>
+				<option value="7" <?= $selectm7 ?>>7月</option>
+				<option value="8" <?= $selectm8 ?>>8月</option>
+				<option value="9" <?= $selectm9 ?>>9月</option>
+				<option value="10" <?= $selectm10 ?>>10月</option>
+				<option value="11" <?= $selectm11 ?>>11月</option>
+				<option value="12" <?= $selectm12 ?>>12月</option>
 				</select>&nbsp;
 				<input type="hidden" name="class_type" value="sat_sun_class">
 				<input type="hidden" name="mode" value="1">

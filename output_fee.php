@@ -106,6 +106,7 @@ try{
 		$member_list[$row["no"]] = $row;
 	}
 */
+//	$member_list = get_simple_member_list($db, array("kind = ?","name <> ?","no='001239'"), array("3","体験生徒"));
 	$member_list = get_simple_member_list($db, array("kind = ?","name <> ?"), array("3","体験生徒"));
 
 //var_dump($member_list);
@@ -532,8 +533,10 @@ foreach ($member_list as $member_no => $member) {
 						// $divided_payment["year"]と$divided_payment["month"]は請求年月なので注意
 						if ($divided_payment["year"] == $year && $divided_payment["month"] == $month) {
 							if (($divided_payment["lesson_id"] == '' || $divided_payment["lesson_id"] == $event["lesson_id"]) && 
-									$divided_payment["type_id"] == $event["course_id"]) {
+									($divided_payment["type_id"] == $event["course_id"] || ($divided_payment["type_id"]==9 && $event["course_id"]===null))) {
 								$divided_payment_array[$divided_payment["payment_no"]]["list_text"] .= $event_text;
+								$divided_payment_array[$divided_payment["payment_no"]]["subtotal_hours"] += $event["diff_hours"];
+								$divided_payment_array[$divided_payment["payment_no"]]["subtotal_fees"] += $event["fees"];
 								$lesson_array[$event["lesson_id"]]["subtotal_hours"] -= $event["diff_hours"];
 								$lesson_array[$event["lesson_id"]]["subtotal_fees"] -= $event["fees"];
 								$divided_payment_flag = true;
@@ -570,19 +573,27 @@ foreach ($member_list as $member_no => $member) {
 
 			// 20160103 見やすいように移動しました
 			// 20151114 調整
-				foreach ($student["divided_payment_list"] as $divided_payment) {
-					$divided_payment_text = "\n";
-					if (empty($divided_payment["memo"]) == true) {
-						$divided_payment_text .= "◆ 授業料金分割払い ".$divided_payment["price"]." 円\n";
-					} else {
-						$divided_payment_text .= "◆ 授業料金分割払い ".$divided_payment["price"]." 円 （".$divided_payment["memo"]."）\n";
-					}
-
-					// 分割払いの分を表示する
-					if (isset($divided_payment_array[$divided_payment["payment_no"]]) !== false) {
-          	$divided_payment_text = $divided_payment_text.$divided_payment_array[$divided_payment["payment_no"]]["list_text"];
-					}
+			foreach ($student["divided_payment_list"] as $divided_payment) {
+				$divided_payment_text .= "\n";
+				if (empty($divided_payment["memo"]) == true) {
+					$divided_payment_text .= "◆ 授業料金分割払い\n".
+							"{$divided_payment['year']}年{$divided_payment['month']}月{$type_list[$divided_payment['type_id']]}分\n".
+							$divided_payment["price"]." 円\n";
+				} else {
+					$divided_payment_text .= "◆ 授業料金分割払い\n".
+							"{$divided_payment['year']}年{$divided_payment['month']}月{$type_list[$divided_payment['type_id']]}分\n".
+							$divided_payment["price"]." 円\n".
+							$divided_payment["memo"]."\n";
 				}
+
+				// 分割払いの分を表示する
+				if (isset($divided_payment_array[$divided_payment["payment_no"]]) !== false) {
+					$divided_payment_text .=
+						"\n{$divided_payment['year']}年{$divided_payment['month']}月{$type_list[$divided_payment['type_id']]}\n".
+						"(合計：{$divided_payment_array[$divided_payment['payment_no']]['subtotal_hours']}時間　{$divided_payment_array[$divided_payment['payment_no']]['subtotal_fees']}円)\n".
+						$divided_payment_array[$divided_payment["payment_no"]]["list_text"];
+				}
+			}
 
 			$content_text = $header_text2.$others_text.$divided_payment_text.$lesson_text;
 
