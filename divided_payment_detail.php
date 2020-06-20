@@ -438,12 +438,7 @@ function delete_payment() {
 <div id="content" align="center">
 
 <h3>生徒の登録 - 分割支払詳細</h3>
-<!--
-<a href="divided_payment_list.php?no=<?=$student_no?>">生徒の登録 - 分割設定へ</a>&nbsp;&nbsp;
-<a href="#" onclick="javascript:window.history.back(-1);return false;">1つ前へ戻る</a>&nbsp;&nbsp;
-<a href="menu.php">メニューへ戻る</a><br><br>
--->
-<a href="#" onclick="javascript:window.open('about:blank', '_self').close();">閉じる</a><br><br>
+<a href="divided_payment_list.php?no=<?=$member['no']?>&mode=new">戻る</a><br><br>
 
 <?php
 	if (count($errArray) > 0) {
@@ -535,7 +530,7 @@ function delete_payment() {
 	<table border="1" id="devided_payment_detail_table">
 	<tr>
 		<th>回</th>
-		<th colspan="2">支払年月</th>
+		<th colspan="2">月謝対象月(*1)</th>
 		<th><font color="red">*</font>&nbsp;支払金額</th>
 <!--
 		<th>&nbsp;</th>
@@ -570,6 +565,7 @@ function delete_payment() {
 	}
 ?>
 </table>
+*1 この月の月謝に請求が組み込まれます。支払いは翌月となります。
 <?php
 //}
 ?>

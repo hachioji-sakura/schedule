@@ -204,6 +204,8 @@ $payment_list = get_divided_payment_list($db, $param_array, $value_array, $order
 
 function add_divided_payment_detail(&$db, $payment_array, &$errArray) {
 					// 分割金額を算出し、tbl_divided_payment_detailに登録する
+					$year  = $payment_array['year'];
+					$month = $payment_array['month'];
 					$divided_payment_detail_array = array();
 					for ($i=1; $i<$payment_array["time"]+1; $i++) {
 						
@@ -219,14 +221,15 @@ function add_divided_payment_detail(&$db, $payment_array, &$errArray) {
 						}
 						$divided_payment_detail_array["payment_no"] = $payment_array["payment_no"];
 						$divided_payment_detail_array["time_no"] = $i;
-						$divided_payment_detail_array["payment_year"] = null;
-						$divided_payment_detail_array["payment_month"] = null;
+						$divided_payment_detail_array["payment_year"] = $year;
+						$divided_payment_detail_array["payment_month"] = $month;
 						$divided_payment_detail_array["price"] = $tmp_price;
 						$result = insert_divided_payment_detail($db, $divided_payment_detail_array);
 						if (!$result) {
 							array_push($errArray, "分割詳細情報をを登録中にエラーが発生しました。");
 	          	return false;
 						}
+						$month++; if ($month>12) { $year++; $month=1; }
 					}
 			//}
 return true;
