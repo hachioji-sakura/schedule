@@ -58,6 +58,7 @@ $pdf->AddFont('IPAG','','ipag.ttf',true);
 $errArray = array();
 
 $student_list = array();
+//$member_list = get_simple_member_list($db, array("kind = ?","name <> ?","no='001239'"), array("3","体験生徒"));
 $member_list = get_simple_member_list($db, array("kind = ?","name <> ?"), array("3","体験生徒"));
 $student_list = get_calculated_list($member_list, $year, $month);
 if ($result == false) {

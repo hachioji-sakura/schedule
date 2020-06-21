@@ -29,6 +29,7 @@ try {
 	$order_array = array();
 	array_push($param_array, "tbl_member.kind = ?");
 	array_push($value_array, "3");
+	if ($log_member_no)	array_push($param_array, "tbl_member.no = '$log_member_no'");
 	$all_student_flag = "1";	// 前生徒と現生徒を抽出
 	$member_list = get_simple_member_list($db, $param_array, $value_array, $order_array, $all_student_flag);
 //var_dump($member_list);
@@ -453,6 +454,19 @@ $member_total=$total_price-$last_total_price;
 $last_total_price = $total_price;
 //if ($member_total)	echo "{$member_list[$member_no]['name']}, $member_total<BR>";
 
+/*
+	echo "{$member_list[$member_no]['name']}, {$price_list['lesson'][1]}, ";
+	$price = $price_list['lesson_place'][1];
+	$rowtotal = 0;
+	foreach ($place_list as $key1=>$item1)	{
+		if ($key1==11)	continue;
+		if ($key1==3)	{
+			if (11 != $key0)	$rowtotal += $price[11];
+		}
+		if ($key1 != $key0)	$rowtotal += $price[$key1];
+	}
+	echo "$rowtotal.<BR>";
+*/
 	}
 
 //var_dump($price_list['lesson']);
