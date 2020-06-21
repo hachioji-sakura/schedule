@@ -139,6 +139,10 @@ foreach ($member_list as $member_no => $member) {
 		$value_array = array($member["no"], $year, $month);
 		$order_array = array("tbl_divided_payment.payment_no","tbl_divided_payment_detail.time_no");
 		$divided_payment_list = get_both_divided_payment_list($db, $param_array, $value_array, $order_array);
+		$param_array = array("tbl_divided_payment.member_no=?", "tbl_divided_payment.year=?", "tbl_divided_payment.month=?");
+		$value_array = array($member["no"], $year, $month);
+		$order_array = array("tbl_divided_payment.payment_no","tbl_divided_payment_detail.time_no");
+		$divided_payment_list1 = get_both_divided_payment_list($db, $param_array, $value_array, $order_array);
 
 //var_dump($divided_payment_list);
 
@@ -161,6 +165,11 @@ foreach ($member_list as $member_no => $member) {
 			//$tmp_divided_price = $tmp_divided_price + $item["price"];
 			$item["price"] = number_format($item["price"]);
 			$divided_payment_list[$key] = $item;
+		}
+		foreach ($divided_payment_list1 as $key => $item) {
+			$item["payment_month"]++;	if ($item["payment_month"]>12) $item["payment_month"]=1;
+			$item["price"] = number_format($item["price"]);
+			$divided_payment_list1[$key] = $item;
 		}
 
 		// テキスト代
@@ -203,6 +212,7 @@ foreach ($member_list as $member_no => $member) {
 	//$tmp_student["last_total_price"] = $total_price + $consumption_tax_price;
 	$tmp_student["statement"]["detail_list"] = $detail_list;
 	$tmp_student["divided_payment_list"] = $divided_payment_list;
+	$tmp_student["divided_payment_list1"] = $divided_payment_list1;
 	$tmp_student["textbook_list"] = $textbook_list;
 	$tmp_student["others_list"] = $others_list;
 
@@ -394,7 +404,7 @@ foreach ($member_list as $member_no => $member) {
 			}
 
 			if ($student["statement"]["membership_fee"] > 0 && 
-					($student["statement"]["lesson_price"] > 0 || $ret!==false)) {
+					($student["statement"]["lesson_price"] > 0 || $student["divided_payment_list1"] || $ret!==false)) {
 				//if ($ohters_text != "") { $ohters_text .= "\n"; }
 				$others_text .= "\n";
 			  $others_text .= "◆ 月会費 ".number_format($student["statement"]["membership_fee"])." 円 ";
@@ -578,10 +588,12 @@ foreach ($member_list as $member_no => $member) {
 				if (empty($divided_payment["memo"]) == true) {
 					$divided_payment_text .= "◆ 授業料金分割払い\n".
 							"{$divided_payment['year']}年{$divided_payment['month']}月{$type_list[$divided_payment['type_id']]}分\n".
+							"{$divided_payment['time']}分割払い{$divided_payment['time_no']}回目\n".
 							$divided_payment["price"]." 円\n";
 				} else {
 					$divided_payment_text .= "◆ 授業料金分割払い\n".
 							"{$divided_payment['year']}年{$divided_payment['month']}月{$type_list[$divided_payment['type_id']]}分\n".
+							"{$divided_payment['time']}分割払い{$divided_payment['time_no']}回目\n".
 							$divided_payment["price"]." 円\n".
 							$divided_payment["memo"]."\n";
 				}
@@ -590,8 +602,11 @@ foreach ($member_list as $member_no => $member) {
 				if (isset($divided_payment_array[$divided_payment["payment_no"]]) !== false) {
 					$divided_payment_text .=
 						"\n{$divided_payment['year']}年{$divided_payment['month']}月{$type_list[$divided_payment['type_id']]}\n".
-						"(合計：{$divided_payment_array[$divided_payment['payment_no']]['subtotal_hours']}時間　{$divided_payment_array[$divided_payment['payment_no']]['subtotal_fees']}円)\n".
-						$divided_payment_array[$divided_payment["payment_no"]]["list_text"];
+						"({$divided_payment_array[$divided_payment['payment_no']]['subtotal_hours']}時間 合計額：".number_format($divided_payment_array[$divided_payment['payment_no']]['subtotal_fees'])."円)\n";
+					foreach ($student["divided_payment_list1"] as $divided_payment1)
+						$divided_payment_text .= 
+							"({$divided_payment1['payment_month']}月支払い額：{$divided_payment1['price']}円)\n";
+					$divided_payment_text .= $divided_payment_array[$divided_payment["payment_no"]]["list_text"];
 				}
 			}
 
