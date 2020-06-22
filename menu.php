@@ -95,9 +95,13 @@ function blankCheck() {
 				<input type="text" name="month" value="<?php echo $month1; ?>" size="4">月分&nbsp;
 				限定する生徒番号（全生徒の場合空白）：
 				<input type="text" name="user_id" value="" size="4">&nbsp;
+				<input type="hidden" name="replace" value="replace"><br>
+				<input type="submit" value="実行">
+				（生徒番号はSON生徒画面に表示されるNo.）
+<!--
 				置換モード（replace）：
 				<input type="text" name="replace" value="replace" size="4">&nbsp;
-				<input type="submit" value="実行">
+-->
 				</form>
 <!--
 			<li><b>カレンダーデータの取り込み</b><br>
@@ -434,10 +438,13 @@ function blankCheck() {
 	<br>
        <h4>■ 季節講習・土日講習スケジュール取り込み</h4>
         <form method="post" action="upload_season_calender.php">
-	開始年：<input type="text" name="startyear" value="<?php echo $year1; ?>" size="4">年&nbsp;
+        開始年：<input type="text" name="startyear" value="<?php echo $year1; ?>" size="4">年&nbsp;
         開始月：<input type="text" name="startmonth" value="" size="4">月&nbsp;
-        終了月（開始月の翌月）：<input type="text" name="endmonth" value="" size="4">月&nbsp;
+        終了月：<input type="text" name="endmonth" value="" size="4">月&nbsp;
+				<input type="hidden" name="mode" value="replace">
+<!--
         更新の場合（replace)：<input type="text" name="mode" value="" size="4">モード&nbsp;
+-->
         <input type="submit" value="実行">
         </form>
         <br>	<br>

@@ -321,9 +321,9 @@ if ($class_type == 'sat_sun_class') {
 <input type="hidden" name="y" value="<?= $year ?>">
 <input type="hidden" name="m" value="<?= $month ?>">
 <input type="hidden" name="class_type" value="<?= $class_type ?>">
-	<h3><input type="submit" name="button" value="前月">
+	<h3><!-- <input type="submit" name="button" value="前月"> -->
 	&nbsp;&nbsp;&nbsp;&nbsp;<?= $year?>年<?= $month ?>月&nbsp;&nbsp;&nbsp;&nbsp;
-	<input type="submit" name="button" value="翌月"></h3>
+	<!-- <input type="submit" name="button" value="翌月"> --></h3>
 </form>
 <?php } ?>
 <form method="post" name="form1" action="season_class_student_schedule.php">
