@@ -66,8 +66,12 @@ $sql = "SELECT tbl_member.no, tbl_event.lesson_id FROM tbl_member, tbl_event ".
 		"AND tbl_member.del_flag = 0 ".
 		"AND tbl_member.name <> '体験生徒' ".
 		"AND tbl_event.member_no = tbl_member.no ".
-		"AND tbl_event.event_start_timestamp = ( SELECT MIN(event_start_timestamp) FROM tbl_event WHERE member_no = tbl_member.no ) ".
-		"AND FROM_UNIXTIME(tbl_event.event_start_timestamp,'%Y/%m') = '$year/".sprintf('%02d',$month)."' ".
+		"AND tbl_event.event_year=$year AND tbl_event.event_month=$month ".
+		"AND tbl_event.event_start_timestamp = ".
+		"( SELECT MIN(event_start_timestamp) FROM tbl_event ".
+		"  WHERE member_no = tbl_member.no ".
+		"  AND course_id NOT IN (0,4,5,6,9) ".
+		"  AND tbl_event.trial_flag = 0 ) ".
 		"ORDER BY tbl_member.furigana ";
 $stmt = $db->prepare($sql);
 $stmt->execute();
