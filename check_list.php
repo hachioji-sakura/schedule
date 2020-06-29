@@ -1762,8 +1762,8 @@ foreach ($staff_list as &$staff) {
 			if ($total_transport_cost > 0 || $staff['transport_zero']) {
 				echo "<td align=\"right\">".number_format($total_transport_cost)."</td>";
 			} else {
-				echo "<td><font color=\"red\">未登録</font></td>";
-				$errFlag = 1;
+//				echo "<td><font color=\"red\">未登録</font></td>";
+//				$errFlag = 1;
 			}
 			
 			$total_pay = $pay + $payadj_tax_free + $total_transport_cost + $tatekae_total;
