@@ -93,11 +93,11 @@ function blankCheck() {
 				<form method="post" action="load_calender_data.php">
 				<input type="text" name="year" value="<?php echo $year1; ?>" size="4">年&nbsp;
 				<input type="text" name="month" value="<?php echo $month1; ?>" size="4">月分&nbsp;
-				限定する生徒番号（全生徒の場合空白）：
+				限定する生徒番号、事務員番号（全員の場合空白）：
 				<input type="text" name="user_id" value="" size="4">&nbsp;
 				<input type="hidden" name="replace" value="replace"><br>
-				<input type="submit" value="実行">
-				（生徒番号はSON生徒画面に表示されるNo.）
+				<input type="submit" value="実行"><br>
+				<b><font color="green" size="-1">生徒番号、事務員番号はSON画面に表示されるNo.です。<br>「200000」を指定すると全事務員を対象とします。</font></b>
 <!--
 				置換モード（replace）：
 				<input type="text" name="replace" value="replace" size="4">&nbsp;

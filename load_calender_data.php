@@ -142,13 +142,24 @@ try{
 			$stmt->bindValue(2, $request_month_str, PDO::PARAM_STR);
 			$stmt->bindValue(3, $request_member_no_str, PDO::PARAM_STR);
 			$stmt->execute();
-		} else {
-			$sql = "DELETE FROM tbl_event_staff where event_year = ? AND event_month = ? AND member_no = ? ";
+		} else if ($request_user_id == 200000 ){
+			$sql = "DELETE FROM tbl_event_staff where event_year = ? AND event_month = ? ";
+			$stmt = $db->prepare($sql);
+			$stmt->bindValue(1, $request_year_str, PDO::PARAM_STR);
+			$stmt->bindValue(2, $request_month_str, PDO::PARAM_STR);
+			$stmt->execute();
+		} else if ($request_user_id > 200000 && $request_user_id < 300000){
+			$sql = "DELETE FROM tbl_event_staff where event_year = ? AND event_month = ? AND staff_no = ? ";
 			$stmt = $db->prepare($sql);
 			$stmt->bindValue(1, $request_year_str, PDO::PARAM_STR);
 			$stmt->bindValue(2, $request_month_str, PDO::PARAM_STR);
 			$stmt->bindValue(3, $request_member_no_str, PDO::PARAM_STR);
 			$stmt->execute();
+		} else {
+			$err_flag = true;
+			$message = 'Error: 生徒番号、事務員番号エラー';
+			array_push($errArray,$message);
+			goto exit_label;
 		}
 	} else if (!$request_replace) { 		// the parameter replace is not specified. Then if the data exist, notify an error.
 		$sql = "SELECT COUNT(*) AS COUNT FROM tbl_event where event_year = ? AND event_month = ? ";
@@ -210,7 +221,9 @@ try{
 	"subject_expr,".
 	"recurrence_id".
 	" FROM tbl_schedule_onetime WHERE delflag!=1 AND (cancel IS NULL OR cancel!='c') AND ymd BETWEEN ? AND ? ";
-	if ($request_user_id > 0) {
+	if ($request_user_id == 200000) {
+		$sql .= " AND user_id> ?";
+	} else if ($request_user_id > 0) {
 		$sql .= " AND user_id= ?";
 	}
 	$stmt = $dbh->prepare($sql);
