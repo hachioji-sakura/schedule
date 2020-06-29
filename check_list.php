@@ -1746,6 +1746,7 @@ foreach ($staff_list as &$staff) {
 				$sql = 
 					"SELECT count(DISTINCT event_day) FROM tbl_event_staff ".
 					"WHERE event_year=$year AND event_month=$month AND staff_no={$staff['no']} ".
+					"AND place_floors!=0 ".
 					"AND absent_flag=0 AND (DAYOFWEEK(FROM_UNIXTIME(event_start_timestamp))-1) IN ({$staff['transport_DOW']})";
 				$stmt = $db->query($sql);
 				$transport_count = ($stmt->fetch(PDO::FETCH_NUM))[0];
