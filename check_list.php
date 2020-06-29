@@ -1759,12 +1759,12 @@ foreach ($staff_list as &$staff) {
 			if ($staff['transport_limit'] && $total_transport_cost > $total_transport_cost_limit) {
 				$total_transport_cost = $total_transport_cost_limit;
 			}
-			if ($total_transport_cost > 0 || $staff['transport_zero']) {
+//			if ($total_transport_cost > 0 || $staff['transport_zero']) {
 				echo "<td align=\"right\">".number_format($total_transport_cost)."</td>";
-			} else {
+//			} else {
 //				echo "<td><font color=\"red\">未登録</font></td>";
 //				$errFlag = 1;
-			}
+//			}
 			
 			$total_pay = $pay + $payadj_tax_free + $total_transport_cost + $tatekae_total;
 			echo "<td align=\"right\">".number_format($total_pay)."</td>";
