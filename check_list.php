@@ -10,7 +10,8 @@ require_once("./gennsenn_choushuu_gaku.php");
 $errArray = array();
 $errFlag = 0;
 
-//$log_tid=2; $log_date='6月18日';
+//$log_tid=2;
+// $log_date='6月18日';
 
 // 当日休み時給対応
 $crew_list = array_merge( $crew_list, 
@@ -770,7 +771,7 @@ while ($event) {
 	$todayFlag = 0;
 	do {
 		$event = $next_event;
-if ($teacher_id==$log_tid && $event['date']==$log_date) {var_dump($event);echo"<BR>";}
+if ($teacher_id==$log_tid) {var_dump($event);echo"<BR>";}
 		if ($event["member_no"]) {
 			$name = $event["name"];
 			if ($event["course_id"] == 3) {
@@ -818,6 +819,7 @@ if ($teacher_id==$log_tid && $event['date']==$log_date) {var_dump($event);echo"<
 	}
 	
 	$lesson_id = $event['lesson_id'];
+	if ($lesson_id == 0)	$lesson_id = 1;		// 季節講習演習対応
 
 	$teacher["working_days"][] = $event["event_month"].'/'.$event["event_day"];
 	$teacher["working"][$lesson_id] = $teacher["working"][$lesson_id] + $diff_hours;
@@ -870,7 +872,8 @@ if ($teacher_id==$log_tid) {echo"$work_type,{$event['date']},{$event['time']},{$
 	
 	$wage_type_list = '';
 	if ($work_type_flag) {} else
-	if ($event["subject_id"]) {
+	if ($lesson_id) {
+//	if ($event["subject_id"]) {
 //	if ($event["member_no"]) {
 		
 		$wage_no = -1; 
@@ -1451,13 +1454,13 @@ foreach ($tmp_teacher_list as &$teacher) {
 		$ret = $stmt->fetch(PDO::FETCH_NUM);
 		$teacher['total_transport_status'] = $ret[0];
 		if ($ret[0] == 2) {
-			if ($total_transport_cost > 0 || $teacher['transport_zero']) {
+//			if ($total_transport_cost > 0 || $teacher['transport_zero']) {
 				$divide_transport_cost = prop_divide($key1, $total_transport_cost, $pay1, $pay2, $pay3, $teacher, $staff);
 				$str0 .= "<td align=\"right\">".number_format($divide_transport_cost)."</td>";
-			} else {
+//			} else {
 //				$str0 .= "<td><font color=\"red\">未登録</font></td>";
 //				$errFlag = 1;
-			}
+//			}
 		} else {
 			$str0 .= "<td><font color=\"red\">未確定</font></td>";
 			$errFlag = 1;
@@ -1729,12 +1732,12 @@ foreach ($staff_list as &$staff) {
 			}
 			$total_transport_cost += $total_transport_cost_unlimit;
 			$teacher_and_staff_list[$staff['name']]['teacher']['total_transport_cost'] = $total_transport_cost;
-			if ($total_transport_cost > 0 || $teacher['transport_zero']) {
+//			if ($total_transport_cost > 0 || $teacher['transport_zero']) {
 				echo "<td align=\"right\">".number_format($total_transport_cost)."</td>";
-			} else {
-				echo "<td><font color=\"red\">未登録</font></td>";
-				$errFlag = 1;
-			}
+//			} else {
+//				echo "<td><font color=\"red\">未登録</font></td>";
+//				$errFlag = 1;
+//			}
 			
 			$total_pay = $pay + $payadj_tax_free + $total_transport_cost + $tatekae_total;
 			echo "<td align=\"right\">".number_format($total_pay)."</td>";
@@ -1871,13 +1874,13 @@ foreach ($staff_list as &$staff) {
 		$divide_transport_cost = 0;
 		$total_transport_cost = $teacher['total_transport_cost'];
 		if ($teacher['total_transport_status'] == 2) {
-			if ($total_transport_cost > 0 || $teacher['transport_zero']) {
+//			if ($total_transport_cost > 0 || $teacher['transport_zero']) {
 				$divide_transport_cost = prop_divide(2, $total_transport_cost, $teacher['pay0'], 0, $staff['pay0'], $teacher, $staff);
 				echo "<td align=\"right\">".number_format($divide_transport_cost)."</td>";
-			} else {
+//			} else {
 //				echo "<td><font color=\"red\">未登録</font></td>";
 //				$errFlag = 1;
-			}
+//			}
 		} else {
 			echo "<td><font color=\"red\">未確定</font></td>";
 			$errFlag = 1;
@@ -1970,12 +1973,12 @@ foreach ($teacher_and_staff_list as $key_name=>&$teacher_and_staff) {
 	
 	$total_transport_cost = $teacher['total_transport_cost'];
 	if ($teacher['total_transport_status'] == 2) {
-		if ($total_transport_cost > 0 || $teacher['transport_zero']) {
+//		if ($total_transport_cost > 0 || $teacher['transport_zero']) {
 			echo "<td align=\"right\">".number_format($total_transport_cost)."</td>";
-		} else {
+//		} else {
 //			echo "<td><font color=\"red\">未登録</font></td>";
 //			$errFlag = 1;
-		}
+//		}
 	} else {
 		echo "<td><font color=\"red\">未確定</font></td>";
 		$errFlag = 1;
