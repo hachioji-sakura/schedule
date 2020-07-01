@@ -288,7 +288,7 @@ function blankCheck() {
 	<h4>■ マッチング</h4>
 		<ol>
 			<li><b>銀行明細書アップロード</b><br>
-				<a href="../bank-check/bank-upload.html">アップロードフォーム表示</a>
+				<a href="../bank-check/bank-upload.php">アップロードフォーム表示</a>
 			<li><b>月謝振込確認</b><br>
 				<form method="get" action="../bank-check/bank-check.php">
 				<input type="text" name="y" value="<?php echo $year; ?>" size="4">年&nbsp;
