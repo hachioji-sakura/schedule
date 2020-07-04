@@ -77,10 +77,10 @@ $place_list[11] = array("no"=>"11","name"=>"北口校２Ｆ","calendar_name_list
 
 $tatekae_item_list = array("備品・消耗品費","書籍費","交際費","支払手数料","荷造運賃費","その他");
 
-$season_class_title = '2020年春期講習';
-//$season_course_id = 4; // 夏期講習
+$season_class_title = '2020年夏期講習';
+$season_course_id = 4; // 夏期講習
 //$season_course_id = 5; // 冬期講習
-$season_course_id = 6; // 春期講習
+//$season_course_id = 6; // 春期講習
 
 /* Old season class course
 $season_course_list = array(
@@ -316,6 +316,33 @@ foreach ($sat_sun_class_date_list as $i=>$item) { if ($i==0) { $sat_sun_class_da
 $sat_sun_class_date_list_string = $sat_sun_class_date_list_string.")";
 
 $date_list = array(
+"2020/07/04",
+"2020/07/05",
+"2020/07/11",
+"2020/07/12",
+"2020/07/18",
+"2020/07/19",
+"2020/07/23",
+"2020/07/24",
+"2020/07/25",
+"2020/07/26",
+"2020/08/01",
+"2020/08/02",
+"2020/08/08",
+"2020/08/09",
+"2020/08/10",
+"2020/08/15",
+"2020/08/16",
+"2020/08/22",
+"2020/08/23",
+"2020/08/29",
+"2020/08/20"
+);
+
+$date_list_array = array(
+"2020/7" => $date_list,
+
+"2020/3" => array(
 "2020/03/04",
 "2020/03/05",
 "2020/03/06",
@@ -345,11 +372,7 @@ $date_list = array(
 "2020/04/03",
 "2020/04/04",
 "2020/04/05"
-);
-
-$date_list_array = array(
-"2020/3" => $date_list,
-
+),
 "2019/12" => array(
 "2019/12/21",
 "2019/12/22",

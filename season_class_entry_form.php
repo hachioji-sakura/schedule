@@ -123,7 +123,8 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 				$subject_index = array_search('希望授業科目',$header);
 				$place_index = array_search('希望校舎',$header);
 				
-				if ($class_type == 'sat_sun_class') {
+//				if ($class_type == 'sat_sun_class') {
+				if (1) {
 					$date_index = array();
 					foreach ($header as $key=>$title) {
 						if (preg_match('|希望日時 \[(\d+)/(\d+)|u',$title,$matches)) {
@@ -213,7 +214,8 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 				continue;
 			}
 
-			if ($class_type != 'sat_sun_class') {
+//			if ($class_type != 'sat_sun_class') {
+			if (0) {
 				preg_match_all('|\d{1,2}/\d{1,2}|',$sqarray[$date_index],$dates);
 				$dates1 = array();
 				foreach ($dates[0] as $date) {
