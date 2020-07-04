@@ -167,12 +167,14 @@ if ($already_exist > 0) {			// Already exsit target year month data.
 	}
 
 } else if ($already_exist == 0) {		// load new data.
+/*
 	if ($request_mode == 'replace') {	// replace option is specified but no data exist..
 		$err_flag = true;
 		$message = 'The schedule is not registerd yet. Remove replace option and try again.';
 		array_push($errArray,$message);
 		goto error_label;
 	}
+*/
 }
 
 	// 2nd cycle. If the date is already confirmed on tbl_schedule_onetime, skip the update. 
