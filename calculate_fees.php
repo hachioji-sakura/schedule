@@ -96,6 +96,7 @@ class calculate_fees {
 	}
 
 try{
+	
 		if ($global_event_list !== 'empty') {
 			$this->event_list = $global_event_list;
 		} else {
@@ -962,16 +963,30 @@ try{
 //					}
 // 20150727 確認のための暫定対応(上のreturn nullをコメントアウト)
 					if (is_null($fee) === true && !$member['fee_free']) {
-						errMsgFileLog (
-							$member["name"].'：　'.
-							"{$tmp_event['year']}/{$tmp_event['month']}/{$tmp_event['day']} ".
-							"{$tmp_event['start_hour']}:{$tmp_event['start_minute']}-{$tmp_event['end_hour']}:{$tmp_event['end_minute']} ".
-							$lesson_list[$tmp_event["lesson_id"]].'-'.
-							$course_list[$tmp_event["course_id"]]["course_name"].'-'.
-							$subject_list[$tmp_event["subject_id"]].'-'.
-							$teacher_list[$tmp_event["teacher_id"]]["name"].
-							"  授業料未登録エラー ({$tmp_event['cal_evt_summary']})\n"
-							);
+						
+						$fee_array = array();
+						$fee_array["lesson_id"] = $tmp_event["lesson_id"];
+						$fee_array["subject_id"] = $tmp_event["subject_id"];
+						$fee_array["course_id"] = $tmp_event["course_id"];
+						$fee_array["teacher_id"] = $tmp_event["teacher_id"];
+						$fee_array["fee"] = 0;
+						$fee_array["family_minus_price"] = 0;
+						$ret = get_default_fee($this->db, $member, $year, $month, $tmp_event["lesson_id"], $tmp_event["course_id"]);
+						if (!is_numeric($ret))	$ret = 0;
+						$fee_array["fee"] = $ret;
+						$fee_array["temp_flag"] = 1;
+						$result = insert_fee($this->db, $member["no"], $fee_array);
+						$member["fee_list"][] = $fee_array;
+						if (!$result) errMsgFileLog (
+								$member["name"].'：　'.
+								"{$tmp_event['year']}/{$tmp_event['month']}/{$tmp_event['day']} ".
+								"{$tmp_event['start_hour']}:{$tmp_event['start_minute']}-{$tmp_event['end_hour']}:{$tmp_event['end_minute']} ".
+								$lesson_list[$tmp_event["lesson_id"]].'-'.
+								$course_list[$tmp_event["course_id"]]["course_name"].'-'.
+								$subject_list[$tmp_event["subject_id"]].'-'.
+								$teacher_list[$tmp_event["teacher_id"]]["name"].
+								"  授業料未登録エラー ({$tmp_event['cal_evt_summary']})\n"
+								);
 						continue; }
 					if ($fee["fee"] == 0 && !$member['fee_free']) {
 						errMsgFileLog (

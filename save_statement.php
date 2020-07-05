@@ -36,15 +36,6 @@ if (($year<'2020') || ($year=='2020' && $month<='02')) {
 	$entrance_fee_for_lesson = array( 1=>20000, 2=>15000, 3=>10000, 4=>10000 );			// 2020/02以降
 }
 
-$stmt = $db->query("SELECT fee_no FROM tbl_fee WHERE temp_flag=1 AND teacher_id!=0");
-$rslt = $stmt->fetch(PDO::FETCH_NUM);
-if ($rslt) throw new Exception(
-"仮登録の受講料があります。<br>".
-"下記の「登録済み生徒一覧へ」リンクをクリックし「生徒の登録 - 生徒一覧」画面で".
-"赤字表示の受講料を正しい金額で再登録してください。<br>".
-"<a href=\"./student_fee_list.php\">登録済み生徒一覧へ</a>"
-);
-
 $cond_name = "";
 if (isset($_POST["cond_name"])) {
 	$cond_name = trim($_POST["cond_name"]);
@@ -119,6 +110,15 @@ if ($student_list == false) {
 	$errFlag = 2;
 	throw new Exception('月謝計算中にエラーが発生しました。');
 }
+
+$stmt = $db->query("SELECT fee_no FROM tbl_fee WHERE temp_flag=1 AND teacher_id!=0");
+$rslt = $stmt->fetch(PDO::FETCH_NUM);
+if ($rslt) throw new Exception(
+"仮登録の受講料があります。<br>".
+"下記の「登録済み生徒一覧へ」リンクをクリックし「生徒の登録 - 生徒一覧」画面で".
+"赤字表示の受講料を正しい金額で再登録してください。<br>".
+"<a href=\"./student_fee_list.php\">登録済み生徒一覧へ</a>"
+);
 
 $db->beginTransaction();
 
