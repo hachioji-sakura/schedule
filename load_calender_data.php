@@ -300,6 +300,13 @@ try{
 				$evt_summary = CONST_FAMILY ;
 			}
 		}
+		
+		if (!$lesson_id || !$course_id || !$subject_id) {
+			if ($lms_subject_conv_tbl[$subject_expr]) {
+				$lesson_id = 1; $course_id = 1; $subject_id = $lms_subject_conv_tbl[$subject_expr];
+			}
+		}
+		
 			// making $evt_summary from tbl_schedule_onetime.
 
 							// 休み処理
