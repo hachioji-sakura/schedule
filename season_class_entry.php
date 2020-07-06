@@ -5,7 +5,7 @@ require_once("./func.inc");
 require_once("./const/login_func.inc");
 $result = check_user($db, "1");
 
-$places_array = array("八王子北口校舎","国立校舎");
+$places_array = array("八王子北口校舎","国立校舎","豊田校舎");
 
 $errFlag = 0;
 $errArray = array();

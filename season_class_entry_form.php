@@ -142,7 +142,7 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 							if ($index0!==false){
 								$date_list1[] = $date;
 							} else {
-								echo "{$date}は土日講習日ではありません。<br>";
+								echo "{$date}は講習日ではありません。<br>";
 							}
 						}
 					}
@@ -311,8 +311,14 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 				$stmt->execute(array($member_no, $lesson_id, $subject_id, $subject_time, $date_list1[0]));
 			}
 			foreach ($dates1 as $key=>$date) {
-				if (array_search($date, $date_list1) === false) continue;
-				if ($date <= $today) continue;
+				if (array_search($date, $date_list1) === false) {
+					echo "{$date}は講習日ではないので登録できません。<br>";
+					continue;
+				}
+				if ($date <= $today) {
+					echo "{$date}は過去の日付なので登録できません。<br>";
+					continue;
+				}
 				$sql = "INSERT INTO tbl_season_class_entry_date VALUES (?, ?, ?, ?, ?, now(), now(), ?, ?, ?, ?, ?, ?)";
 				$stmt = $db->prepare($sql);
 				$stmt->execute(array($member_no, $season_course_id, $date, '11:00', '', $stimes1[$key], $etimes1[$key], '', '', 0, $place));
