@@ -316,12 +316,6 @@ foreach ($sat_sun_class_date_list as $i=>$item) { if ($i==0) { $sat_sun_class_da
 $sat_sun_class_date_list_string = $sat_sun_class_date_list_string.")";
 
 $date_list = array(
-"2020/07/05",
-"2020/07/06",
-"2020/07/07",
-"2020/07/08",
-"2020/07/09",
-"2020/07/10",
 "2020/07/11",
 "2020/07/12",
 "2020/07/13",
