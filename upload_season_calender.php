@@ -120,8 +120,21 @@ if ($already_exist > 0) {			// Already exsit target year month data.
 
 	// 1st cycle. Check season_class schedule on tbl_schedule_onetime that is not confired yet. 
 	// if there is, logical delete the data.
+	$sql = "SELECT * FROM tbl_schedule_onetime ";
+	$sql .= " WHERE delflag=0 AND confirm='f' AND (work_id=? OR work_id=? OR work_id=?) AND ymd BETWEEN ? AND ? ORDER BY id";
+
+	$stmt = $dbh->prepare($sql);
+	$stmt->bindValue(1, $target_work_id, PDO::PARAM_INT);
+	$stmt->bindValue(2, $target_work_id2, PDO::PARAM_INT);
+	$stmt->bindValue(3, $target_work_id3, PDO::PARAM_INT);
+	$stmt->bindValue(4, $startofmonth, PDO::PARAM_STR);
+	$stmt->bindValue(5, $endofmonth, PDO::PARAM_STR);
+	$stmt->execute();
+	$confirmed_schedule_onetime_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 	$sql = "SELECT id FROM tbl_schedule_onetime ";
-	$sql .= " WHERE delflag=0 AND confirm!='f' AND (work_id=? OR work_id=? OR work_id=?) AND ymd BETWEEN ? AND ? ORDER BY id";
+//	$sql .= " WHERE delflag=0 AND confirm!='f' AND (work_id=? OR work_id=? OR work_id=?) AND ymd BETWEEN ? AND ? ORDER BY id";
+	$sql .= " WHERE delflag=0 AND (work_id=? OR work_id=? OR work_id=?) AND ymd BETWEEN ? AND ? ORDER BY id";
 
 	$stmt = $dbh->prepare($sql);
 	$stmt->bindValue(1, $target_work_id, PDO::PARAM_INT);
@@ -158,12 +171,14 @@ if ($already_exist > 0) {			// Already exsit target year month data.
 			$end_id = $id;		// count up $end_id
 		}
 	}
-	$result = lms_delete_notify($start_id,$end_id);
-	if (!$result){		// if null then error.
-		$err_flag = true;
-		$message = 'lms_delete_notify error.';
-		array_push($errArray,$message);
-		goto error_label;
+	if ($start_id) {
+		$result = lms_delete_notify($start_id,$end_id);
+		if (!$result){		// if null then error.
+			$err_flag = true;
+			$message = 'lms_delete_notify error.';
+			array_push($errArray,$message);
+			goto error_label;
+		}
 	}
 
 } else if ($already_exist == 0) {		// load new data.
@@ -238,6 +253,7 @@ foreach ( $season_entry_date_array as $season_entry_date_row ) {
 
     $user_id = (int)$season_entry_date_row['member_id'] ;
 
+/*
 						// check the target schedule is registered on the tbl_schedule_onetime.
 	$onetime_schedule_status = check_target_schedule($dbh,$datewithhyphen,$start_timestamp,$end_timestamp,$user_id);
 
@@ -249,6 +265,7 @@ foreach ( $season_entry_date_array as $season_entry_date_row ) {
 							// skip insert process.
 		continue;
 	}
+*/
 
     $student_no = $user_id ;
     $student_id = (string)$student_no ;
@@ -562,6 +579,21 @@ function insert_calender_event(&$dbh,$start_timestamp,$end_timestamp,$repetition
 global $work_list;
 global $subject_list;
 global $now;
+global $confirmed_schedule_onetime_array;
+
+	$confirm = null;
+	foreach ($confirmed_schedule_onetime_array as $key=>$record) {
+		if (
+			"{$record['ymd']} {$record['starttime']}" == date('Y-m-d H:i:s', $start_timestamp) &&
+			"{$record['ymd']} {$record['endtime']}" == date('Y-m-d H:i:s', $end_timestamp) &&
+			$record['teacher_id'] == $teacher_id &&
+			$record['student_no'] == $student_no
+			) {
+				$confirm = 'f';
+				unset($confirmed_schedule_onetime_array[$key]);
+				break;
+			}
+	}
 
 	$startymd = date('Y-m-d',$start_timestamp);
 	$starttime = date('H:i:s',$start_timestamp);
@@ -618,8 +650,9 @@ try{
 	" entrytime,".
 	" updateuser, ".
 	" comment,".
-	" recurrence_id ".
-	" ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	" recurrence_id, ".
+	" confirm ".
+	" ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	$stmt = $dbh->prepare($sql);
 	$stmt->bindValue(1, $repetition_id, PDO::PARAM_INT);
 	$stmt->bindValue(2, $user_id, PDO::PARAM_INT);
@@ -647,6 +680,7 @@ try{
 	$stmt->bindValue(24, $updateuser, PDO::PARAM_INT);
 	$stmt->bindValue(25, $comment, PDO::PARAM_STR);
 	$stmt->bindValue(26, $recurrence_id, PDO::PARAM_STR);
+	$stmt->bindValue(27, $confirm, PDO::PARAM_STR);
 	$stmt->execute();
 
 	return $status;
@@ -1204,6 +1238,17 @@ if ($err_flag == true) {
 <?php
        		}
        	} else {
+					if ($confirmed_schedule_onetime_array) {
+						echo "以下のSONカレンダー予定が変更・削除されました。<br><table>\n";
+						foreach ($confirmed_schedule_onetime_array as $record) {
+							$stmt = $db->query("SELECT name FROM tbl_member WHERE no=".str_pad($record['student_no'],6,'0',STR_PAD_LEFT));
+							$student_name = ($stmt->fetch(PDO::FETCH_NUM))[0];
+							$stmt = $db->query("SELECT name FROM tbl_teacher WHERE no=".($record['teacher_id']-100000));
+							$teacher_name = ($stmt->fetch(PDO::FETCH_NUM))[0];
+							echo "<tr><td>{$record['ymd']} ".substr($record['starttime'],0,5).'-'.substr($record['endtime'],0,5)." {$student_name}様 {$teacher_name}先生</td></tr>\n";
+						}
+						echo "</table><br>";
+					}
 ?>
 	<a href='menu.php'><h4>正常終了しました。メニュー画面に戻る</h4></a>
 <?php
