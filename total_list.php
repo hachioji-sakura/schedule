@@ -147,7 +147,19 @@ try {
 			$tax_season_class_total = 0;
 			$tax_satsun_class_total = 0;
 			
+			$tmp_event_list = $statement["event_list"];
 			foreach ($statement["event_list"] as $event) {
+				
+				if (!$event["lesson_id"])	continue;
+				if (!$event['place_id']) {
+					foreach($tmp_event_list as $tmp_event) {
+						if ($tmp_event['place_id']) {
+							$event['place_id'] = $tmp_event['place_id'];
+							break;
+						}
+					}
+				}
+				
 				$lesson_id = $event["lesson_id"];
 				$fees = str_replace(",","",$event["fees"]);
 				$hours = str_replace(",","",$event["diff_hours"]);
