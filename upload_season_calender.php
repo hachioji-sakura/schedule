@@ -747,6 +747,7 @@ try{
 	$season_schedule_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	$reccnt = 0;
 	$crnt_ts = $startofday_ts;
+	$m2metime_ts = null;
 
 	foreach ( $season_schedule_array as $row ) {
 
@@ -838,7 +839,7 @@ try{
 	}		// end of foreach.
 			// no more man2man recod but not reach the end of day. Then insert selfstudy record.
 
-	if ($m2metime_ts < $endofday_ts) { 		//その日の終了時間まで自習時間がある
+	if ($m2metime_ts && $m2metime_ts < $endofday_ts) { 		//その日の終了時間まで自習時間がある
 		$start_timestamp = $crnt_ts ;
 		$end_timestamp = $endofday_ts ;
 	  			 	// Initialization.
