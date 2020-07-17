@@ -212,7 +212,7 @@ try{
 		foreach ($this->lesson_detail_list as $lesson_detail) {
 			$tmp_total_hours = $tmp_total_hours + $lesson_detail["subtotal_hours"];
 			$tmp_total_fees = $tmp_total_fees + $lesson_detail["subtotal_fees"];
-			if ($tmp_total_hours > 0) {
+			if ($tmp_total_fees > 0) {
 				// いずれかの教室で小計が0円より大きい場合、通学したとして月会費を請求
 				$membership_flag = 1;
 			}
