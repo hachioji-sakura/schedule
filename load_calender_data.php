@@ -153,7 +153,7 @@ try{
 			$stmt = $db->prepare($sql);
 			$stmt->bindValue(1, $request_year_str, PDO::PARAM_STR);
 			$stmt->bindValue(2, $request_month_str, PDO::PARAM_STR);
-			$stmt->bindValue(3, $request_member_no_str, PDO::PARAM_STR);
+			$stmt->bindValue(3, $request_user_id-200000, PDO::PARAM_STR);
 			$stmt->execute();
 		} else {
 			$err_flag = true;
