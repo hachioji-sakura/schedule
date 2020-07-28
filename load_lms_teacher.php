@@ -32,16 +32,20 @@ try {
 
 	foreach ($lms_teachers as $lms_teacher) {
 		
-		$teacher_array = array();
 		$teacher_no 										= ($lms_teacher['teacher_no'][0]=='1')? substr($lms_teacher['teacher_no'],1)+0: 0;
+		
+		if ($teacher_no)
+			$teacher_array = $current_teacher_list[$teacher_no];
+		else
+			$teacher_array = array();
+		
 		$teacher_array["id"]						= $lms_teacher['user_id'];
 		$teacher_array["teacher_id"]		= $lms_teacher['id'];
-		$lms_teacher['name_last']				= mb_convert_kana(trim($lms_teacher['name_last']),'r');
-		$lms_teacher['name_first']			= mb_convert_kana(trim($lms_teacher['name_first']),'r');
-		$lms_teacher['kana_last']				= mb_convert_kana(trim($lms_teacher['kana_last']),'r');
-		$lms_teacher['kana_first']			= mb_convert_kana(trim($lms_teacher['kana_first']),'r');
+		$lms_teacher['name_last'] = trim($lms_teacher['name_last']); $lms_teacher['name_first'] = trim($lms_teacher['name_first']);
+		$lms_teacher['kana_last'] = trim($lms_teacher['kana_last']); $lms_teacher['kana_first'] = trim($lms_teacher['kana_first']);
 		$teacher_array["name"]					= $lms_teacher['name_last']?($lms_teacher['name_first']?"{$lms_teacher['name_last']} {$lms_teacher['name_first']}":"{$lms_teacher['name_last']}"):"{$lms_teacher['name_first']}";
 		$teacher_array["furigana"]			= $lms_teacher['kana_last']?($lms_teacher['kana_first']?"{$lms_teacher['kana_last']} {$lms_teacher['kana_first']}":"{$lms_teacher['kana_last']}"):"{$lms_teacher['kana_first']}";
+		$teacher_array["furigana"]      = mb_convert_kana($teacher_array["furigana"],'c');
 		$teacher_array["del_flag"]			= ($lms_teacher['status'] == 'regular')? 0: 2;
 		$teacher_array["mail_address"]	= (strpos($lms_teacher['email'],'@')!==false)? $lms_teacher['email']: '';
 		$lesson_list = array_unique(explode(',',$lms_teacher['lesson']));
@@ -59,7 +63,13 @@ try {
 			if (!$current_teacher_list[$teacher_no]) {
 				$str2 = '';
 				foreach ($teacher_array as $key=>$value) $str2 .= " $key:$value, ";
-				$null_list[] = "$str1<td>$str2</td>\n";
+				$str0 = "<td><input type=\"checkbox\" name=\"insert_check[]\" value=\"$insert_no\"></td>";
+				if (array_search($insert_no, $insert_check)!==false)
+					if (insert_teacher($db,$teacher_array,$teacher_no))	$str0='<td>OK</td>'; else $str0='<td>ERROR!!</td>';
+				$str1 = "<td>{$teacher_array['name']}</td><td>{$teacher_array['id']}</td><td>{$teacher_array['teacher_id']}</td><td>";
+				foreach ($teacher_array as $key=>$value) $str1 .= " $key:$value, ";
+				$new_list[] = "$str0$str1</td>\n";
+				$insert_no++;
 				continue;
 			}
 			
@@ -67,7 +77,7 @@ try {
 			foreach ($teacher_array as $key=>$value) {
 				if ($key=='id' || $key=='teacher_id')	continue;
 				$value0 = $current_teacher_list[$teacher_no][$key];
-				if ($key=='furigana' && $value0)	$value0 = mb_convert_kana($value0,'C');
+//				if ($key=='furigana' && $value0)	$value0 = mb_convert_kana($value0,'C');
 				if ($key=='lesson_id') {
 					$array1 = array($teacher_array['lesson_id'],$teacher_array['lesson_id2']); sort($array1);
 					$array2 = array($current_teacher_list[$teacher_no]['lesson_id'],$current_teacher_list[$teacher_no]['lesson_id2']); sort($array2);
@@ -86,16 +96,6 @@ try {
 			
 			unset($current_teacher_list[$teacher_no]);
 			
-		} else {
-			
-			$str0 = "<td><input type=\"checkbox\" name=\"insert_check[]\" value=\"$insert_no\"></td>";
-			if (array_search($insert_no, $insert_check)!==false)
-				if (insert_teacher($db,$teacher_array))	$str0='<td>OK</td>'; else $str0='<td>ERROR!!</td>';
-			$str1 = "<td>{$teacher_array['name']}</td><td>{$teacher_array['id']}</td><td>{$teacher_array['teacher_id']}</td><td>";
-			foreach ($teacher_array as $key=>$value) $str1 .= " $key:$value, ";
-			$new_list[] = "$str0$str1</td>\n";
-			$insert_no++;
-
 		}
 	}
 
@@ -113,9 +113,6 @@ try {
 	echo "</table>";
 	echo "<br>new list<br><table border=\"1\"><tr><td></td><td>name</td><td>user_id</td><td>teacher_id</td><td>data</td></tr>";
 	foreach ($new_list as $val)			echo "<tr>$val</tr>";
-	echo "</table>";
-	echo "<br>null list<br><table border=\"1\"><tr><td>name</td><td>user_id</td><td>teacher_id</td><td>teacher_no</td><td>data</td></tr>";
-	foreach ($null_list as $val)		echo "<tr>$val</tr>";
 	echo "</table>";
 	echo "<br>drop list<br>";		foreach ($drop_list as $val)	echo $val;
 	

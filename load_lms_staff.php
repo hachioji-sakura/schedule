@@ -29,14 +29,17 @@ try {
 
 	foreach ($lms_staffs as $lms_staff) {
 		
-		$staff_array = array();
 		$staff_no 										= ($lms_staff['staff_no'][0]=='2')? substr($lms_staff['staff_no'],1)+0: 0;
+		
+		if ($staff_no)
+			$staff_array = $current_staff_list[$staff_no];
+		else
+			$staff_array = array();
+		
 		$staff_array["id"]						= $lms_staff['user_id'];
 		$staff_array["staff_id"]			= $lms_staff['id'];
-//		$lms_staff['name_last']				= mb_convert_kana(trim($lms_staff['name_last']),'r');
-//		$lms_staff['name_first']			= mb_convert_kana(trim($lms_staff['name_first']),'r');
-//		$lms_staff['kana_last']				= mb_convert_kana(trim($lms_staff['kana_last']),'r');
-//		$lms_staff['kana_first']			= mb_convert_kana(trim($lms_staff['kana_first']),'r');
+		$lms_staff['name_last'] = trim($lms_staff['name_last']); $lms_staff['name_first'] = trim($lms_staff['name_first']);
+		$lms_staff['kana_last'] = trim($lms_staff['kana_last']); $lms_staff['kana_first'] = trim($lms_staff['kana_first']);
 		$staff_array["name"]					= $lms_staff['name_last']?($lms_staff['name_first']?"{$lms_staff['name_last']} {$lms_staff['name_first']}":"{$lms_staff['name_last']}"):"{$lms_staff['name_first']}";
 		$staff_array["furigana"]			= $lms_staff['kana_last']?($lms_staff['kana_first']?"{$lms_staff['kana_last']} {$lms_staff['kana_first']}":"{$lms_staff['kana_last']}"):"{$lms_staff['kana_first']}";
 		$staff_array["furigana"]      = mb_convert_kana($staff_array["furigana"],'c');
@@ -57,7 +60,13 @@ try {
 			if (!$current_staff_list[$staff_no]) {
 				$str2 = '';
 				foreach ($staff_array as $key=>$value) $str2 .= " $key:$value, ";
-				$null_list[] = "$str1<td>$str2</td>\n";
+				$str0 = "<td><input type=\"checkbox\" name=\"insert_check[]\" value=\"$insert_no\"></td>";
+				if (array_search($insert_no, $insert_check)!==false)
+					if (insert_staff($db,$staff_array, $staff_no))	$str0='<td>OK</td>'; else $str0='<td>ERROR!!</td>';
+				$str1 = "<td>{$staff_array['name']}</td><td>{$staff_array['id']}</td><td>{$staff_array['staff_id']}</td><td>";
+				foreach ($staff_array as $key=>$value) $str1 .= " $key:$value, ";
+				$new_list[] = "$str0$str1</td>\n";
+				$insert_no++;
 				continue;
 			}
 			
@@ -77,16 +86,6 @@ try {
 			
 			unset($current_staff_list[$staff_no]);
 			
-		} else {
-			
-			$str0 = "<td><input type=\"checkbox\" name=\"insert_check[]\" value=\"$insert_no\"></td>";
-			if (array_search($insert_no, $insert_check)!==false)
-				if (insert_staff($db,$staff_array))	$str0='<td>OK</td>'; else $str0='<td>ERROR!!</td>';
-			$str1 = "<td>{$staff_array['name']}</td><td>{$staff_array['id']}</td><td>{$staff_array['staff_id']}</td><td>";
-			foreach ($staff_array as $key=>$value) $str1 .= " $key:$value, ";
-			$new_list[] = "$str0$str1</td>\n";
-			$insert_no++;
-
 		}
 	}
 
@@ -104,9 +103,6 @@ try {
 	echo "</table>";
 	echo "<br>new list<br><table border=\"1\"><tr><td></td><td>name</td><td>user_id</td><td>staff_id</td><td>data</td></tr>";
 	foreach ($new_list as $val)			echo "<tr>$val</tr>";
-	echo "</table>";
-	echo "<br>null list<br><table border=\"1\"><tr><td>name</td><td>user_id</td><td>staff_id</td><td>staff_no</td><td>data</td></tr>";
-	foreach ($null_list as $val)		echo "<tr>$val</tr>";
 	echo "</table>";
 	echo "<br>drop list<br>";		foreach ($drop_list as $val)	echo $val;
 	
