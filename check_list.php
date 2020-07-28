@@ -10,7 +10,7 @@ require_once("./gennsenn_choushuu_gaku.php");
 $errArray = array();
 $errFlag = 0;
 
-//$log_tid=2;
+//$log_tid=12;
 // $log_date='6月18日';
 
 // 当日休み時給対応
@@ -797,6 +797,7 @@ if ($teacher_id==$log_tid) {var_dump($event);echo"<BR>";}
 	if ($absent_flag_min>0 && !$todayFlag) { $member_count = 0; $event = $next_event; continue; }
 	
 	if ($event['course_id'] == 2 && $member_count == 0) { $member_count = 1; }
+	if ($event['course_id'] == 3 && $member_count == 0) { $member_count = 1; }
 	
 	if ($todayFlag) {
 		$sql = 
@@ -962,7 +963,7 @@ if ($teacher_id==$log_tid) {echo"$work_type,{$event['date']},{$event['time']},{$
 			$wage_type_list = $naraigoto_wage_type_list;
 			$wage_no = 0;
 		}
-		//echo "$lesson_id,$grade,$member_count,$wage_no<br>";
+if ($teacher_id==$log_tid) echo "$lesson_id,$grade,$member_count,$wage_no<br>";
 		if ($wage_no>-1) {
 			$stmt = $db->query("SELECT * FROM tbl_wage WHERE teacher_id=\"{$teacher_id}\" AND wage_no=\"{$wage_no}\" AND lesson_id=\"{$lesson_id}\" AND work_type=0");
 			$wage_array = $stmt->fetch(PDO::FETCH_ASSOC);			
@@ -981,12 +982,12 @@ if ($teacher_id==$log_tid) {echo"{$event['date']},$absent_flag_min,$todayFlag<BR
 					$teacher["wage_worktime3"][$lesson_id][$crew_no] += $diff_hours;
 if ($teacher_id==$log_tid) {echo"{$event['date']},{$event['time']},{$hourly_wage},{$diff_hours},".($hourly_wage*$diff_hours)."<BR>";}
 				} else {
-					$errArray[] = "時給未登録エラー：　{$teacher['name']}先生 {$wage_type_list[$wage_no]} ".
+					$errArray[] = "時給未登録エラー１：　{$teacher['name']}先生 {$wage_type_list[$wage_no]} ".
 						date('Y/m/d',$event['event_start_timestamp'])." ".date('H:i',$event['event_start_timestamp'])."～".date('H:i',$event['event_end_timestamp']).
 						" {$event['lesson_name']} {$event['subject_name']} {$event['course_name']} {$event['cal_evt_summary']}";
 				}
 			} else {
-				$errArray[] = "時給未登録エラー：　{$teacher['name']}先生 {$wage_type_list[$wage_no]} ".
+				$errArray[] = "時給未登録エラー２：　{$teacher['name']}先生 {$wage_type_list[$wage_no]} ".
 					date('Y/m/d',$event['event_start_timestamp'])." ".date('H:i',$event['event_start_timestamp'])."～".date('H:i',$event['event_end_timestamp']).
 					" {$event['lesson_name']} {$event['subject_name']} {$event['course_name']} {$event['cal_evt_summary']}";
 			}
@@ -996,7 +997,7 @@ if ($teacher_id==$log_tid) {echo"{$event['date']},{$event['time']},{$hourly_wage
 					date('Y/m/d',$event['event_start_timestamp'])." ".date('H:i',$event['event_start_timestamp'])."～".date('H:i',$event['event_end_timestamp']).
 					" {$event['lesson_name']} {$event['subject_name']} {$event['course_name']} {$event['cal_evt_summary']}";
 			} else {
-				$errArray[] = "時給未登録エラー：　{$teacher['name']}先生 {$wage_type_list[$wage_no]} ".
+				$errArray[] = "時給未登録エラー３：　{$teacher['name']}先生 {$wage_type_list[$wage_no]} ".
 					date('Y/m/d',$event['event_start_timestamp'])." ".date('H:i',$event['event_start_timestamp'])."～".date('H:i',$event['event_end_timestamp']).
 					" {$event['lesson_name']} {$event['subject_name']} {$event['course_name']} {$event['cal_evt_summary']}";
 			}
@@ -1013,7 +1014,7 @@ if ($teacher_id==$log_tid) {echo"{$event['date']},{$event['time']},{$hourly_wage
 			$teacher["wage_worktime3"][$lesson_id][$wage_array["crew_no"]] += $diff_hours;
 if ($teacher_id==$log_tid) {echo"{$event['date']},{$event['time']},".($hourly_wage*$diff_hours)."<BR>";}
 			if (!$hourly_wage) {
-				$errArray[] = "時給未登録エラー：　{$teacher['name']}先生 演習 ".
+				$errArray[] = "時給未登録エラー４：　{$teacher['name']}先生 演習 ".
 					date('Y/m/d',$event['event_start_timestamp'])." ".date('H:i',$event['event_start_timestamp'])."～".date('H:i',$event['event_end_timestamp']);
 			}
 		} else {
