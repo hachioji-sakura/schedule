@@ -2941,10 +2941,10 @@ function get_lesson_data(&$db, $year, $month, $param_array=array(), $value_array
 
 
 
-function insert_teacher(&$db, $teacher_array) {
+function insert_teacher(&$db, $teacher_array, $last_no=null) {
 	$errFlag = 0;
 	try {
-			$last_no = get_teacher_cnt($db, array(), array(), "2")+1;
+			if (!$last_no)	$last_no = get_teacher_cnt($db, array(), array(), "2")+1;
 			$sql = "INSERT INTO tbl_teacher (no, name, furigana, lesson_id, del_flag,".
 						" mail_address, password, initial_password, transport_cost, transport_DOW,".
 						" transport_limit, gennsenn_choushuu_shubetu, huyou_ninnzuu, jyuuminnzei1, jyuuminnzei2,".
@@ -3561,10 +3561,10 @@ function get_staff_list($db, $param_array=array(), $value_array=array(), $order_
 	return $staff_list;
 }
 
-function insert_staff(&$db, $staff_array) {
+function insert_staff(&$db, $staff_array, $last_no=null) {
 	$errFlag = 0;
 	try {
-			$last_no = get_staff_cnt($db, array(), array(), "2")+1;
+			if (!$last_no)	$last_no = get_staff_cnt($db, array(), array(), "2")+1;
 			$sql = "INSERT INTO tbl_staff (no, name, furigana, del_flag, mail_address, password, initial_password,".
 						" transport_cost, transport_DOW,".
 						" transport_limit, gennsenn_choushuu_shubetu, huyou_ninnzuu, jyuuminnzei1, jyuuminnzei2,".
