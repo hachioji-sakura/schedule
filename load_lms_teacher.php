@@ -55,6 +55,13 @@ try {
 		$teacher_array["lesson_id2"]		= $lesson_list[1]+0;
 		$teacher_array["password"]			= substr(base_convert(bin2hex(openssl_random_pseudo_bytes(8)),16,36),0,8);
 		$teacher_array["initial_password"]	= $teacher_array["password"];
+		$teacher_array["transport_cost"] = '';
+		$teacher_array["transport_DOW"]  = '0,1,2,3,4,5,6';
+		$teacher_array["transport_limit"] = '';
+		$teacher_array["gennsenn_choushuu_shubetu"] = '';
+		$teacher_array["huyou_ninnzuu"] = '';
+		$teacher_array["jyuuminnzei1"] = '';
+		$teacher_array["jyuuminnzei2"] = '';
 
 //		var_dump($teacher_array);echo'<br>';
 
