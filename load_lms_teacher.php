@@ -53,6 +53,8 @@ try {
 		sort($lesson_list);
 		$teacher_array["lesson_id"]			= $lesson_list[0]+0;
 		$teacher_array["lesson_id2"]		= $lesson_list[1]+0;
+		$teacher_array["password"]			= substr(base_convert(bin2hex(openssl_random_pseudo_bytes(8)),16,36),0,8);
+		$teacher_array["initial_password"]	= $teacher_array["password"];
 
 //		var_dump($teacher_array);echo'<br>';
 
