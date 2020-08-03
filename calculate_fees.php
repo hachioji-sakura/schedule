@@ -718,10 +718,10 @@ try{
 						$lesson_fee0 = $lesson_fee_table[$season_fee_type][$grade][$item['season_course_id']][1];
 					else
 						$lesson_fee0 = $lesson_fee_table[$season_fee_type][$grade][$item['season_course_id']][0];
-					$exercise_fee = $exercise_fee_table[$season_fee_type][$item['season_course_id']][$date_count_index];		
 					if ($lesson_fee1 && $lesson_fee1!=0 && $lesson_fee1 < $lesson_fee0) { $lesson_fee0 = $lesson_fee1; }
 */
 					$lesson_fee0 = $lesson_fee1;
+					$exercise_fee = $exercise_fee_table[$season_fee_type][$item['season_course_id']][$date_count_index];		
 					if ($member['fee_free']) { $lesson_fee0 = 0; $exercise_fee = 0; }
 					
 					if ($item['date'] != $last_date) {
