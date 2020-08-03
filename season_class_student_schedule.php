@@ -137,15 +137,18 @@ try {
 		}
 		
 		$total_fee = 0; $total_fee0 = 0; $total_fee1 = 0;
+		
+/*　2020年7月季節講習受講料変更
 		if ($member_list[$member_no]['jyukensei'])
 			$lesson_fee0 = $lesson_fee_table[$season_fee_type][$grade][$member['season_course_id'][0]][1];
 		else
 			$lesson_fee0 = $lesson_fee_table[$season_fee_type][$grade][$member['season_course_id'][0]][0];
-
+*/
 		$stmt = $db->prepare("SELECT min(fee) FROM tbl_fee WHERE member_no=? AND lesson_id=1 AND course_id=1 AND fee!=0");
 		$stmt->execute(array($member_no));
 		$rslt = $stmt->fetch(PDO::FETCH_NUM);
-		if ($rslt[0] && $rslt[0]!=0 && $rslt[0] < $lesson_fee0) { $lesson_fee0 = $rslt[0]; }
+//		if ($rslt[0] && $rslt[0]!=0 && $rslt[0] < $lesson_fee0) { $lesson_fee0 = $rslt[0]; }
+		$lesson_fee0 = $rslt[0];
 
 		if ($member_list[$member_no]['fee_free']) { $lesson_fee0 = 0; }
 				

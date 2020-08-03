@@ -713,12 +713,15 @@ try{
 						$date_count_index = $date_count_index0;
 						$sat_sun_flag = 0;
 					}
+/*　2020年7月季節講習受講料変更
 					if ($member['jyukensei'])
 						$lesson_fee0 = $lesson_fee_table[$season_fee_type][$grade][$item['season_course_id']][1];
 					else
 						$lesson_fee0 = $lesson_fee_table[$season_fee_type][$grade][$item['season_course_id']][0];
 					$exercise_fee = $exercise_fee_table[$season_fee_type][$item['season_course_id']][$date_count_index];		
 					if ($lesson_fee1 && $lesson_fee1!=0 && $lesson_fee1 < $lesson_fee0) { $lesson_fee0 = $lesson_fee1; }
+*/
+					$lesson_fee0 = $lesson_fee1;
 					if ($member['fee_free']) { $lesson_fee0 = 0; $exercise_fee = 0; }
 					
 					if ($item['date'] != $last_date) {
@@ -900,6 +903,7 @@ try{
 														"monthly_fees_total"=>$monthly_fees_total,
 														"event_list"=>	$event_list
 													);
+if ($member['no'] == '001275')	echo "$subtotal_hours<br>";
 					//$total_hours = $total_hours + $subtotal_hours;
 					//$total_fees = $total_fees + $subtotal_fees;
 					$subtotal_hours = 0;
@@ -1250,6 +1254,7 @@ try{
 												"monthly_fees_total"=>$monthly_fees_total,
 												"event_list"=>$event_list
 											);
+if ($member['no'] == '001275')	echo "$subtotal_hours<br>";
 		}
 
 		return $lesson_detail_list;
