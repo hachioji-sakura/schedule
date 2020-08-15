@@ -420,7 +420,8 @@ foreach ( $season_entry_date_array as $season_entry_date_row ) {
 
 	$attend_status = $season_entry_date_row['attend_status'];
 
-	$work = 'ss';
+//	$work = 'ss';
+	$work = 'seasonss';
 	$lesson_id = 1 ; 	// 塾
 	$course_id = 9 ;	// weekend seminar (fixed value for temporary). 
 	$subject_id = 0 ;
@@ -923,7 +924,8 @@ $result = true;
 $teacher_id = 100000 + $teacher_no;
 
 			// converting work shortname into work_id
-$work = "ss" ; 		// 自習
+//$work = "ss" ; 		// 自習
+$work = "seasonss" ; 		// 自習
 foreach ($work_list as $workitem) {
 	if (mb_strpos($workitem["shortname"], $work)!==false) {
                 $work_id = $workitem["id"];
