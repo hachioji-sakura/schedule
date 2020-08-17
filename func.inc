@@ -3980,6 +3980,7 @@ function get_default_fee($db, $member, $year, $month, $lesson_id, $course_id) {
 		$lesson_length = get_lesson_length($db, $member_no, $year, $month, $lesson_id, $course_id);
 		if (!$lesson_length) return "授業時間不確定";
 		$ent_month = get_student_join_month($db, $member_no);
+		if (!$ent_month) return "入会月不確定";
 		$grade = get_grade($db, $member, $year, $month, ($ent_month>='2018/09'));
 		
 		if ($lesson_id==2 && $course_id==2 && $lesson_length==40)	$lesson_length=60;
