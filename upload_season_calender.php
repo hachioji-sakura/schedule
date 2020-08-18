@@ -158,6 +158,7 @@ if ($already_exist > 0) {			// Already exsit target year month data.
 			$start_id = $id; 
 			$end_id = $id;
 		} else if ($end_id < $id - 1 ){ // not sequential.
+/*
 			$result = lms_delete_notify($start_id,$end_id);
 			if (!$result){		// if null then error.
 				$err_flag = true;
@@ -165,6 +166,7 @@ if ($already_exist > 0) {			// Already exsit target year month data.
 				array_push($errArray,$message);
 				goto error_label;
 			}
+*/
 			$start_id = $id; 
 			$end_id = $id;
 		} else { 			// sequential.
@@ -172,6 +174,7 @@ if ($already_exist > 0) {			// Already exsit target year month data.
 		}
 	}
 	if ($start_id) {
+/*
 		$result = lms_delete_notify($start_id,$end_id);
 		if (!$result){		// if null then error.
 			$err_flag = true;
@@ -179,6 +182,7 @@ if ($already_exist > 0) {			// Already exsit target year month data.
 			array_push($errArray,$message);
 			goto error_label;
 		}
+*/
 	}
 
 } else if ($already_exist == 0) {		// load new data.
@@ -550,6 +554,7 @@ while ($tmp_end_id < $end_id){
 	} else {
 		$tmp_end_id = $end_id;
 	}
+/*
 	$status = lms_insert_notify($tmp_start_id,$tmp_end_id);
 	if (!$status){		// if null then error.
 		$err_flag = true;
@@ -557,6 +562,7 @@ while ($tmp_end_id < $end_id){
 		array_push($errArray,$message);
 		goto error_label;
 	}
+*/
 	$tmp_start_id = $tmp_end_id + 1;	// setting next start.
 }
 
