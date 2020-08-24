@@ -7,6 +7,8 @@ $dbh = null;
 connect_DBH($dbh);
 $dbc = null;
 connect_DBC($dbc);
+$dbl = null;
+connect_DBL($dbl);
 
 mb_regex_encoding("UTF-8");
 
@@ -729,6 +731,16 @@ function connect_DBC(&$dbc) {
 		$dbc->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	}catch (PDOException $e){
 		$err_msg = 'connect_DBC Connection failed: ' . $e->getMessage();
+		exit($err_msg);
+	}
+}
+// データベース接続4
+function connect_DBL(&$dbl) {
+	try{
+		$dbl = new PDO(PDO_DSN4, DB_USER4, DB_PASSWD4);
+		$dbl->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	}catch (PDOException $e){
+		$err_msg = 'connect_DBL Connection failed: ' . $e->getMessage();
 		exit($err_msg);
 	}
 }

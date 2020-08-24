@@ -226,7 +226,7 @@ function blankCheck() {
 				<input type="submit" value="表示">
 				</form>
 			<li><b>請求明細書送付準備（明細書をスプレッドシートおよびpdfファイルに出力）</b><br>
-				<form name="form3" method="get" action="save_statement.php">
+				<form name="form3" method="get" action="check_SON_cal_fix.php">
 				<input type="text" name="y" value="<?php echo $year; ?>" size="4">年&nbsp;
 				<input type="text" name="m" value="<?php echo $month; ?>" size="4">月分&nbsp;
 				<input type="hidden" name="go" value="1">
