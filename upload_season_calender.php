@@ -8,7 +8,10 @@ ini_set( 'display_errors', 0 );
 error_reporting(0);
 $errArray = array();
 
+$logfile = "./log/upload_season_calendar-".date('Ymd-His').".log";
+
 $request_startyear = $_POST['startyear'];
+if (!$request_startyear)	$request_startyear = $_GET['startyear'];
 if (!$request_startyear){
 	$err_flag = true;
 	$message = 'Syntax error: correct syntax is php upload_season_calender_batch.php STARTYEAR STARTMONTH ENDMONTH';
@@ -17,6 +20,7 @@ if (!$request_startyear){
 }
 
 $request_startmonth = $_POST['startmonth'];
+if (!$request_startmonth)	$request_startmonth = $_GET['startmonth'];
 if (!$request_startmonth){
 	$err_flag = true;
 	$message = 'Syntax error: correct syntax is php upload_season_calender_batch.php STARTYEAR STARTMONTH ENDMONTH';
@@ -38,6 +42,7 @@ if ($request_startmonth_str == '12') {		// if December then next year.
 }
 
 $request_endmonth = $_POST['endmonth'];
+if (!$request_endmonth)	$request_endmonth = $_GET['endmonth'];
 if (!$request_endmonth){
 	$err_flag = true;
 	$message = 'Syntax error: correct syntax is php upload_season_calender_batch.php STARTYEAR STARTMONTH ENDMONTH';
@@ -51,10 +56,10 @@ if (strlen($request_endmonth) === 1) {	// filling leading zero.
 	$request_endmonth_str = $request_endmonth;
 }
 
-$request_mode = $_POST['mode'] ;
-if ($request_mode ){
+//$request_mode = $_POST['mode'] ;
+//if ($request_mode ){
 	$request_mode = 'replace';
-}
+//}
 
 require_once "./const/const.inc";
 require_once "./func.inc";
@@ -100,6 +105,59 @@ $target_work_id3 = TEACHERATTEND;	// for season and weekend seminar attend only.
 $startofmonth = $request_startyear.'-'.$request_startmonth_str.'-01';
 $endofmonth = $request_endyear.'-'.$request_endmonth_str.'-31';
 try{
+	
+$dbh->beginTransaction();
+	
+$sql = "
+CREATE TEMPORARY TABLE `tbl_schedule_onetime_new` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `repetition_id` int(11) DEFAULT '0',
+  `delflag` int(11) DEFAULT '0',
+  `user_id` int(11) DEFAULT NULL,
+  `teacher_id` int(11) DEFAULT NULL,
+  `student_no` int(11) DEFAULT NULL,
+  `ymd` date DEFAULT NULL,
+  `starttime` time DEFAULT NULL,
+  `endtime` time DEFAULT NULL,
+  `lecture_id` int(11) DEFAULT '0',
+  `group_lesson_id` int(11) DEFAULT '0',
+  `subject_expr` varchar(100) DEFAULT NULL,
+  `work_id` int(11) DEFAULT '0',
+  `free` varchar(10) DEFAULT '',
+  `cancel` varchar(10) DEFAULT '',
+  `cancel_reason` varchar(100) DEFAULT '',
+  `alternate` varchar(10) DEFAULT '',
+  `altsched_id` int(11) DEFAULT '0',
+  `altlimitdate` date DEFAULT NULL,
+  `trial_id` varchar(10) DEFAULT '',
+  `absent1_num` int(11) DEFAULT '0',
+  `absent2_num` int(11) DEFAULT '0',
+  `trial_num` int(11) DEFAULT '0',
+  `repeattimes` int(11) DEFAULT '0',
+  `monthly_fee_flag` int(11) DEFAULT '0',
+  `place_id` int(11) DEFAULT '0',
+  `temporary` int(11) DEFAULT '0',
+  `recess` varchar(10) DEFAULT '',
+  `confirm` varchar(30) DEFAULT '',
+  `additional` varchar(30) DEFAULT '',
+  `entrytime` datetime DEFAULT NULL,
+  `updatetime` datetime DEFAULT NULL,
+  `deletetime` datetime DEFAULT NULL,
+  `updateuser` int(11) DEFAULT NULL,
+  `comment` varchar(100) DEFAULT '',
+  `temp_name` varchar(100) DEFAULT '',
+  `googlecal_id` varchar(100) DEFAULT '',
+  `googleevent_id` varchar(100) DEFAULT '',
+  `recurrence_id` varchar(100) DEFAULT '',
+  `googleexpression` varchar(100) DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4";
+$res = $dbh->query($sql);
+if (!$res) {
+	echo 'CREATE TEMPORARY TABLE `tbl_schedule_onetime_new` error';
+	exit();
+}
+
 $sql = "SELECT COUNT(*) AS COUNT FROM tbl_schedule_onetime WHERE (work_id=? OR work_id=? OR work_id=?) AND delflag=0 AND ymd BETWEEN ? AND ?";
 $stmt = $dbh->prepare($sql);
 $stmt->bindValue(1, $target_work_id, PDO::PARAM_INT);
@@ -120,19 +178,21 @@ if ($already_exist > 0) {			// Already exsit target year month data.
 
 	// 1st cycle. Check season_class schedule on tbl_schedule_onetime that is not confired yet. 
 	// if there is, logical delete the data.
-	$sql = "SELECT * FROM tbl_schedule_onetime ";
-	$sql .= " WHERE delflag=0 AND confirm='f' AND (work_id=? OR work_id=? OR work_id=?) AND ymd BETWEEN ? AND ? ORDER BY id";
+	$sql = "select t1.* from hachiojisakura_calendar.tbl_schedule_onetime as t1
+ left join hachiojisakura_calendar.tbl_schedule_onetime as t2
+ on (t1.student_no=t2.student_no and t1.ymd=t2.ymd and t1.starttime=t2.starttime and t1.updatetime<t2.updatetime)
+ where t2.updatetime IS NULL
+ and t1.ymd BETWEEN ? AND ? and t1.work_id=10 and t1.updatetime is not null
+ group by t1.student_no, t1.ymd, t1.starttime
+ order by t1.id";
 
 	$stmt = $dbh->prepare($sql);
-	$stmt->bindValue(1, $target_work_id, PDO::PARAM_INT);
-	$stmt->bindValue(2, $target_work_id2, PDO::PARAM_INT);
-	$stmt->bindValue(3, $target_work_id3, PDO::PARAM_INT);
-	$stmt->bindValue(4, $startofmonth, PDO::PARAM_STR);
-	$stmt->bindValue(5, $endofmonth, PDO::PARAM_STR);
+	$stmt->bindValue(1, $startofmonth, PDO::PARAM_STR);
+	$stmt->bindValue(2, $endofmonth, PDO::PARAM_STR);
 	$stmt->execute();
-	$confirmed_schedule_onetime_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	$updated_schedule_onetime_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-	$sql = "SELECT id FROM tbl_schedule_onetime ";
+	$sql = "SELECT * FROM tbl_schedule_onetime ";
 //	$sql .= " WHERE delflag=0 AND confirm!='f' AND (work_id=? OR work_id=? OR work_id=?) AND ymd BETWEEN ? AND ? ORDER BY id";
 	$sql .= " WHERE delflag=0 AND (work_id=? OR work_id=? OR work_id=?) AND ymd BETWEEN ? AND ? ORDER BY id";
 
@@ -145,6 +205,7 @@ if ($already_exist > 0) {			// Already exsit target year month data.
 	$stmt->execute();
 	$start_id = 0;
 	$schedule_onetime_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
+/*
 	foreach ( $schedule_onetime_array as $schedule_onetime_row ) {
 		$sql = "UPDATE tbl_schedule_onetime SET delflag=1,deletetime=?,updateuser=-1 ";
 		$sql .= " WHERE id=?";
@@ -158,7 +219,6 @@ if ($already_exist > 0) {			// Already exsit target year month data.
 			$start_id = $id; 
 			$end_id = $id;
 		} else if ($end_id < $id - 1 ){ // not sequential.
-/*
 			$result = lms_delete_notify($start_id,$end_id);
 			if (!$result){		// if null then error.
 				$err_flag = true;
@@ -166,7 +226,6 @@ if ($already_exist > 0) {			// Already exsit target year month data.
 				array_push($errArray,$message);
 				goto error_label;
 			}
-*/
 			$start_id = $id; 
 			$end_id = $id;
 		} else { 			// sequential.
@@ -174,7 +233,6 @@ if ($already_exist > 0) {			// Already exsit target year month data.
 		}
 	}
 	if ($start_id) {
-/*
 		$result = lms_delete_notify($start_id,$end_id);
 		if (!$result){		// if null then error.
 			$err_flag = true;
@@ -182,9 +240,8 @@ if ($already_exist > 0) {			// Already exsit target year month data.
 			array_push($errArray,$message);
 			goto error_label;
 		}
-*/
 	}
-
+*/
 } else if ($already_exist == 0) {		// load new data.
 /*
 	if ($request_mode == 'replace') {	// replace option is specified but no data exist..
@@ -504,6 +561,7 @@ foreach ( $season_teacherattend_array as $row ) {
 		$start_timestamp = $attendstime_ts;
 		$end_timestamp = $attendetime_ts;
 		$user_id = $teacher_no + 100000 ;
+/*
 		$onetime_schedule_status = check_target_schedule($dbh,$datewithhyphen,$start_timestamp,$end_timestamp,$user_id);
 
 		if ($onetime_schedule_status == 'new'){
@@ -514,11 +572,11 @@ foreach ( $season_teacherattend_array as $row ) {
 			// skip insert process.
 			continue;
 		}
-
+*/
 		$starttime_str = date("H:i:s",$start_timestamp);
 		$endtime_str = date("H:i:s",$end_timestamp);
 
-		$sql = "SELECT place_id FROM tbl_schedule_onetime WHERE ymd=? AND teacher_id=? AND starttime >=?  AND endtime <=? and delflag=0"; 
+		$sql = "SELECT place_id FROM tbl_schedule_onetime_new WHERE ymd=? AND teacher_id=? AND starttime >=?  AND endtime <=? and delflag=0"; 
 							// select from tbl_schedule_onetime.
 		$stmt = $dbh->prepare($sql);
 		$stmt->bindValue(1, $datewithhyphen, PDO::PARAM_STR);
@@ -539,6 +597,94 @@ foreach ( $season_teacherattend_array as $row ) {
 
 }
 
+	$sql = "SELECT * FROM tbl_schedule_onetime_new ";
+	$sql .= " WHERE delflag=0 AND (work_id=? OR work_id=? OR work_id=?) AND ymd BETWEEN ? AND ? ORDER BY id";
+
+	$stmt = $dbh->prepare($sql);
+	$stmt->bindValue(1, $target_work_id, PDO::PARAM_INT);
+	$stmt->bindValue(2, $target_work_id2, PDO::PARAM_INT);
+	$stmt->bindValue(3, $target_work_id3, PDO::PARAM_INT);
+	$stmt->bindValue(4, $startofmonth, PDO::PARAM_STR);
+	$stmt->bindValue(5, $endofmonth, PDO::PARAM_STR);
+	$stmt->execute();
+	$schedule_onetime_array_new = $stmt->fetchAll(PDO::FETCH_ASSOC);
+/*
+foreach ( $schedule_onetime_array as $key=>$item ) {
+	if ($item['ymd']=='2020-08-11' && $item['student_no']==1267 && $item['work_id']==10) {
+		var_dump($item);echo"<br>";
+	} else unset ($schedule_onetime_array[$key]);
+}
+foreach ( $schedule_onetime_array_new as $key=>$item ) {
+	if ($item['ymd']=='2020-08-11' && $item['student_no']==1267 && $item['work_id']==10) {
+		var_dump($item);echo"<br>";
+	} else unset ($schedule_onetime_array_new[$key]);
+}
+*/
+foreach ( $schedule_onetime_array as $schedule_onetime_row ) {
+	$equal=0;
+	foreach ( $schedule_onetime_array_new as $schedule_onetime_row_new ) {
+		$equal=1;
+		foreach ( $schedule_onetime_row_new as $key=>$value ) {
+			if ($key=='id' || $key=='entrytime' || $key=='updatetime' || $key=='deletetime') continue;
+			if ($schedule_onetime_row[$key] != $value) { $equal=0; break; }
+		}
+		if ($equal) break;
+	}
+	if (!$equal) {
+		// deleted record
+		$logmsg = "delete: ".print_r($schedule_onetime_row,TRUE);
+		if ($_GET['go']==1)	file_put_contents( $logfile, $logmsg."\n", FILE_APPEND ); else echo $logmsg."<br>";
+		if ($_GET['go']==1) {
+			$sql = "UPDATE tbl_schedule_onetime SET delflag=1,deletetime=?,updateuser=-1 ";
+			$sql .= " WHERE id=?";
+			$stmt = $dbh->prepare($sql);
+			$stmt->bindValue(1, $now, PDO::PARAM_STR);
+			$id = $schedule_onetime_row['id'];
+			$stmt->bindValue(2, $id, PDO::PARAM_INT);
+			$stmt->execute();
+		}
+	}
+}
+
+foreach ( $schedule_onetime_array_new as $schedule_onetime_row_new ) {
+	$equal=0;
+	foreach ( $schedule_onetime_array as $schedule_onetime_row ) {
+		$equal=1;
+		foreach ( $schedule_onetime_row as $key=>$value ) {
+			if ($key=='id' || $key=='entrytime' || $key=='updatetime' || $key=='deletetime') continue;
+			if ($schedule_onetime_row_new[$key] != $value) { $equal=0; break; }
+		}
+		if ($equal) break;
+	}
+	if (!$equal) {
+		// inserted record
+		$logmsg = "insert: ".print_r($schedule_onetime_row_new,TRUE);
+		if ($_GET['go']==1)	file_put_contents( $logfile, $logmsg."\n", FILE_APPEND ); else echo $logmsg."<br>";
+		if ($_GET['go']==1) {
+			$id = $schedule_onetime_row_new['id'];
+			$stmt = $dbh->query("INSERT INTO tbl_schedule_onetime ".
+				'(repetition_id,delflag,user_id,teacher_id,student_no,ymd,starttime,endtime,lecture_id,group_lesson_id,subject_expr,work_id,free,cancel,cancel_reason,alternate,altsched_id,altlimitdate,trial_id,absent1_num,absent2_num,trial_num,repeattimes,monthly_fee_flag,place_id,temporary,recess,confirm,additional,entrytime,updatetime,deletetime,updateuser,comment,temp_name,googlecal_id,googleevent_id,recurrence_id,googleexpression) '.
+				'SELECT repetition_id,delflag,user_id,teacher_id,student_no,ymd,starttime,endtime,lecture_id,group_lesson_id,subject_expr,work_id,free,cancel,cancel_reason,alternate,altsched_id,altlimitdate,trial_id,absent1_num,absent2_num,trial_num,repeattimes,monthly_fee_flag,place_id,temporary,recess,confirm,additional,entrytime,updatetime,deletetime,updateuser,comment,temp_name,googlecal_id,googleevent_id,recurrence_id,googleexpression '.
+				" FROM tbl_schedule_onetime_new WHERE id=$id" );
+		}
+	}
+}
+
+$dbh->commit();
+
+if ($_GET['go']==1) {
+	$status = lms_import_season_schedule();
+	$logmsg = "lms_import_season_schedule(): ".print_r($status,TRUE)."\n";
+	file_put_contents( $logfile, $logmsg, FILE_APPEND );
+	if (!$status){		// if null then error.
+		$err_flag = true;
+		$message = 'lms_import_season_schedule error.';
+		array_push($errArray,$message);
+		goto error_label;
+	}
+}
+
+/*
 $sql = "SELECT MAX(id) FROM tbl_schedule_onetime where delflag=0 ";
 $stmt = $dbh->prepare($sql);
 $stmt->execute();
@@ -554,7 +700,6 @@ while ($tmp_end_id < $end_id){
 	} else {
 		$tmp_end_id = $end_id;
 	}
-/*
 	$status = lms_insert_notify($tmp_start_id,$tmp_end_id);
 	if (!$status){		// if null then error.
 		$err_flag = true;
@@ -562,22 +707,28 @@ while ($tmp_end_id < $end_id){
 		array_push($errArray,$message);
 		goto error_label;
 	}
-*/
 	$tmp_start_id = $tmp_end_id + 1;	// setting next start.
 }
-
+*/
 
 }catch (PDOException $e){
         print_r('exception: ' . $e->getMessage());
+				$logmsg = 'exception: ' . print_r('exception: ' . $e->getMessage(), TRUE);
+				if ($_GET['go']==1)	file_put_contents( $logfile, $logmsg."\n", FILE_APPEND );
         return false;
 }
 
 
 error_label:
 	if ($err_flag === true){
-//		var_dump($message);
+		var_dump($message);
+		if ($_GET['go']==1)	file_put_contents( $logfile, 'error: '.$message."\n", FILE_APPEND );
 	}
 //} // the end of main program. 
+
+foreach ($errArray as $msg) {
+	if ($_GET['go']==1)	file_put_contents( $logfile, "error: $msg\n", FILE_APPEND );
+}
 
 /************* Single Insert ****************/
 
@@ -586,18 +737,22 @@ function insert_calender_event(&$dbh,$start_timestamp,$end_timestamp,$repetition
 global $work_list;
 global $subject_list;
 global $now;
-global $confirmed_schedule_onetime_array;
+global $updated_schedule_onetime_array;
 
 	$confirm = null;
-	foreach ($confirmed_schedule_onetime_array as $key=>$record) {
+	$updateuser = -1;
+	foreach ($updated_schedule_onetime_array as $key=>$record) {
 		if (
 			"{$record['ymd']} {$record['starttime']}" == date('Y-m-d H:i:s', $start_timestamp) &&
 			"{$record['ymd']} {$record['endtime']}" == date('Y-m-d H:i:s', $end_timestamp) &&
 			$record['teacher_id'] == $teacher_id &&
 			$record['student_no'] == $student_no
 			) {
-				$confirm = 'f';
-				unset($confirmed_schedule_onetime_array[$key]);
+				$confirm	= $record['confirm'];
+				$cancel		= $record['cancel'];
+				$cancel_reason	= $record['cancel_reason'];
+				$updateuser			= $record['updateuser'];
+				unset($updated_schedule_onetime_array[$key]);
 				break;
 			}
 	}
@@ -628,10 +783,10 @@ global $confirmed_schedule_onetime_array;
         }
 
 	if ($user_id==0) { goto exit_label;}
-	$updateuser = -1;
+//	$updateuser = -1;
 try{
 						// not Repeting
-	$sql = "INSERT INTO tbl_schedule_onetime (".
+	$sql = "INSERT INTO tbl_schedule_onetime_new (".
 	" repetition_id,".
 	" user_id,".
 	" teacher_id,".
@@ -943,7 +1098,7 @@ try{
 							// 先生の立ち合いスケジュール作成
 $startymd = date('Y/m/d',$attendstime_ts);
 							// 講習予定を検索する。なければ立ち合いなし
-$sql = "SELECT * FROM tbl_schedule_onetime WHERE teacher_id=? AND ymd=? AND delflag=0 AND work_id=10 ORDER BY starttime ";
+$sql = "SELECT * FROM tbl_schedule_onetime_new WHERE teacher_id=? AND ymd=? AND delflag=0 AND work_id=10 ORDER BY starttime ";
 $stmt = $dbh->prepare($sql);
 $stmt->bindValue(1, $teacher_id, PDO::PARAM_INT);	 
 $stmt->bindValue(2, $startymd, PDO::PARAM_STR);
@@ -1084,7 +1239,7 @@ teacherattend_exit:
 	return false;
 }
 } // End:event_insert
-
+/*
 function check_target_schedule(&$dbh,$datewithhyphen,$start_timestamp,$end_timestamp,$user_id){
 			// This function check every season record on tbl_season_schedule.
 			// If the schedule is already confirmed then skip the insert.
@@ -1137,8 +1292,9 @@ check_target_schedule_exit_label:
 	return false;
 }
 }
-
+*/
 function lms_insert_notify($tmp_start_id,$tmp_end_id){
+	echo "lms_insert_notify abort!!";exit;
                 // this function notify update of the schedule to lms.
         $result = NULL;         // initialization.
         $senddata = array(
@@ -1171,6 +1327,7 @@ function lms_insert_notify($tmp_start_id,$tmp_end_id){
 }
 
 function lms_delete_notify($start_id,$end_id){
+	echo "lms_delete_notify abort!!";exit;
                 // this function notify update of the schedule to lms.
         $result = NULL;         // initialization.
         $senddata = array(
@@ -1204,6 +1361,35 @@ function lms_delete_notify($start_id,$end_id){
         return($result);
 
 }
+
+function lms_import_season_schedule(){
+        $result = NULL;         // initialization.
+        $platform = PLATFORM;
+                                // http-post:
+        if ($platform == 'staging' ){
+                $url = 'https://staging.sakuraone.jp/import/season_schedules';
+        } else if ($platform == 'production' ){
+                $url = 'https://sakuraone.jp/import/season_schedules';
+        }
+        $header = array(
+                'Content-Type:application/x-www-form-urlencoded',
+                'Content-Length: '.strlen($url),
+                'Api-Token: 7511a32c7b6fd3d085f7c6cbe66049e7'
+        );
+
+        $options = array('http' => array(
+                   'method' => 'POST',
+                   'timeout' => 1800 ,
+                   'header' => implode("\r\n",$header)
+                         )
+                   );
+        $ctx = stream_context_create($options);
+        $result = file_get_contents($url,false,$ctx);
+        if(!empty($result)) $result = json_decode($result);
+        return($result);
+
+}
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -1247,16 +1433,20 @@ if ($err_flag == true) {
 <?php
        		}
        	} else {
-					if ($confirmed_schedule_onetime_array) {
-						echo "以下のSONカレンダー予定が変更・削除されました。<br><table>\n";
-						foreach ($confirmed_schedule_onetime_array as $record) {
+					if ($updated_schedule_onetime_array) {
+						$logmsg = "以下のSONカレンダー予定が変更・削除されました。<br><table>\n";
+						if ($_GET['go']==1)	file_put_contents( $logfile, $logmsg, FILE_APPEND ); else echo $logmsg;
+						foreach ($updated_schedule_onetime_array as $record) {
 							$stmt = $db->query("SELECT name FROM tbl_member WHERE no=".str_pad($record['student_no'],6,'0',STR_PAD_LEFT));
 							$student_name = ($stmt->fetch(PDO::FETCH_NUM))[0];
 							$stmt = $db->query("SELECT name FROM tbl_teacher WHERE no=".($record['teacher_id']-100000));
 							$teacher_name = ($stmt->fetch(PDO::FETCH_NUM))[0];
-							echo "<tr><td>{$record['ymd']} ".substr($record['starttime'],0,5).'-'.substr($record['endtime'],0,5)." {$student_name}様 {$teacher_name}先生</td></tr>\n";
+							$logmsg = "<tr><td>{$record['ymd']} ".substr($record['starttime'],0,5).'-'.substr($record['endtime'],0,5)." {$student_name}様 {$teacher_name}先生".
+								"  cancel={$record['cancel']}, cancel_reason={$record['cancel_reason']}, confirm={$record['confirm']}</td></tr>\n";
+							if ($_GET['go']==1)	file_put_contents( $logfile, $logmsg.print_r($record,TRUE)."\n", FILE_APPEND ); else echo $logmsg;
 						}
-						echo "</table><br>";
+						$logmsg = "</table><br>\n";
+						if ($_GET['go']==1)	file_put_contents( $logfile, $logmsg, FILE_APPEND ); else echo $logmsg;
 					}
 ?>
 	<a href='menu.php'><h4>正常終了しました。メニュー画面に戻る</h4></a>
