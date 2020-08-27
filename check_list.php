@@ -783,8 +783,14 @@ if ($teacher_id==$log_tid) {var_dump($event);echo"<BR>";}
 			}
 			foreach ($names as $key=>$name) {
 				$i++;
+				if (!$event['absent_flag']) {
 				if (!($event['course_id'] == 2 && $event["trial_flag"])) { $member_count++; }
-				if (preg_match('/(当日|today)/iu', $attendStatusCal[$event["date"]][$event["time"]][$name])) { $todayFlag = 1; }
+				} else {
+					if (preg_match('/(当日|today)/iu', $attendStatusCal[$event["date"]][$event["time"]][$name])) {
+						if (!($event['course_id'] == 2 && $event["trial_flag"])) { $member_count++; }
+						$todayFlag = 1;
+					}
+				}
 			}
 		}
 		if ($event['absent_flag']<$absent_flag_min) { $absent_flag_min = $event['absent_flag']; }
@@ -799,7 +805,7 @@ if ($teacher_id==$log_tid) {var_dump($event);echo"<BR>";}
 	if ($event['course_id'] == 2 && $member_count == 0) { $member_count = 1; }
 	if ($event['course_id'] == 3 && $member_count == 0) { $member_count = 1; }
 	
-	if ($todayFlag) {
+	if ($absent_flag_min>0 && $todayFlag) {
 		$sql = 
 			"SELECT * FROM tbl_event ".
 			"WHERE event_year=? AND event_month=? AND teacher_id=? AND absent_flag=0 ".
