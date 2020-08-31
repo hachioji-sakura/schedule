@@ -253,7 +253,7 @@ td {padding: 5px 10px 5px 10px;}
 
 if ($class_type == 'sat_sun_class') {
 ?>
-<h3>&nbsp;&nbsp;&nbsp;&nbsp;<?= $year?>年<?= $month ?>-<?= $m3 ?>月&nbsp;&nbsp;&nbsp;&nbsp;</h3>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;<?= $year?>年<?= $month ?><?= $m3?"-$m3":"" ?>月&nbsp;&nbsp;&nbsp;&nbsp;</h3>
 <?php } ?>
 <form method="post" name="form1" action="season_class_student_schedule.php">
 <input type="hidden" name="y" value="<?= $year ?>">
