@@ -683,9 +683,7 @@ if ($class_type=='sat_sun_class') {
 <input type="hidden" name="view_type" value="<?= $view_type ?>">
 <input type="hidden" name="lms_mode" value="<?=$lms_mode?>">
 <input type="hidden" name="place_select" value="<?=$place_select?>">
-	<h3><input type="submit" name="button" value="前月">
-	&nbsp;&nbsp;&nbsp;&nbsp;<?= $year?>年<?= $month ?>-<?= $m3 ?>月&nbsp;&nbsp;&nbsp;&nbsp;
-	<input type="submit" name="button" value="翌月"></h3>
+	<h3><?= $year?>年<?= $month ?>月</h3>
 </form>
 <?php
 }
