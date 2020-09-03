@@ -3538,7 +3538,7 @@ function isSeasonClassExercise( $event ) {
 }
 
 function errMsgfileName() {
-	return './errmsg-'.session_id();
+	return './tmp/errmsg-'.session_id();
 }
 
 function errMsgFileLog( $errmsg ) {
