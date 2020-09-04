@@ -104,7 +104,7 @@ if ($action == 'add' && $date_list_string && $date_list_string1) {
 		$i=0;
 		$sql = "INSERT INTO tbl_season_class_entry_date VALUES (?, ?, ?, ?, ?, now(), now(), ?, ?, ?, ?, ?, ?)";
 		$stmt = $db->prepare($sql);
-		foreach ($date_list as $datestring ) {
+		foreach ($date_list1 as $datestring ) {
 			if (array_search($datestring, $date_list1) !== false) {
 				$season_course_id0 = $season_course_id;
 			} else{
@@ -622,7 +622,7 @@ function inputCheck()
 	</tr>
  	<?php
 	$i=0;
-	foreach ($date_list as $datestring) {
+	foreach ($date_list1 as $datestring) {
 		$entry_data0 = $entry_data[$datestring];
 		if ($entry_data0["furikae_status"]) {
 			if (substr($entry_data0["furikae_status"],0,3)=='=> ') {
