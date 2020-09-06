@@ -976,6 +976,12 @@ function get_member_list($db, $param_array=array(), $value_array=array(), $order
 	  if(count($param_array) > 0){
 	    $cmd .= " and " . join(" and ",$param_array);
 	  }
+	} else if ($all_student_flag == "4") {
+	// 現生徒、前生徒、体験生徒を抽出
+	  $cmd .= " where (tbl_member.del_flag = '0' or tbl_member.del_flag = '2' or tbl_member.del_flag = '4')";	
+	  if(count($param_array) > 0){
+	    $cmd .= " and " . join(" and ",$param_array);
+	  }
 	} else {
 	// 現生徒のみの場合
 	  $cmd .= " where tbl_member.del_flag = '0'";	
@@ -1031,6 +1037,18 @@ function get_simple_member_list($db, $param_array=array(), $value_array=array(),
 	  if(count($param_array) > 0){
 	    $cmd .= " where " . join(" and ",$param_array);
 	  }
+	} else if ($all_student_flag == "3") {
+	// 前生徒のみの場合
+	  $cmd .= " where tbl_member.del_flag = '2'";	
+	  if(count($param_array) > 0){
+	    $cmd .= " and " . join(" and ",$param_array);
+	  }
+	} else if ($all_student_flag == "4") {
+	// 現生徒、前生徒、体験生徒を抽出
+	  $cmd .= " where (tbl_member.del_flag = '0' or tbl_member.del_flag = '2' or tbl_member.del_flag = '4')";	
+	  if(count($param_array) > 0){
+	    $cmd .= " and " . join(" and ",$param_array);
+	  }
 	} else {
 	// 現生徒のみの場合
 	  $cmd .= " where tbl_member.del_flag = '0'";	
@@ -1071,6 +1089,18 @@ function get_member_cnt($db, $param_array=array(), $value_array=array(), $all_st
 	// 削除も含むすべての場合（前生徒と現生徒と削除済み生徒のすべてを抽出）
 	  if(count($param_array) > 0){
 	    $cmd .= " where " . join(" and ",$param_array);
+	  }
+	} else if ($all_student_flag == "3") {
+	// 前生徒のみの場合
+	  $cmd .= " where tbl_member.del_flag = '2'";	
+	  if(count($param_array) > 0){
+	    $cmd .= " and " . join(" and ",$param_array);
+	  }
+	} else if ($all_student_flag == "4") {
+	// 現生徒、前生徒、体験生徒を抽出
+	  $cmd .= " where (tbl_member.del_flag = '0' or tbl_member.del_flag = '2' or tbl_member.del_flag = '4')";	
+	  if(count($param_array) > 0){
+	    $cmd .= " and " . join(" and ",$param_array);
 	  }
 	} else {
 	// 現生徒のみの場合

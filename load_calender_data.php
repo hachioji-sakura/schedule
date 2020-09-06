@@ -64,7 +64,9 @@ define('CONST_ALTERNATE_ENG','make-up');
 
 $teacher_list = get_teacher_list($db);
 
-$member_list = get_member_list($db);
+$staff_list = get_staff_list($db);
+
+$member_list = get_member_list($db,null,null,null,4);
 
 $lesson_list = get_lesson_list($db);
 
@@ -112,12 +114,18 @@ if (!$request_user_id){
 }
 
 mb_regex_encoding("UTF-8");
-$teacher_list = get_teacher_list($db);
-$member_list = get_member_list($db);
 $now = date('Y-m-d H:i:s');
 $request_year_str = (string)$request_year;
 $request_month_str = (string)$request_month;
 
+foreach ($teacher_list as $teacher) {
+	foreach ($staff_list as $staff) {
+		if ($staff['name'] == $teacher['name']) {
+			$teacher_and_staff_list[$teacher['name']] = array('teacher'=>$teacher, 'staff'=>$staff);
+		}
+	}
+}
+	
 try{
 	if ($request_user_id > 0) {
 				// 当該月の当該user_idのデータをtbl_eventから削除する
@@ -148,7 +156,7 @@ try{
 			$stmt->bindValue(1, $request_year_str, PDO::PARAM_STR);
 			$stmt->bindValue(2, $request_month_str, PDO::PARAM_STR);
 			$stmt->execute();
-		} else if ($request_user_id > 200000 && $request_user_id < 300000){
+		} else if ($request_user_id > 200000 && $request_user_id < 300000 && !$teacher_and_staff_list[$staff_list[$request_user_id-200000]['name']]){
 			$sql = "DELETE FROM tbl_event_staff where event_year = ? AND event_month = ? AND staff_no = ? ";
 			$stmt = $db->prepare($sql);
 			$stmt->bindValue(1, $request_year_str, PDO::PARAM_STR);
@@ -222,16 +230,15 @@ try{
 	"recurrence_id".
 	" FROM tbl_schedule_onetime WHERE delflag!=1 AND (cancel IS NULL OR cancel!='c') AND ymd BETWEEN ? AND ? ";
 	if ($request_user_id == 200000) {
-		$sql .= " AND user_id> ?";
+		$sql .= " AND user_id> $request_user_id";
+	} else if ($request_user_id > 200000) {
+		$sql .= " AND user_id= $request_user_id";
 	} else if ($request_user_id > 0) {
-		$sql .= " AND user_id= ?";
+		$sql .= " AND user_id= $request_user_id";
 	}
 	$stmt = $dbh->prepare($sql);
 	$stmt->bindValue(1, $request_startdate, PDO::PARAM_STR);
 	$stmt->bindValue(2, $request_enddate, PDO::PARAM_STR);
-	if ($request_user_id > 0) {
-		$stmt->bindValue(3, $request_user_id, PDO::PARAM_INT);
-	}
 	$stmt->execute();
         $schedule_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ( $schedule_array as $row ) {
@@ -268,6 +275,23 @@ try{
 		if ( $temporary > 0 && $temporary < 110 ) {
 				// temporary. target data should be omitted.
 			continue;
+		}
+		
+		// 事務兼任講師の事務作業時に講師IDを事務員IDに変換
+		if ($user_id>100000 && $user_id<200000) {
+			if ($work_id==9) {
+				$tid = $user_id-100000;
+				$mid = $teacher_and_staff_list[$teacher_list[$tid]['name']]['staff']['no'];
+				if (!$mid) {
+					$err_flag = true;
+					$message = "{$teacher_list[$tid]['name']}先生の事務作業がありますが、事務員登録されていません。";
+					array_push($errArray,$message);
+					continue;
+				}
+				$user_id = $mid+200000;
+			} else if ($request_user_id > 200000)	{
+				continue;
+			}
 		}
 
 		sscanf($ymd,'%d-%d-%d',$event_year,$event_month,$event_day);	
@@ -379,14 +403,29 @@ try{
 					$grade = $member['grade'];
 					$evt_summary = $evt_summary.$member_cal_name;
 					$evt_summary = $evt_summary.CONST_SAMA;
+					break;
 				}
 			}
+			if ($member_cal_name == ' ') {
+				$err_flag = true;
+				$message = "user_id=$user_id 未登録エラー";
+				array_push($errArray,$message);
+				continue;
+			}			
 		} else if ($user_id == 1 ) { // try student
-			$trial_id = '1'; 
-			$grade = $trial_num;
-			$member_cal_name = CONST_TRYSTUDENT;
-			$evt_summary = $evt_summary.$member_cal_name;
-			$evt_summary = $evt_summary.CONST_SAMA;
+			if ($lesson_id == 1) {
+				$err_flag = true;
+				$message = "体験生徒 未登録エラー";
+				array_push($errArray,$message);
+				continue;
+			} else {
+				$trial_id = '1'; 
+//			$grade = $trial_num;
+				$grade = 0;
+				$member_cal_name = CONST_TRYSTUDENT;
+				$evt_summary = $evt_summary.$member_cal_name;
+				$evt_summary = $evt_summary.CONST_SAMA;
+			}
 		} else if ($user_id < 0 ) { // student not defined.
 			if ($comment !== ' '){
 				$member_cal_name = $comment;
