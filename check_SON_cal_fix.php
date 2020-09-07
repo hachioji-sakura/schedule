@@ -33,6 +33,11 @@ try {
 		throw new Exception('年月が不明です。');
 	}
 	$month = str_pad($month, 2, '0', STR_PAD_LEFT);
+
+	$fix_flag = 1;
+
+	$teacher_list = get_teacher_list($db);
+	$staff_list = get_staff_list($db);
 	
 	$stmt = $dbl->query("select usr.id from common.users usr, common.teachers tch where usr.id=tch.user_id");
 	$rslt = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -48,6 +53,7 @@ try {
 	$rslt = $stmt->fetchAll(PDO::FETCH_COLUMN);
 	
 	if ($rslt) {
+		$fix_flag = 0;
 		$not_yet_fixed_ids = "'".implode("','", $rslt)."'"; 
 		
 		$stmt = $dbl->query("select concat(tch.name_last, ' ', tch.name_first) from common.users usr, common.teachers tch
@@ -57,10 +63,44 @@ try {
 		echo "以下の先生が勤務実績未確定です。<br>";
 		echo "<table>";
 		foreach($rslt as $name)	echo "<tr><td>$name</td></tr>";
-		echo "</table>";
+		echo "</table><br><br>";
 	} else {
-		echo "全先生の勤務実績は確定しています。<br>";
-		echo "<a href=\"./save_statement.php?y=$year&m=$month&go=1\">次の処理へ</a>";
+		echo "全先生の勤務実績は確定しています。<br><br>";
+	}
+
+	$stmt = $dbl->query("select usr.id from common.users usr, common.managers mgr where usr.id=mgr.user_id");
+	$rslt = $stmt->fetchAll(PDO::FETCH_COLUMN);
+	$mgr_ids = "'".implode("','", $rslt)."'"; 
+
+	$stmt = $dbc->query("select mem.user_id from lms.user_calendars cal, lms.user_calendar_members mem
+ where date_format(start_time,'%Y/%m')='$year/$month'
+ and cal.id=mem.calendar_id
+ and mem.user_id in ($mgr_ids)
+ and (cal.status='fix' or (cal.status in ('presence','absence','rest','cancel','lecture_cancel') and checked_at is null))
+ order by cal.start_time"
+			);
+	$rslt = $stmt->fetchAll(PDO::FETCH_COLUMN);
+	
+	if ($rslt) {
+		$fix_flag = 0;
+		$not_yet_fixed_ids = "'".implode("','", $rslt)."'"; 
+		
+		$stmt = $dbl->query("select concat(mgr.name_last, ' ', mgr.name_first) from common.users usr, common.managers mgr
+	 where usr.id=mgr.user_id and usr.id in ($not_yet_fixed_ids) order by mgr.kana_last,mgr.kana_first");
+		$rslt = $stmt->fetchAll(PDO::FETCH_COLUMN);
+		
+		echo "以下の事務員が勤務実績未確定です。<br>";
+		echo "<table>";
+		foreach($rslt as $name)	
+			if (array_search($name, array_column($teacher_list, 'name')) === false)
+				echo "<tr><td>$name</td></tr>";
+		echo "</table><br><br>";
+	} else {
+		echo "全事務員の勤務実績は確定しています。<br><br>";
+	}
+
+	if ($fix_flag) {
+		echo "<a href=\"./save_statement.php?y=$year&m=$month&go=1\">次の処理へ</a><br>";
 	}
 
 } catch (Exception $e) {

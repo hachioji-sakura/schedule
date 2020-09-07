@@ -735,7 +735,7 @@ function connect_DB(&$db) {
 // データベース接続2
 function connect_DBH(&$dbh) {
 	try{
-		$dbh = new PDO(PDO_DSN2, DB_USER, DB_PASSWD2);
+		$dbh = new PDO(PDO_DSN2, DB_USER2, DB_PASSWD2);
 		$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	}catch (PDOException $e){
 		$err_msg = 'connect_DBH Connection failed: ' . $e->getMessage();
