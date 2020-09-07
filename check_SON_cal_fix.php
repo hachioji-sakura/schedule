@@ -32,7 +32,6 @@ try {
 	if ((is_null($year) == true || $year == "") || (is_null($month) == true || $month == "")) {
 		throw new Exception('年月が不明です。');
 	}
-	$month = str_pad($month, 2, '0', STR_PAD_LEFT);
 
 	$fix_flag = 1;
 
@@ -43,26 +42,35 @@ try {
 	$rslt = $stmt->fetchAll(PDO::FETCH_COLUMN);
 	$teacher_ids = "'".implode("','", $rslt)."'"; 
 
-	$stmt = $dbc->query("select mem.user_id from lms.user_calendars cal, lms.user_calendar_members mem
- where date_format(start_time,'%Y/%m')='$year/$month'
+	$stmt = $dbc->query("select mem.user_id, date_format(cal.start_time,'%e') day from lms.user_calendars cal, lms.user_calendar_members mem
+ where date_format(start_time,'%Y/%c')='$year/$month'
  and cal.id=mem.calendar_id
  and mem.user_id in ($teacher_ids)
- and (cal.status='fix' or (cal.status in ('presence','absence','rest','cancel','lecture_cancel') and checked_at is null))
+ and ((cal.status='fix' and cal.work<>11) or (cal.status in ('presence','absence','rest','cancel','lecture_cancel') and checked_at is null))
  order by cal.start_time"
 			);
-	$rslt = $stmt->fetchAll(PDO::FETCH_COLUMN);
+	$rslt = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	
 	if ($rslt) {
 		$fix_flag = 0;
-		$not_yet_fixed_ids = "'".implode("','", $rslt)."'"; 
+		$not_yet_fixed_ids = "'".implode("','", array_column($rslt,'user_id'))."'"; 
 		
-		$stmt = $dbl->query("select concat(tch.name_last, ' ', tch.name_first) from common.users usr, common.teachers tch
+		$stmt = $dbl->query("select concat(tch.name_last, ' ', tch.name_first) name, usr.id from common.users usr, common.teachers tch
 	 where usr.id=tch.user_id and usr.id in ($not_yet_fixed_ids) order by tch.kana_last,tch.kana_first");
-		$rslt = $stmt->fetchAll(PDO::FETCH_COLUMN);
+		$rslt1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		
-		echo "以下の先生が勤務実績未確定です。<br>";
-		echo "<table>";
-		foreach($rslt as $name)	echo "<tr><td>$name</td></tr>";
+		echo "以下の先生に勤務実績未確定があります。<br>";
+		echo "<table border=\"1\">";
+		echo "<tr><th>名前</th><th>{$month}月 未確定日</th></tr>";
+		foreach($rslt1 as $item1) {
+			$days = array();
+			foreach ($rslt as $item) {
+				if ($item['user_id']==$item1['id'])	$days[] = $item['day'];
+			}
+			sort($days);
+			$days = implode(',',array_unique($days));
+			echo "<tr><td>{$item1['name']}</td><td>$days</td></tr>";
+		}
 		echo "</table><br><br>";
 	} else {
 		echo "全先生の勤務実績は確定しています。<br><br>";
@@ -72,28 +80,36 @@ try {
 	$rslt = $stmt->fetchAll(PDO::FETCH_COLUMN);
 	$mgr_ids = "'".implode("','", $rslt)."'"; 
 
-	$stmt = $dbc->query("select mem.user_id from lms.user_calendars cal, lms.user_calendar_members mem
- where date_format(start_time,'%Y/%m')='$year/$month'
+	$stmt = $dbc->query("select mem.user_id, date_format(cal.start_time,'%e') day from lms.user_calendars cal, lms.user_calendar_members mem
+ where date_format(start_time,'%Y/%c')='$year/$month'
  and cal.id=mem.calendar_id
  and mem.user_id in ($mgr_ids)
  and (cal.status='fix' or (cal.status in ('presence','absence','rest','cancel','lecture_cancel') and checked_at is null))
  order by cal.start_time"
 			);
-	$rslt = $stmt->fetchAll(PDO::FETCH_COLUMN);
+	$rslt = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	
 	if ($rslt) {
 		$fix_flag = 0;
-		$not_yet_fixed_ids = "'".implode("','", $rslt)."'"; 
+		$not_yet_fixed_ids = "'".implode("','", array_column($rslt,'user_id'))."'"; 
 		
-		$stmt = $dbl->query("select concat(mgr.name_last, ' ', mgr.name_first) from common.users usr, common.managers mgr
+		$stmt = $dbl->query("select concat(mgr.name_last, ' ', mgr.name_first) name, usr.id  from common.users usr, common.managers mgr
 	 where usr.id=mgr.user_id and usr.id in ($not_yet_fixed_ids) order by mgr.kana_last,mgr.kana_first");
-		$rslt = $stmt->fetchAll(PDO::FETCH_COLUMN);
+		$rslt1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		
-		echo "以下の事務員が勤務実績未確定です。<br>";
-		echo "<table>";
-		foreach($rslt as $name)	
-			if (array_search($name, array_column($teacher_list, 'name')) === false)
-				echo "<tr><td>$name</td></tr>";
+		echo "以下の事務員に勤務実績未確定があります。<br>";
+		echo "<table border=\"1\">";
+		echo "<tr><th>名前</th><th>{$month}月 未確定日</th></tr>";
+		foreach($rslt1 as $item1) {
+			if (array_search($item1['name'], array_column($teacher_list, 'name')) !== false)	continue;
+			$days = array();
+			foreach ($rslt as $item) {
+				if ($item['user_id']==$item1['id'])	$days[] = $item['day'];
+			}
+			sort($days);
+			$days = implode(',',array_unique($days));
+			echo "<tr><td>{$item1['name']}</td><td>$days</td></tr>";
+		}
 		echo "</table><br><br>";
 	} else {
 		echo "全事務員の勤務実績は確定しています。<br><br>";
