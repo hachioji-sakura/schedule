@@ -115,7 +115,7 @@ try {
 		echo "全事務員の勤務実績は確定しています。<br><br>";
 	}
 
-	if ($fix_flag) {
+	if ($fix_flag && ($_POST['go']==1)) {
 		echo "<a href=\"./save_statement.php?y=$year&m=$month&go=1\">次の処理へ</a><br>";
 	}
 
