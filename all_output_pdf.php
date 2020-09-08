@@ -308,7 +308,6 @@ function convert($str_text) {
 function back() {
 	document.back_form.submit();
 }
-location.href = "output_fee.php?y=<?= $year ?>&m=<?= $month ?>";
 //-->
 </script>
 </head>

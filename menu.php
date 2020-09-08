@@ -226,16 +226,12 @@ function blankCheck() {
 				<input type="submit" value="表示">
 				</form>
 			<li><b>請求明細書送付準備（明細書をスプレッドシートおよびpdfファイルに出力）</b><br>
-				<form method="get" action="check_SON_cal_fix.php">
-				<input type="text" name="y" value="<?php echo $year; ?>" size="4">年&nbsp;
-				<input type="text" name="m" value="<?php echo $month; ?>" size="4">月分&nbsp;
-				<input type="submit" value="勤務実績確認"><br>
-				</form>
 				<form name="form3" method="get" action="check_SON_cal_fix.php">
 				<input type="text" name="y" value="<?php echo $year; ?>" size="4">年&nbsp;
 				<input type="text" name="m" value="<?php echo $month; ?>" size="4">月分&nbsp;
-				<input type="hidden" name="go" value="1">
-				<input type="submit" value="出力" onclick="return updateAlert2();"><br>
+				<input type="submit" value="勤務実績確認" onclick="document.form3.action='check_SON_cal_fix.php'">
+				<input type="submit" value="PDF出力" onclick="document.form3.action='all_output_pdf.php'">
+				<input type="submit" value="請求メールスプレッドシート出力" onclick="document.form3.action='check_SON_cal_fix_go.php'"><br>
 				</form>
 			<li><b>部門別受講料</b><br>
 				<form method="get" action="total_list.php">
