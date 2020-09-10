@@ -46,7 +46,7 @@ try {
  where date_format(start_time,'%Y/%c')='$year/$month'
  and cal.id=mem.calendar_id
  and mem.user_id in ($teacher_ids)
- and ((cal.status='fix' and cal.work<>11) or (cal.status in ('presence','absence','rest','cancel','lecture_cancel') and checked_at is null))
+ and ((cal.status='fix' and cal.work<>11) or (cal.status in ('presence','absence','rest') and checked_at is null))
  order by cal.start_time"
 			);
 	$rslt = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -84,7 +84,7 @@ try {
  where date_format(start_time,'%Y/%c')='$year/$month'
  and cal.id=mem.calendar_id
  and mem.user_id in ($mgr_ids)
- and (cal.status='fix' or (cal.status in ('presence','absence','rest','cancel','lecture_cancel') and checked_at is null))
+ and (cal.status='fix' or (cal.status in ('presence','absence','rest') and checked_at is null))
  order by cal.start_time"
 			);
 	$rslt = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -115,7 +115,7 @@ try {
 		echo "全事務員の勤務実績は確定しています。<br><br>";
 	}
 
-	if ($fix_flag && $next_URL) {
+	if ($next_URL) {
 		echo "<a href=\"$next_URL\">次の処理へ</a><br>";
 	}
 
