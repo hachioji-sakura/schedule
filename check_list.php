@@ -798,7 +798,8 @@ if ($teacher_id==$log_tid) {var_dump($event);echo"<BR>";}
 		$lastteacher_id=$event["teacher_id"]; 
 		$next_event = next($event_list);
 //	} while (($next_event) && ($next_event["date"] == $lastdate) && ($next_event["time"] == $lasttime) && ($next_event["cal_evt_summary"] == $last_cal_evt_summary));
-	} while (($next_event) && ($next_event["date"] == $lastdate) && ($next_event["time"] == $lasttime) && ($next_event["teacher_id"] == $last_teacher_id) && $event["course_id"] != 1); // changes for sakuraonenet.
+	} while (($next_event) && ($next_event["date"] == $lastdate) && ($next_event["time"] == $lasttime) 
+		&& ($next_event["teacher_id"] == $last_teacher_id) && ($next_event["course_id"] == $event['course_id']) && $event["course_id"] != 1 );	// teacher is same and not man2man.
 			
 	if ($absent_flag_min>0 && !$todayFlag) { $member_count = 0; $event = $next_event; continue; }
 	
