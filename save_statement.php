@@ -84,10 +84,6 @@ $param_array = array();
 $value_array = array();
 array_push($param_array, "tbl_member.kind = ?");
 array_push($value_array, "3");
-array_push($param_array, "(tbl_member.del_flag = ? or tbl_member.del_flag = ?)");
-array_push($value_array, "0");	// 現生徒
-array_push($value_array, "2");	// 前生徒
-//tbl_member.del_flag = '0' or tbl_member.del_flag = '2'
 if ($cond_name != "") {
 // 検索時
 	array_push($param_array," tbl_member.name like concat('%',?,'%') ");
@@ -98,7 +94,7 @@ if ($cond_name != "") {
 // 20150816 ふりがなの50音順にソートする
 $order_array = array("tbl_member.furigana asc");
 
-$member_list = get_simple_member_list($db, $param_array, $value_array, $order_array);
+$member_list = get_simple_member_list($db, $param_array, $value_array, $order_array, 4);
 if (count($member_list) == 0) {
 	$errFlag = 1;
 	throw new Exception('生徒が見つかりませんでした。');
@@ -508,7 +504,7 @@ $event = array("date" => date("n月j日", $start_datetime),
 		}catch (PDOException $e){
 			$errFlag = 1;
 			//throw $e;
-			var_dump($event_array);echo"<BR>";
+			var_export($event_array);echo"<BR>";
 		  print('Error:'.$e->getMessage()."<BR>");
 		}
 		if ($errFlag == 0) {

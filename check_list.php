@@ -11,7 +11,7 @@ $errArray = array();
 $errFlag = 0;
 
 //$log_tid=12;
-// $log_date='6月18日';
+//$log_date='6月18日';
 
 // 当日休み時給対応
 $crew_list = array_merge( $crew_list, 
@@ -784,7 +784,7 @@ if ($teacher_id==$log_tid) {var_dump($event);echo"<BR>";}
 			foreach ($names as $key=>$name) {
 				$i++;
 				if (!$event['absent_flag']) {
-				if (!($event['course_id'] == 2 && $event["trial_flag"])) { $member_count++; }
+					if (!($event['course_id'] == 2 && $event["trial_flag"])) { $member_count++; }
 				} else {
 					if (preg_match('/(当日|today)/iu', $attendStatusCal[$event["date"]][$event["time"]][$name])) {
 						if (!($event['course_id'] == 2 && $event["trial_flag"])) { $member_count++; }
@@ -803,8 +803,7 @@ if ($teacher_id==$log_tid) {var_dump($event);echo"<BR>";}
 			
 	if ($absent_flag_min>0 && !$todayFlag) { $member_count = 0; $event = $next_event; continue; }
 	
-	if ($event['course_id'] == 2 && $member_count == 0) { $member_count = 1; }
-	if ($event['course_id'] == 3 && $member_count == 0) { $member_count = 1; }
+	if ($member_count == 0) { $member_count = 1; }
 	
 	if ($absent_flag_min>0 && $todayFlag) {
 		$sql = 
@@ -1482,9 +1481,6 @@ foreach ($tmp_teacher_list as &$teacher) {
 			$total_transport_cost_lesson[$lesson_id] += $divide_transport_cost + $payadj_tax_free1;
 			$total_transport_cost_sum1 += $divide_transport_cost;
 			$total_pay_sum1 += $pay;
-		} else {
-			$yuge_transport_cost = $divide_transport_cost + $payadj_tax_free1;
-			$yuge_pay = $pay;
 		}
 		
 		if (!($str1 && $key1!=0)) {
@@ -1519,11 +1515,6 @@ foreach ($tmp_teacher_list as &$teacher) {
 					$tax2_sum1 += $tax2;
 					$tax12_sum1 += $tax1+$tax2;
 					$net_payments_sum1 += $teacher['net_payments'];
-				} else {
-					$yuge_tax1 = $tax1;
-					$yuge_tax2 = $tax2;
-					$yuge_tax12 = $tax1+$tax2;
-					$yuge_net_pay = $teacher['net_payments'];
 				}
 				
 				if ($pdf_mode) {
@@ -1621,7 +1612,7 @@ foreach ($tmp_teacher_list as &$teacher) {
 		}
 		$str0 .= "</tr>\n";
 		if ($teacher_and_staff_list[$teacher['name']]) { $teacher_and_staff_list[$teacher['name']]['teacher'] = $teacher; }
-		if (!$yuge_flag) echo $str0; else $yuge_line = $str0;
+		if (!$yuge_flag) echo $str0; else $yuge_line1 = $str0;
 	}
 }
 unset($teacher);
@@ -1665,43 +1656,50 @@ $total_payadj_tax_free_teacher = $total_payadj_tax_free;
 $total_working_days=0; $total_working_hours=0; $total_wage=0; $total_pay1=0; $total_payadj=0; $total_payadj_tax_free=0;
 
 foreach ($staff_list as &$staff) {
+
+	if ($staff['no']==30) {
+		$yuge_flag=1;
+		$output0 = ob_get_contents();
+		ob_end_clean();
+		ob_start();
+	} else $yuge_flag=0;
 	
 	echo "<tr>";
 	echo "<td>{$staff['name']}</td>";
 
 	$work_days = $staff['work_days'];
 	echo "<td align=\"right\">{$work_days}</td>";
-	$total_working_days += $work_days;
+	if (!$yuge_flag) $total_working_days += $work_days;
 	
 	$work_times = $staff['work_times'] + 0;
 	echo "<td align=\"right\">".(floor($work_times*100)/100)."</td>";
-	$total_working_hours += $work_times;
+	if (!$yuge_flag) $total_working_hours += $work_times;
 
 	$wages = $staff['wages'];
 	echo "<td align=\"right\">".number_format($wages[0]['hourly_wage'])."</td>";
-	$total_wage += $wages[0]['hourly_wage'];
+	if (!$yuge_flag) $total_wage += $wages[0]['hourly_wage'];
 	
 	$pay = $staff['pay0'];
 	echo "<td align=\"right\">".number_format($pay)."</td>";
-	$total_pay1 += $pay;
+	if (!$yuge_flag) $total_pay1 += $pay;
 
 	$tatekae_total = $staff['tatekae_total'];
 	$tatekae_detail = $staff['tatekae_detail'];
 	echo "<td align=\"right\">".number_format($tatekae_total)."</td>";
-	$total_tatekae_total_staff += $tatekae_total;
+	if (!$yuge_flag) $total_tatekae_total_staff += $tatekae_total;
 	foreach ($tatekae_detail as $item0)
-		$total_tatekae_detail_staff[$item0['name']] += $item0['price'];
+		if (!$yuge_flag) $total_tatekae_detail_staff[$item0['name']] += $item0['price'];
 
 	$payadj = $staff['payadj'];
 	$pay += $payadj;
 	echo "<td align=\"right\">".number_format($payadj)."</td>";
-	$total_payadj += $payadj;
+	if (!$yuge_flag) $total_payadj += $payadj;
 
-	$total_pay_staff += $pay;
+	if (!$yuge_flag) $total_pay_staff += $pay;
 
 	$payadj_tax_free = $staff['payadj_tax_free'];
 	echo "<td align=\"right\">".number_format($payadj_tax_free)."</td>";
-	$total_payadj_tax_free += $payadj_tax_free;
+	if (!$yuge_flag) $total_payadj_tax_free += $payadj_tax_free;
 	
 	$total_transport_cost = 0; $tax1 = 0; $tax2 = 0;
 	$teacher = $teacher_and_staff_list[$staff['name']]['teacher'];
@@ -1867,16 +1865,19 @@ foreach ($staff_list as &$staff) {
 				fclose($fp);
 			}
 		}
-		$total_transport_cost_sum2 += $total_transport_cost;
-		$tax1_sum2 += $tax1;
-		$tax2_sum2 += $tax2;
-		$tax12_sum2 += $tax1+$tax2;
-		$net_payments_sum2 += $staff['net_payments'];
-		$total_pay_sum2 += $total_pay;
 		
-		$total_transport_cost_staff += $total_transport_cost + $payadj_tax_free;
-		$total_tax1_staff += $tax1;
-		$total_tax2_staff += $tax2;
+		if (!$yuge_flag) {
+			$total_transport_cost_sum2 += $total_transport_cost;
+			$tax1_sum2 += $tax1;
+			$tax2_sum2 += $tax2;
+			$tax12_sum2 += $tax1+$tax2;
+			$net_payments_sum2 += $staff['net_payments'];
+			$total_pay_sum2 += $total_pay;
+			
+			$total_transport_cost_staff += $total_transport_cost + $payadj_tax_free;
+			$total_tax1_staff += $tax1;
+			$total_tax2_staff += $tax2;
+		}
 		
 	} else {
 		$divide_transport_cost = 0;
@@ -1907,6 +1908,14 @@ foreach ($staff_list as &$staff) {
 
 	echo "</tr>\n";
 	if ($teacher_and_staff_list[$staff['name']]) { $teacher_and_staff_list[$staff['name']]['staff'] = $staff; }
+	
+	if ($yuge_flag) {
+		$output1 = ob_get_contents();
+		ob_end_clean();
+		ob_start();
+		echo $output0;
+		$yuge_line2 = $output1;
+	}
 }
 unset($staff);
 
@@ -1942,6 +1951,13 @@ foreach ($teacher_and_staff_list as $key_name=>&$teacher_and_staff) {
 	$teacher = $teacher_and_staff['teacher'];
 	$staff   = $teacher_and_staff['staff'];
 	
+	if ($teacher['no']==1) {
+		$yuge_flag=1;
+		$output0 = ob_get_contents();
+		ob_end_clean();
+		ob_start();
+	} else $yuge_flag=0;
+
 	$work_times = array_sum($teacher['working'])+$staff['work_times'];
 	if (!$work_times) { continue; }
 
@@ -1957,27 +1973,27 @@ foreach ($teacher_and_staff_list as $key_name=>&$teacher_and_staff) {
 	$ret = ($stmt->fetch(PDO::FETCH_NUM))[0];
 	$work_days = count($teacher['working_days'])+$staff['work_days']-$ret;
 	echo "<td align=\"right\">{$work_days}</td>";
-	$total_working_days += $work_days;
+	if (!$yuge_flag) $total_working_days += $work_days;
 	
 	echo "<td align=\"right\">".(floor($work_times*100)/100)."</td>";
-	$total_working_hours += $work_times;
+	if (!$yuge_flag) $total_working_hours += $work_times;
 	
 	$pay = $teacher['pay0']+$staff['pay0'];
 	echo "<td align=\"right\">".number_format($pay)."</td>";
-	$total_pay1 += $pay;
+	if (!$yuge_flag) $total_pay1 += $pay;
 	
 	$tatekae_total = $teacher['tatekae_total']+$staff['tatekae_total'];
 	echo "<td align=\"right\">".number_format($tatekae_total)."</td>";
-	$total_tatekae += $tatekae_total;
+	if (!$yuge_flag) $total_tatekae += $tatekae_total;
 
 	$payadj = $teacher['payadj']+$staff['payadj'];
 	$pay += $payadj;
 	echo "<td align=\"right\">".number_format($payadj)."</td>";
-	$total_payadj += $payadj;
+	if (!$yuge_flag) $total_payadj += $payadj;
 
 	$payadj_tax_free = $teacher['payadj_tax_free']+$staff['payadj_tax_free'];
 	echo "<td align=\"right\">".number_format($payadj_tax_free)."</td>";
-	$total_payadj_tax_free += $payadj_tax_free;
+	if (!$yuge_flag) $total_payadj_tax_free += $payadj_tax_free;
 	
 	$total_transport_cost = $teacher['total_transport_cost'];
 	if ($teacher['total_transport_status'] == 2) {
@@ -2016,19 +2032,29 @@ foreach ($teacher_and_staff_list as $key_name=>&$teacher_and_staff) {
 
 	$teacher_and_staff['net_payments'] = $total_pay-$tax1-$tax2;
 	echo "<td align=\"right\">".number_format($teacher_and_staff['net_payments'])."</td>";
-	$total_transport_cost_sum3 += $total_transport_cost;
-	$tax1_sum3 += $tax1;
-	$tax2_sum3 += $tax2;
-	$tax12_sum3 += $tax1+$tax2;
-	$net_payments_sum3 += $teacher_and_staff['net_payments'];
-	$total_pay_sum3 += $total_pay;
+	
+	if (!$yuge_flag)  {
+		$total_transport_cost_sum3 += $total_transport_cost;
+		$tax1_sum3 += $tax1;
+		$tax2_sum3 += $tax2;
+		$tax12_sum3 += $tax1+$tax2;
+		$net_payments_sum3 += $teacher_and_staff['net_payments'];
+		$total_pay_sum3 += $total_pay;
 
-	if ($teacher['pay0'] >= $staff['pay0']) {
-		$total_tax1_teacher += $tax1;
-		$total_tax2_teacher += $tax2;
+		if ($teacher['pay0'] >= $staff['pay0']) {
+			$total_tax1_teacher += $tax1;
+			$total_tax2_teacher += $tax2;
+		} else {
+			$total_tax1_staff += $tax1;
+			$total_tax2_staff += $tax2;
+		}
 	} else {
-		$total_tax1_staff += $tax1;
-		$total_tax2_staff += $tax2;
+		$yuge_transport_cost += $total_transport_cost;
+		$yuge_tax1 += $tax1;
+		$yuge_tax2 += $tax2;
+		$yuge_tax12 += $tax1+$tax2;
+		$yuge_net_pay += $teacher_and_staff['net_payments'];
+		$yuge_pay += $total_pay;
 	}
 
 	if ($pdf_mode) {
@@ -2106,6 +2132,13 @@ foreach ($teacher_and_staff_list as $key_name=>&$teacher_and_staff) {
 	}
 
 	echo "</tr>\n";
+	if ($yuge_flag) {
+		$output1 = ob_get_contents();
+		ob_end_clean();
+		ob_start();
+		echo $output0;
+		$yuge_line3 = $output1;
+	}
 }
 unset($teacher_and_staff);
 
@@ -2156,6 +2189,8 @@ foreach ($tmp_teacher_list as $teacher) {
 }
 foreach ($staff_list as $staff) {
 	if ($teacher_and_staff_list[$staff['name']]) { continue; }
+	// 弓削先生スキップ
+	if ($staff['no']==30) { continue; }
 	if (!$staff['net_payments']) { continue; }
 	if (!$staff['bank_no'] || !$staff['bank_branch_no'] || !$staff['bank_acount_type'] ||
 			!$staff['bank_acount_no'] || !$staff['bank_acount_name']) {
@@ -2209,7 +2244,8 @@ echo "</table>";
 <?php } ?>
 <br><br>
 
-<h3>弓削先生分</h3>
+<?php if ($yuge_line1) { ?>
+<h3>弓削先生講師分</h3>
 <table border="1">
 <tr>
 <th>先生名</th><th>教室</th><th>出勤日数</th><th>授業時間</th>
@@ -2224,8 +2260,31 @@ echo "</table>";
 <th name="absent_detail" style="display:none;">休み１の時間</th><th name="absent_detail" style="display:none;">休み２の時間</th><th name="absent_detail" style="display:none;">グループの休み１</th><th name="absent_detail" style="display:none;">グループの休み２</th><th name="absent_detail" style="display:none;">面談</th>
 <?php } ?>
 </tr>
-<?= $yuge_line ?>
+<?= $yuge_line1 ?>
 </table>
+<?php } ?>
+<?php if ($yuge_line2) { ?>
+<h3>弓削先生事務分</h3>
+<table border="1">
+<tr>
+<th>名前</th><th>出勤日数</th><th>勤務時間</th><th>時給</th><th>時給×勤務時間</th><th>立替経費</th>
+<th>給料調整<br>(課税)</th><th>給料調整<br>(非課税)</th><th>交通費</th><th>支給額合計</th>
+<th>源泉徴収税</th><th>住民税</th><th>控除額合計</th><th>差引支給額</th>
+</tr>
+<?= $yuge_line2 ?>
+</table>
+<?php } ?>
+<?php if ($yuge_line3) { ?>
+<h3>弓削先生兼任表</h3>
+<table border="1">
+<tr>
+<th>名前</th><th>出勤日数</th><th>勤務時間</th><th>時給×勤務時間</th><th>立替経費</th>
+<th>給料調整<br>(課税)</th><th>給料調整<br>(非課税)</th><th>交通費</th><th>支給額合計</th>
+<th>源泉徴収税</th><th>住民税</th><th>控除額合計</th><th>差引支給額</th>
+</tr>
+<?= $yuge_line3 ?>
+</table>
+<?php } ?>
 
 <table>
 <tr><th align="left">交通費合計</th><td align="right"><?= number_format($total_transport_cost_sum1+$total_transport_cost_sum2+$yuge_transport_cost) ?></td></tr>
@@ -2234,6 +2293,7 @@ echo "</table>";
 <tr><th align="left">住民税合計</th><td align="right"><?= number_format($tax2_sum1+$tax2_sum2+$tax2_sum3+$yuge_tax2) ?></td></tr>
 <tr><th align="left">控除額合計</th><td align="right"><?= number_format($tax12_sum1+$tax12_sum2+$tax12_sum3+$yuge_tax12) ?></td></tr>
 <tr><th align="left">差引支給額合計</th><td align="right"><?= number_format($net_payments_sum1+$net_payments_sum2+$net_payments_sum3+$yuge_net_pay) ?></td></tr>
+</table>
 </table>
 
 <?php
