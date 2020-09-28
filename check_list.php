@@ -428,6 +428,96 @@ if ($date_list_string != '()') {
 	}
 }
 
+$sql = "SELECT * FROM tbl_payadj WHERE year=$year and month=$month";
+$stmt = $db->prepare($sql);
+$stmt->execute();
+$pyadj_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+foreach ($pyadj_list as $payadj_rcrd) {
+	switch ($payadj_rcrd['employee_type']) {
+		case 1:
+			$teacher_id = $payadj_rcrd['employee_no'];
+			if ($tmp_teacher_list[$teacher_id]) break;
+			$tmp_teacher_list[$teacher_id] = array(
+					"no"               => $teacher_id, 
+					"name"             => $teacher_list[$teacher_id]["name"], 
+					"furigana"         => $teacher_list[$teacher_id]["furigana"],
+					"worker_code"      => $teacher_list[$teacher_id]["worker_code"],
+//				"working"          => 0,
+					"present"          => 0, 
+					"absent1"          => 0, 
+					"absent2"          => 0,
+					"absent_group"     => array("absent1"=>array(),"absent2"=>array()),
+					"interview"        => array(),
+					"transport_cost"   => $teacher_list[$teacher_id]["transport_cost"],
+					"transport_DOW"    => $teacher_list[$teacher_id]["transport_DOW"],
+					"transport_mcost"=> $teacher_list[$teacher_id]["transport_mcost"],
+					"transport_dcost1"=> $teacher_list[$teacher_id]["transport_dcost1"],
+					"transport_dcost2"=> $teacher_list[$teacher_id]["transport_dcost2"],
+					"transport_limit"  => $teacher_list[$teacher_id]["transport_limit"],
+					"transport_zero"   => $teacher_list[$teacher_id]["transport_zero"],
+					"gennsenn_choushuu_shubetu" => $teacher_list[$teacher_id]["gennsenn_choushuu_shubetu"],
+					"huyou_ninnzuu"    => $teacher_list[$teacher_id]["huyou_ninnzuu"],
+					"jyuuminnzei1"     => $teacher_list[$teacher_id]["jyuuminnzei1"],
+					"jyuuminnzei2"     => $teacher_list[$teacher_id]["jyuuminnzei2"],
+					"bank_no"          => $teacher_list[$teacher_id]["bank_no"],
+					"bank_branch_no"   => $teacher_list[$teacher_id]["bank_branch_no"],
+					"bank_acount_type" => $teacher_list[$teacher_id]["bank_acount_type"],
+					"bank_acount_no"   => $teacher_list[$teacher_id]["bank_acount_no"],
+					"bank_acount_name" => $teacher_list[$teacher_id]["bank_acount_name"],
+					"lesson_id"        => $teacher_list[$teacher_id]["lesson_id"],
+					"lesson_id2"       => $teacher_list[$teacher_id]["lesson_id2"]
+					);
+			break;
+		case 2:
+			break;
+	}
+}
+
+$sql = "SELECT * FROM tbl_tatekae WHERE year=$year and month=$month and status='承認済'";
+$stmt = $db->prepare($sql);
+$stmt->execute();
+$tatekae_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+foreach ($tatekae_list as $tatekae_rcrd) {
+	switch ($tatekae_rcrd['employee_type']) {
+		case 1:
+			$teacher_id = $tatekae_rcrd['employee_no'];
+			if ($tmp_teacher_list[$teacher_id]) break;
+			$tmp_teacher_list[$teacher_id] = array(
+					"no"               => $teacher_id, 
+					"name"             => $teacher_list[$teacher_id]["name"], 
+					"furigana"         => $teacher_list[$teacher_id]["furigana"],
+					"worker_code"      => $teacher_list[$teacher_id]["worker_code"],
+//				"working"          => 0,
+					"present"          => 0, 
+					"absent1"          => 0, 
+					"absent2"          => 0,
+					"absent_group"     => array("absent1"=>array(),"absent2"=>array()),
+					"interview"        => array(),
+					"transport_cost"   => $teacher_list[$teacher_id]["transport_cost"],
+					"transport_DOW"    => $teacher_list[$teacher_id]["transport_DOW"],
+					"transport_mcost"=> $teacher_list[$teacher_id]["transport_mcost"],
+					"transport_dcost1"=> $teacher_list[$teacher_id]["transport_dcost1"],
+					"transport_dcost2"=> $teacher_list[$teacher_id]["transport_dcost2"],
+					"transport_limit"  => $teacher_list[$teacher_id]["transport_limit"],
+					"transport_zero"   => $teacher_list[$teacher_id]["transport_zero"],
+					"gennsenn_choushuu_shubetu" => $teacher_list[$teacher_id]["gennsenn_choushuu_shubetu"],
+					"huyou_ninnzuu"    => $teacher_list[$teacher_id]["huyou_ninnzuu"],
+					"jyuuminnzei1"     => $teacher_list[$teacher_id]["jyuuminnzei1"],
+					"jyuuminnzei2"     => $teacher_list[$teacher_id]["jyuuminnzei2"],
+					"bank_no"          => $teacher_list[$teacher_id]["bank_no"],
+					"bank_branch_no"   => $teacher_list[$teacher_id]["bank_branch_no"],
+					"bank_acount_type" => $teacher_list[$teacher_id]["bank_acount_type"],
+					"bank_acount_no"   => $teacher_list[$teacher_id]["bank_acount_no"],
+					"bank_acount_name" => $teacher_list[$teacher_id]["bank_acount_name"],
+					"lesson_id"        => $teacher_list[$teacher_id]["lesson_id"],
+					"lesson_id2"       => $teacher_list[$teacher_id]["lesson_id2"]
+					);
+			break;
+		case 2:
+			break;
+	}
+}
+
 uasort($tmp_teacher_list, "cmp_date_furigana");
 
 //var_dump($tmp_teacher_list);
