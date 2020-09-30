@@ -361,6 +361,9 @@ foreach ( $season_entry_date_array as $season_entry_date_row ) {
                } else if (mb_strpos($place_char,'豊田校舎')!== FALSE) {
                       $place_id = 1;
 		      break;
+               } else if (mb_strpos($place_char,'三鷹校舎')!== FALSE) {
+                      $place_id = 11;
+		      break;
                } 
 	}
 

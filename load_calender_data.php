@@ -568,6 +568,9 @@ try{
 		case '10':		// home
 			$new_place_id = 0 ;
 			break;
+		case '11':		// Mitaka
+			$new_place_id = 12 ;
+			break;
 		}
 
 		if ($user_id > 200000 ) {	// スタッフの場合
