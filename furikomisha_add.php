@@ -13,8 +13,16 @@ if (isset($_POST['add'])) {
 	$action = "";
 }
 $select_list = $_POST['selectMember'];
+$taikaisha_flag = $_POST['t'];
 
-$member_list = get_simple_member_list($db, array("name <> ?"), array("体験生徒"));
+if (is_null($taikaisha_flag) == true || $taikaisha_flag == "") {
+	$taikaisha_flag = $_GET["t"];
+}
+
+if ($taikaisha_flag)
+	$member_list = get_simple_member_list( $db, array("name <> ? and name <> ?"), array("体験生徒","職員"), array(), 1);
+else
+	$member_list = get_simple_member_list( $db, array("name <> ? and name <> ?"), array("体験生徒","職員"));
 
 try{
 	$stmt = $db->prepare("SELECT member_no,member_name,furikomisha_name FROM tbl_furikomisha ORDER BY tbl_furikomisha.furikomisha_name asc");
@@ -143,6 +151,7 @@ function member_click( member_no, checked ) {
 <form method="post" name="furikomisha_form" action="./furikomisha_add.php">
 	<input type="hidden" name="no" value="<?=$furikomisha["no"]?>">
 	<input type="hidden" name="del_flag" value="0">
+	<input type="hidden" name="t" id="taikaisha_flag" value="<?=$taikaisha_flag?>">
 
 	<table>
 	<tr>
@@ -150,6 +159,8 @@ function member_click( member_no, checked ) {
 		新規登録する場合は、振込者名を入力し振込生徒を選択したのち、登録ボタンを押してください。<br>
 		<input type="submit" name="add" value="登録">
 		<input type="reset" name="reset" value="リセット">
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="button" value="&nbsp;退会者表示&nbsp;" onclick="document.getElementById('taikaisha_flag').value='1';document.furikomisha_form.submit();">
 	</td>
 	</tr>
 	</table>

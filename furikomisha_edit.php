@@ -25,9 +25,9 @@ if (isset($_POST['add'])) {
 $select_list = $_POST['selectMember'];
 
 if ($taikaisha_flag)
-	$member_list = get_simple_member_list( $db, array("name <> ?"), array("体験生徒"), array(), 1);
+	$member_list = get_simple_member_list( $db, array("name <> ? and name <> ?"), array("体験生徒","職員"), array(), 1);
 else
-	$member_list = get_simple_member_list( $db, array("name <> ?"), array("体験生徒"));
+	$member_list = get_simple_member_list( $db, array("name <> ? and name <> ?"), array("体験生徒","職員"));
 
 try{
 	$stmt = $db->prepare("SELECT member_no,member_name,furikomisha_name,del_flag FROM tbl_furikomisha WHERE no=? ORDER BY tbl_furikomisha.furikomisha_name asc");
