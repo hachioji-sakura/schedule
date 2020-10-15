@@ -16,7 +16,7 @@ if ((is_null($year) == true || $year == "") || (is_null($month) == true || $mont
 
 $member_list = get_member_list($db,array(),array(),array(),1);
 
-$stmt = $db->prepare("SELECT nos, mibarai FROM tbl_mibarai WHERE year=? AND month=?");
+$stmt = $db->prepare("SELECT * FROM tbl_mibarai WHERE year=? AND month=?");
 $stmt->execute(array($year, $month));
 $mibarai_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -81,18 +81,16 @@ function confirm() {
 ?>
 
 <a href="../bank-check/bank-check.php?y=<?= $year ?>&m=<?= $month ?>">振込請求一覧へ</a>&nbsp;&nbsp;
-<a href="./tokusoku-log.php">督促メール送信記録へ</a>&nbsp;&nbsp;
 <a href="menu.php">メニューへ戻る</a><br><br>
 
 <form method="post" name="tokusoku_list" action="">
 
-<input type="button" value="督促メール送信" onclick="return confirm()"><br>
-（前回メール送信日：）<br>
-<br>
 <table border="1">
 <tr>
 <th>生徒名</th>
 <th>未払い金額</th>
+<th>前月請求-未払い</th>
+<th>メールアドレス</th>
 </tr>
 <?php
 foreach ($mibarai_array as $item) {
@@ -100,6 +98,8 @@ foreach ($mibarai_array as $item) {
 	<tr>
 		<td><?= $item["name"] ?></td>
 		<td align="right"><?= number_format($item["mibarai"]) ?></td>
+		<td align="right"><?= number_format($item["last_total_price"]-$item["mibarai"]) ?></td>
+		<td align="left"><?= $member_list[explode(',', $item['nos'])[0]]['mail_address'] ?></td>
 	</tr>
 <?php
 }

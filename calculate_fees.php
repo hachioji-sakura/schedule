@@ -903,7 +903,7 @@ try{
 														"monthly_fees_total"=>$monthly_fees_total,
 														"event_list"=>	$event_list
 													);
-if ($member['no'] == '001275')	echo "$subtotal_hours<br>";
+//if ($member['no'] == '001275')	echo "$subtotal_hours<br>";
 					//$total_hours = $total_hours + $subtotal_hours;
 					//$total_fees = $total_fees + $subtotal_fees;
 					$subtotal_hours = 0;
@@ -1254,7 +1254,7 @@ if ($member['no'] == '001275')	echo "$subtotal_hours<br>";
 												"monthly_fees_total"=>$monthly_fees_total,
 												"event_list"=>$event_list
 											);
-if ($member['no'] == '001275')	echo "$subtotal_hours<br>";
+//if ($member['no'] == '001275')	echo "$subtotal_hours<br>";
 		}
 
 		return $lesson_detail_list;
