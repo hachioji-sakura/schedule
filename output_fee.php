@@ -107,7 +107,7 @@ try{
 	}
 */
 //	$member_list = get_simple_member_list($db, array("kind = ?","name <> ?","no='001239'"), array("3","体験生徒"));
-	$member_list = get_simple_member_list($db, array("kind = ?","name <> ?"), array("3","体験生徒"));
+	$member_list = get_simple_member_list($db, array("kind = ?","name <> ?"), array("3","体験生徒"), array(), 1);
 
 //var_dump($member_list);
 

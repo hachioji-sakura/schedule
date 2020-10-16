@@ -59,7 +59,7 @@ $errArray = array();
 
 $student_list = array();
 //$member_list = get_simple_member_list($db, array("kind = ?","name <> ?","no='001239'"), array("3","体験生徒"));
-$member_list = get_simple_member_list($db, array("kind = ?","name <> ?"), array("3","体験生徒"));
+$member_list = get_simple_member_list($db, array("kind = ?","name <> ?"), array("3","体験生徒"), array(), 1);
 $student_list = get_calculated_list($member_list, $year, $month);
 if ($result == false) {
 	throw new Exception('月謝計算中にエラーが発生しました。');
@@ -88,6 +88,8 @@ foreach ($member_list as $member_no => $member) {
 uasort($student_list, 'cmp');
 */
 foreach ($student_list as $student) {
+	
+	if (!$student["last_total_price"])	continue;
 
 	// ページ追加（マージンとフォントを継続する）
 	// 生徒ごとに新しいページを用意する
