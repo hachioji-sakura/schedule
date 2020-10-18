@@ -11,6 +11,8 @@ $errArray = array();
 
 $year = trim($_GET["y"]);
 $month = trim($_GET["m"]);
+if (is_null($year) === true || empty($year) === true)   { $year = $_POST['y']; }
+if (is_null($month) === true || empty($month) === true) { $month = $_POST['m']; }
 $result = check_input_year_month($year, $month);
 if ($result == false) {
 	throw new Exception('年月が不明です。');
@@ -33,6 +35,136 @@ try {
 	$all_student_flag = "1";	// 前生徒と現生徒を抽出
 	$member_list = get_simple_member_list($db, $param_array, $value_array, $order_array, $all_student_flag);
 //var_dump($member_list);
+
+	$course_list = get_course_list($db);
+
+	if ($_POST['place0_def'] == '校舎登録') {
+		foreach ($_POST as $key=>$value) {
+			if (substr($key, 0, 6) != 'place-')	continue;
+			$place_data = explode('-', $key); $place_id = null;
+			foreach ($place_list as $place)	if ($place['name']==$value)	{ $place_id = $place['no']; break; }
+			if (!$place_id)	continue;
+			$member_no = $place_data[1];
+			$lesson_id = $place_data[2];
+			$course_id = $place_data[3];
+//		echo "$member_no, $lesson_id, $course_id, $value, $place_id<br>";
+			$db->query(
+			"INSERT INTO tbl_place0 VALUES ('$year','$month','$member_no','$lesson_id','$course_id','{$place_id}',now(),now()) ".
+			"ON DUPLICATE KEY UPDATE place_id='$place_id',update_timestamp=now() "
+			);
+		}
+	}
+
+	$place0_list = $db->query(
+		"SELECT st.member_no,std.lesson_id,std.course_id,pl.place_id ".
+		"FROM tbl_statement_detail AS std JOIN tbl_statement AS st ON (std.statement_no=st.statement_no) ".
+		"LEFT JOIN tbl_place0 AS pl ON (st.seikyu_year=pl.year AND st.seikyu_month=pl.month AND st.member_no=pl.member_no AND std.lesson_id=pl.lesson_id ".
+		"AND (std.course_id=pl.course_id or (std.course_id is null and pl.course_id=''))) ".
+		"WHERE std.statement_no in ".
+		"(SELECT statement_no FROM tbl_statement where seikyu_year=$year and seikyu_month=$month) ".
+		"and std.place_id=0 ".
+		"group by member_no,lesson_id,course_id "
+		)->fetchAll(PDO::FETCH_ASSOC);
+		
+	foreach ($place0_list as $key=>$row) {
+		if (!$member_list[$row['member_no']])	continue;
+		if ($row['place_id'])	continue;
+	switch ($row['course_id']) {
+	case 4:
+	case 5:
+	case 6:
+		$place_ids = $db->query(
+			"SELECT place_id FROM tbl_statement_detail,tbl_statement WHERE ".
+			"seikyu_year=$year and seikyu_month=$month ".
+			"and tbl_statement_detail.statement_no=tbl_statement.statement_no ".
+			"and member_no='{$row['member_no']}' ".
+			"and lesson_id='{$row['lesson_id']}' and course_id='{$row['course_id']}' and place_id!=0 ".
+			"order by start_timestamp desc "
+			)->fetchAll(PDO::FETCH_COLUMN);
+			break;
+	case null:
+		$place_ids = $db->query(
+			"SELECT place_id FROM tbl_statement_detail,tbl_statement WHERE ".
+			"seikyu_year=$year and seikyu_month=$month ".
+			"and tbl_statement_detail.statement_no=tbl_statement.statement_no ".
+			"and member_no='{$row['member_no']}' ".
+			"and lesson_id='{$row['lesson_id']}' and course_id is null and place_id!=0 ".
+			"order by start_timestamp desc "
+			)->fetchAll(PDO::FETCH_COLUMN);
+			break;
+	default:
+		$place_ids = $db->query(
+			"SELECT place_id FROM tbl_statement_detail,tbl_statement WHERE ".
+			"tbl_statement_detail.statement_no=tbl_statement.statement_no ".
+			"and member_no='{$row['member_no']}' ".
+			"and start_timestamp<UNIX_TIMESTAMP(ADDDATE('$year-$month-01',INTERVAL 1 MONTH)) ".
+			"and lesson_id='{$row['lesson_id']}' and course_id='{$row['course_id']}' and place_id!=0 ".
+			"order by start_timestamp desc "
+			)->fetchAll(PDO::FETCH_COLUMN);
+	}
+		if ($place_ids) {
+			$place_id = $place_ids[0];
+			$place0_list[$key]['place_id'] = $place_id;
+			$db->query(
+			"INSERT INTO tbl_place0 VALUES ('$year','$month','{$row['member_no']}','{$row['lesson_id']}','{$row['course_id']}',{$place_id},now(),now()) ".
+			"ON DUPLICATE KEY UPDATE place_id=$place_id,update_timestamp=now() "
+			);
+		} else {
+	//		var_dump($row);echo"<br>";
+		}
+	}
+
+	$place0_input='';
+	foreach ($place_list as $key=>$place)		if ($place['name']!='北口校') $places[]=$place['name'];
+	sort($places);
+	foreach ($place0_list as $key=>$row) {
+		if (!$member_list[$row['member_no']])	continue;
+		if ($row['place_id'])	continue;
+	$place0_input .= "<tr><td>{$member_list[$row['member_no']]['name']}</td><td>{$lesson_list[$row['lesson_id']]}</td><td>{$course_list[$row['course_id']]['course_name']}</td><td>";
+		disp_pulldown_menu($places, "place-{$row['member_no']}-{$row['lesson_id']}-{$row['course_id']}", '', '', $place_select);
+		$place0_input .= $place_select."</td></tr>\n";
+	}
+	if ($place0_input) {
+		print <<<PLACE0_INPUT_PAGE
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" type="text/css" href="./script/style.css">
+<link rel="stylesheet" type="text/css" href="./script/print.css" media="print" />
+<script type="text/javascript" src="./script/calender.js"></script>
+<script type = "text/javascript">
+</script>
+</head>
+<body>
+<div id="header">
+	事務システム
+</div>
+
+<div id="content">
+
+<center>
+		<h3>年月別一覧 - 部門別受講料</h3>
+		<div>
+			<a href="menu.php">メニューへ戻る</a>&nbsp;&nbsp;
+		</div>
+<br>
+以下の生徒はオンライン授業です。売上を計上する校舎を指定してください。
+<br>
+<form method="post" action="./total_list.php">
+<input type="hidden" name="y" value="$year">
+<input type="hidden" name="m" value="$month">
+<table border="1\"><tr><th>生徒名</th><th>教室</th><th>コース</th><th>校舎</th></tr>
+$place0_input
+</table>
+<input type="submit" name="place0_def" value="校舎登録">
+</form>
+</center>
+</div>
+</body></html>
+PLACE0_INPUT_PAGE;
+		exit;
+	}
 
 	$last_total_price = 0;
 	$total_price = 0;
@@ -75,7 +207,6 @@ try {
 
 	foreach ($member_list as $member_no => $member) {
 //echo "{$member_list[$member_no]['name']}<br>";
-
 		$tax_season_class_total = 0;
 
 		$lesson_array = array();
@@ -147,17 +278,20 @@ try {
 			$tax_season_class_total = 0;
 			$tax_satsun_class_total = 0;
 			
-			$tmp_event_list = $statement["event_list"];
 			foreach ($statement["event_list"] as $event) {
 				
 				if (!$event["lesson_id"])	continue;
 				if (!$event['place_id']) {
-					foreach($tmp_event_list as $tmp_event) {
-						if ($tmp_event['place_id']) {
-							$event['place_id'] = $tmp_event['place_id'];
-							break;
+					foreach ($place0_list as $row) {
+						if ($row['member_no'] == $member_no && $row['lesson_id'] == $event['lesson_id'] && $row['course_id'] == $event['course_id']) {
+							$event['place_id'] = $row['place_id'];
+						break;
 						}
 					}
+				}
+				if (!$event['place_id']) {
+//				echo "$member_no, {$event['lesson_id']}, {$event['course_id']}.<br>";
+					array_push($errArray, "{$member_list[$member_no]['name']}-{$lesson_list[$event['lesson_id']]}-{$course_list[$event['course_id']]['course_name']} 校舎不明エラー");
 				}
 				
 				$lesson_id = $event["lesson_id"];
@@ -176,6 +310,8 @@ try {
 						$lesson_array[$lesson_id]['hours'] += $hours;
 if ($member_no == $log_member_no)	echo "{$event['date']} fees2 $fees<BR>";
 						$total_price += $fees ;
+						
+						if ($event['place_id'])	$price_list['season_place'][$event['place_id']] += $fees;
 						continue;
 				}
 				if ($event['course_id'] === NULL ) { 	// 土日講習
@@ -188,6 +324,8 @@ if ($member_no == $log_member_no)	echo "{$event['date']} fees2 $fees<BR>";
 						$lesson_array[$lesson_id]['hours'] += $hours;
 if ($member_no == $log_member_no)	echo "{$event['date']} fees2 $fees<BR>";
 						$total_price += $fees ;
+						
+						if ($event['place_id'])	$price_list['satsun_place'][$event['place_id']] += $fees;
 						continue;
 				}
 				//if (array_key_exists($lesson_id, $price_list['lesson']) === true) {
@@ -625,7 +763,7 @@ if (count($price_list) > 0) {
 		</tr>
 <?php if ($season_class_total>0) { ?>
 		<tr>
-			<td width="120" align="left" class="meisai" colspan="2">期間講習</td>
+			<td width="120" align="left" class="meisai" colspan="2">季節講習</td>
 			<td width="140" align="right" class="meisai"><?= number_format($season_class_total) ?></td>
 		</tr>
 <?php } ?>
@@ -699,7 +837,7 @@ if (count($price_list) > 0) {
 <h3>校舎別</h3>
 <table class="meisai" cellpadding="2">
 	<tr>
-	<th class="meisai" colspan="2">項目</th>
+	<th class="meisai" colspan="2" rowspan="2">項目</th>
 <?php
 	foreach ($price_list['lesson_place'] as $lesson_id => $price) {
 		$sum0 = 0;
@@ -712,11 +850,18 @@ if (count($price_list) > 0) {
 	$place_list[$key0]['name'] = '北口校合計';
 	foreach ($place_list as $key=>$item0)	{
 		if ($key==11)	continue;
+		if (strpos($item0['name'], '北口校') !== false && $key!=11) { $kitaguchi_num++; continue; }
+		if ($kitaguchi_num) { $kitaguchi_num++; echo "<th colspan=\"$kitaguchi_num\">北口校</th>"; $kitaguchi_num = 0;}
+		echo "<th class=\"meisai\" rowspan=\"2\">{$item0['name']}</th>";
+	}
+	echo "<th class=\"meisai\" rowspan=\"2\">全校舎合計</th></tr><tr>";
+	$lesson_num = count($lesson_list);
+	foreach ($place_list as $key=>$item0)	{
+		if ($key==11)	continue;
+		if (strpos($item0['name'], '北口校') === false)	continue;
 		if ($key==3)	echo "<th class=\"meisai\">{$place_list[11]['name']}</th>";
 		echo "<th class=\"meisai\">{$item0['name']}</th>";
 	}
-	echo "<th class=\"meisai\">全校舎合計</th>";
-	$lesson_num = count($lesson_list);
 ?>
 	</tr>
 	<tr>
@@ -743,6 +888,76 @@ if (count($price_list) > 0) {
 		}
 ?>
 		<td width="100" align="right" class="meisai"><b><font color="red">合計</font></b></td>
+<?php
+		$rowtotal = 0;
+		foreach ($place_list as $key1=>$item1) {
+			if ($key1==11)	continue;
+			if ($key1==3)	{
+				echo "<td width=\"100\" align=\"right\" class=\"meisai\">".number_format($total_fees_place[11])."</td>";
+				if (11 != $key0)	$rowtotal += $total_fees_place[11];
+			}
+			echo "<td width=\"100\" align=\"right\" class=\"meisai\">".number_format($total_fees_place[$key1])."</td>";
+			if ($key1 != $key0)	$rowtotal += $total_fees_place[$key1];
+		}
+		echo "<td width=\"100\" align=\"right\" class=\"meisai\">".number_format($rowtotal)."</td>";
+?>
+		</tr>
+<?php if ($season_class_total>0) { ?>
+	<tr>
+		<td align="left" class="meisai" colspan="2">季節講習</td>
+<?php
+		$price = $price_list['season_place'];
+		$sum0 = 0;
+		foreach ($place_list as $key=>$item0) {
+			if (strpos($item0['name'], '北口校') !== false) $sum0 += $price[$key];
+			if ($item0['name'] == '北口校') $key0 = $key;
+		}
+		$price[$key0] = $sum0;
+		$rowtotal = 0;
+		foreach ($place_list as $key1=>$item1)	{
+			if ($key1==11)	continue;
+			if ($key1==3)	{
+				echo "<td width=\"100\" align=\"right\" class=\"meisai\">".number_format($price[11])."</td>";
+				$total_fees_place[11] += $price[11];
+				if (11 != $key0)	$rowtotal += $price[11];
+			}
+			echo "<td width=\"100\" align=\"right\" class=\"meisai\">".number_format($price[$key1])."</td>";
+			$total_fees_place[$key1] += $price[$key1];
+			if ($key1 != $key0)	$rowtotal += $price[$key1];
+		}
+		echo "<td width=\"100\" align=\"right\" class=\"meisai\">".number_format($rowtotal)."</td>";
+?>
+	</tr>
+<?php } ?>
+<?php if ($satsun_class_total>0) { ?>
+	<tr>
+		<td align="left" class="meisai" colspan="2">土日講習</td>
+<?php
+		$price = $price_list['satsun_place'];
+		$sum0 = 0;
+		foreach ($place_list as $key=>$item0) {
+			if (strpos($item0['name'], '北口校') !== false) $sum0 += $price[$key];
+			if ($item0['name'] == '北口校') $key0 = $key;
+		}
+		$price[$key0] = $sum0;
+		$rowtotal = 0;
+		foreach ($place_list as $key1=>$item1)	{
+			if ($key1==11)	continue;
+			if ($key1==3)	{
+				echo "<td width=\"100\" align=\"right\" class=\"meisai\">".number_format($price[11])."</td>";
+				$total_fees_place[11] += $price[11];
+				if (11 != $key0)	$rowtotal += $price[11];
+			}
+			echo "<td width=\"100\" align=\"right\" class=\"meisai\">".number_format($price[$key1])."</td>";
+			$total_fees_place[$key1] += $price[$key1];
+			if ($key1 != $key0)	$rowtotal += $price[$key1];
+		}
+		echo "<td width=\"100\" align=\"right\" class=\"meisai\">".number_format($rowtotal)."</td>";
+?>
+	</tr>
+<?php } ?>
+	<tr>
+		<td width="100" align="right" class="meisai" colspan="2"><b><font color="red">合計</font></b></td>
 <?php
 		$rowtotal = 0;
 		foreach ($place_list as $key1=>$item1) {
