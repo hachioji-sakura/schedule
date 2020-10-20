@@ -16,6 +16,7 @@ $current_staff_name_list = array_column($current_staff_list,'name','no');
 $errArray = array();
 
 $bank_account_type_tbl = array('normal'=>1,'current'=>2,'savings'=>4);
+
 try {
 	
 	$stmt = $dbc->query("SELECT st.*, ".
@@ -37,6 +38,8 @@ try {
 		else
 			$staff_array = array();
 		
+//		var_dump($lms_staff);echo'<br>';
+
 		$staff_array["id"]						= $lms_staff['user_id'];
 		$staff_array["staff_id"]			= $lms_staff['id'];
 		$lms_staff['name_last'] = trim($lms_staff['name_last']); $lms_staff['name_first'] = trim($lms_staff['name_first']);
@@ -52,7 +55,7 @@ try {
 		$staff_array["bank_acount_no"]   = $lms_staff['bank_account_no'];
 		$staff_array["bank_acount_name"] = $lms_staff['bank_account_name'];
 
-//		var_dump($staff_array);echo'<br>';
+//		var_dump($staff_array);echo'<br><br>';
 
 		$str3 = '';
 		if (!$staff_no) {
@@ -80,11 +83,11 @@ try {
 			foreach ($staff_array as $key=>$value) {
 				if ($key=='id' || $key=='staff_id')	continue;
 				$value0 = $current_staff_list[$staff_no][$key];
-				if ($key=='furigana' && $value0)	$value0 = mb_convert_kana($value0,'C');
+//				if ($key=='furigana' && $value0)	$value0 = mb_convert_kana($value0,'C');
 				if ($value != $value0)	$diff1 .= " $key:$value0->$value, ";
 			}
 			if ($diff1) {
-			$staff_array = $staff_array + $current_staff_list[$staff_no];
+				$staff_array = $staff_array + $current_staff_list[$staff_no];
 				if (array_search($staff_no, $update_check)!==false)
 					if (update_staff($db, $staff_array))	$str0='<td>OK</td>'; else $str0='<td>ERROR!!</td>';
 					$update_list[] = "$str0$str1<td>$diff1</td>\n";
