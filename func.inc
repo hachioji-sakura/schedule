@@ -3630,8 +3630,9 @@ function insert_staff(&$db, $staff_array, $last_no=null) {
 			$sql = "INSERT INTO tbl_staff (no, name, furigana, del_flag, mail_address, password, initial_password,".
 						" transport_cost, transport_DOW,".
 						" transport_limit, gennsenn_choushuu_shubetu, huyou_ninnzuu, jyuuminnzei1, jyuuminnzei2,".
+						" bank_no, bank_branch_no, bank_acount_type, bank_acount_no, bank_acount_name,".
 						" insert_timestamp, update_timestamp".
-						" ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), now())";
+						" ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), now())";
 
 			$stmt = $db->prepare($sql);
 			$stmt->bindParam(1, $no);
@@ -3648,6 +3649,11 @@ function insert_staff(&$db, $staff_array, $last_no=null) {
 			$stmt->bindParam(12, $huyou_ninnzuu);
 			$stmt->bindParam(13, $jyuuminnzei1);
 			$stmt->bindParam(14, $jyuuminnzei2);
+			$stmt->bindParam(15,$bank_no);
+			$stmt->bindParam(16,$bank_branch_no);
+			$stmt->bindParam(17,$bank_acount_type);
+			$stmt->bindParam(18,$bank_acount_no);
+			$stmt->bindParam(19,$bank_acount_name);
 			$no = sprintf("%06d", $last_no);
 			$name = $staff_array["name"];
 			$furigana = $staff_array["furigana"];
@@ -3663,6 +3669,11 @@ function insert_staff(&$db, $staff_array, $last_no=null) {
 			$huyou_ninnzuu = $staff_array['huyou_ninnzuu'];
 			$jyuuminnzei1 = $staff_array['jyuuminnzei1'];
 			$jyuuminnzei2 = $staff_array['jyuuminnzei2'];
+			$bank_no          = $staff_array["bank_no"];
+			$bank_branch_no   = $staff_array["bank_branch_no"];
+			$bank_acount_type = $staff_array["bank_acount_type"];
+			$bank_acount_no   = $staff_array["bank_acount_no"];
+			$bank_acount_name = $staff_array["bank_acount_name"];
 			$stmt->execute();
 		}catch (PDOException $e){
 			$errFlag = 1;

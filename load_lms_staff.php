@@ -15,6 +15,7 @@ $current_staff_list = get_staff_list($db,array(),array(),array(),1);
 $current_staff_name_list = array_column($current_staff_list,'name','no');
 $errArray = array();
 
+$bank_account_type_tbl = array('normal'=>1,'current'=>2,'savings'=>4);
 try {
 	
 	$stmt = $dbc->query("SELECT st.*, ".
@@ -45,6 +46,11 @@ try {
 		$staff_array["furigana"]      = mb_convert_kana($staff_array["furigana"],'c');
 		$staff_array["del_flag"]			= ($lms_staff['status'] == 'regular')? 0: 2;
 		$staff_array["mail_address"]	= (strpos($lms_staff['email'],'@')!==false)? $lms_staff['email']: '';
+		$staff_array["bank_no"]          = $lms_staff['bank_no'];
+		$staff_array["bank_branch_no"]   = $lms_staff['bank_branch_no'];
+		$staff_array["bank_acount_type"] = $bank_account_type_tbl[$lms_staff['bank_account_type']];
+		$staff_array["bank_acount_no"]   = $lms_staff['bank_account_no'];
+		$staff_array["bank_acount_name"] = $lms_staff['bank_account_name'];
 
 //		var_dump($staff_array);echo'<br>';
 
