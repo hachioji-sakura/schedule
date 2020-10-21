@@ -331,7 +331,18 @@ $sat_sun_class_date_list = array(
 "2020/10/18",
 "2020/10/24",
 "2020/10/25",
-"2020/10/31"
+"2020/10/31",
+"2020/11/01",
+"2020/11/03",
+"2020/11/07",
+"2020/11/08",
+"2020/11/14",
+"2020/11/15",
+"2020/11/21",
+"2020/11/22",
+"2020/11/23",
+"2020/11/28",
+"2020/11/29"
 
 );
 foreach ($sat_sun_class_date_list as $i=>$item) { if ($i==0) { $sat_sun_class_date_list_string = "('$item'"; } else { $sat_sun_class_date_list_string = $sat_sun_class_date_list_string.",'$item'"; } }
