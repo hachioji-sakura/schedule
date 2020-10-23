@@ -313,6 +313,7 @@ $sat_sun_class_date_list = array(
 "2020/06/21",
 "2020/06/27",
 "2020/06/28",
+
 "2020/09/05",
 "2020/09/06",
 "2020/09/12",
@@ -332,6 +333,7 @@ $sat_sun_class_date_list = array(
 "2020/10/24",
 "2020/10/25",
 "2020/10/31",
+
 "2020/11/01",
 "2020/11/03",
 "2020/11/07",
@@ -342,7 +344,11 @@ $sat_sun_class_date_list = array(
 "2020/11/22",
 "2020/11/23",
 "2020/11/28",
-"2020/11/29"
+"2020/11/29",
+"2020/12/05",
+"2020/12/06",
+"2020/12/12",
+"2020/12/13"
 
 );
 foreach ($sat_sun_class_date_list as $i=>$item) { if ($i==0) { $sat_sun_class_date_list_string = "('$item'"; } else { $sat_sun_class_date_list_string = $sat_sun_class_date_list_string.",'$item'"; } }
@@ -765,6 +771,7 @@ function connect_DBC(&$dbc) {
 		exit($err_msg);
 	}
 }
+
 // データベース接続4
 function connect_DBL(&$dbl) {
 	try{
