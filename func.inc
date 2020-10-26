@@ -3146,9 +3146,9 @@ function check_teacher($db, &$errArray, $teacher) {
 		$errFlag = 1;
  		array_push($errArray, "氏名を入力してください。");
 	}
-	if (mb_strlen($teacher["name"], "UTF-8") > 18) {
+	if (mb_strlen($teacher["name"], "UTF-8") > 20) {
 		$errFlag = 1;
- 		array_push($errArray, "氏名を１８文字以内で入力してください。");
+ 		array_push($errArray, "氏名を20文字以内で入力してください。");
 	}
 	$param_array = array();
 	$value_array = array();
