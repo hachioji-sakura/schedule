@@ -15,8 +15,27 @@ $insert_check = $_POST['insert_check']? $_POST['insert_check']: array();
 $course_list = get_course_list($db);
 $current_teacher_list = get_teacher_list($db,array(),array(),array(),1);
 
+foreach ($current_teacher_list as &$teacher_array) {
+	$teacher_array["transport_dcost1"][0] = $teacher_array['transport_dcost1_Sun'];
+	$teacher_array["transport_dcost1"][1] = $teacher_array['transport_dcost1_Mon'];
+	$teacher_array["transport_dcost1"][2] = $teacher_array['transport_dcost1_Tue'];
+	$teacher_array["transport_dcost1"][3] = $teacher_array['transport_dcost1_Wen'];
+	$teacher_array["transport_dcost1"][4] = $teacher_array['transport_dcost1_Thr'];
+	$teacher_array["transport_dcost1"][5] = $teacher_array['transport_dcost1_Fri'];
+	$teacher_array["transport_dcost1"][6] = $teacher_array['transport_dcost1_Sat'];
+	$teacher_array["transport_dcost2"][0] = $teacher_array['transport_dcost2_Sun'];
+	$teacher_array["transport_dcost2"][1] = $teacher_array['transport_dcost2_Mon'];
+	$teacher_array["transport_dcost2"][2] = $teacher_array['transport_dcost2_Tue'];
+	$teacher_array["transport_dcost2"][3] = $teacher_array['transport_dcost2_Wen'];
+	$teacher_array["transport_dcost2"][4] = $teacher_array['transport_dcost2_Thr'];
+	$teacher_array["transport_dcost2"][5] = $teacher_array['transport_dcost2_Fri'];
+	$teacher_array["transport_dcost2"][6] = $teacher_array['transport_dcost2_Sat'];
+}
+unset($teacher_array);
+
 $errArray = array();
 
+$bank_account_type_tbl = array('normal'=>1,'current'=>2,'savings'=>4);
 try {
 	
 	$stmt = $dbc->query("SELECT te.*, ".
@@ -53,15 +72,12 @@ try {
 		sort($lesson_list);
 		$teacher_array["lesson_id"]			= $lesson_list[0]+0;
 		$teacher_array["lesson_id2"]		= $lesson_list[1]+0;
-		$teacher_array["password"]			= substr(base_convert(bin2hex(openssl_random_pseudo_bytes(8)),16,36),0,8);
-		$teacher_array["initial_password"]	= $teacher_array["password"];
-		$teacher_array["transport_cost"] = '';
-		$teacher_array["transport_DOW"]  = '0,1,2,3,4,5,6';
-		$teacher_array["transport_limit"] = '';
-		$teacher_array["gennsenn_choushuu_shubetu"] = '';
-		$teacher_array["huyou_ninnzuu"] = '';
-		$teacher_array["jyuuminnzei1"] = '';
-		$teacher_array["jyuuminnzei2"] = '';
+
+		$teacher_array["bank_no"]          = $lms_teacher['bank_no'];
+		$teacher_array["bank_branch_no"]   = $lms_teacher['bank_branch_no'];
+		$teacher_array["bank_acount_type"] = $bank_account_type_tbl[$lms_teacher['bank_account_type']];
+		$teacher_array["bank_acount_no"]   = $lms_teacher['bank_account_no'];
+		$teacher_array["bank_acount_name"] = $lms_teacher['bank_account_name'];
 
 //		var_dump($teacher_array);echo'<br>';
 
@@ -70,6 +86,16 @@ try {
 			$str0 = "<td><input type=\"checkbox\" name=\"update_check[]\" value=\"$teacher_no\"></td>";
 			$str1 = "<td>{$teacher_array['name']}</td><td>{$teacher_array['id']}</td><td>{$teacher_array['teacher_id']}</td><td>{$teacher_no}</td>";
 			if (!$current_teacher_list[$teacher_no]) {
+				$teacher_array["password"]			= substr(base_convert(bin2hex(openssl_random_pseudo_bytes(8)),16,36),0,8);
+				$teacher_array["initial_password"]	= $teacher_array["password"];
+				$teacher_array["transport_cost"] = '';
+				$teacher_array["transport_DOW"]  = '0,1,2,3,4,5,6';
+				$teacher_array["transport_limit"] = '';
+				$teacher_array["gennsenn_choushuu_shubetu"] = '';
+				$teacher_array["huyou_ninnzuu"] = '';
+				$teacher_array["jyuuminnzei1"] = '';
+				$teacher_array["jyuuminnzei2"] = '';
+
 				$str2 = '';
 				foreach ($teacher_array as $key=>$value) $str2 .= " $key:$value, ";
 				$str0 = "<td><input type=\"checkbox\" name=\"insert_check[]\" value=\"$insert_no\"></td>";
@@ -81,7 +107,6 @@ try {
 				$insert_no++;
 				continue;
 			}
-			
 			$diff1 = '';
 			foreach ($teacher_array as $key=>$value) {
 				if ($key=='id' || $key=='teacher_id')	continue;
