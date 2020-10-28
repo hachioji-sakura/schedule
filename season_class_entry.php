@@ -98,7 +98,7 @@ if ($action == 'add' && $date_list_string && $date_list_string1) {
 	try{
 		$sql = "DELETE FROM tbl_season_class_entry_subject WHERE member_id='{$student['no']}' AND date='{$date_list1[0]}'";
 		$db->query($sql);
-		$sql = "DELETE FROM tbl_season_class_entry_date WHERE member_id='{$student['no']}' AND date IN {$date_list_string}";
+		$sql = "DELETE FROM tbl_season_class_entry_date WHERE member_id='{$student['no']}' AND date IN {$date_list_string1}";
 		$db->query($sql);
 		
 		$i=0;
@@ -129,7 +129,7 @@ if ($action == 'add' && $date_list_string && $date_list_string1) {
 			}
 		}
 		
-		$stmt = $db->query("SELECT date,stime,etime FROM tbl_season_class_entry_date WHERE member_id='{$student['no']}' AND date IN {$date_list_string}");
+		$stmt = $db->query("SELECT date,stime,etime FROM tbl_season_class_entry_date WHERE member_id='{$student['no']}' AND date IN {$date_list_string1}");
 		$dates0 = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		$dates1 = array_column($dates0, 'date');
 		$sql = "SELECT * FROM tbl_season_schedule WHERE date IN {$date_list_string1} AND member_no=\"{$student['no']}\"";
@@ -179,7 +179,7 @@ try{
 	
 	$teacher_list = get_teacher_list($db, array(), array(), array(), 1);
 	
-	$sql = "SELECT * FROM tbl_season_class_entry_date WHERE member_id=? AND date IN ".$date_list_string." ORDER BY date ASC";
+	$sql = "SELECT * FROM tbl_season_class_entry_date WHERE member_id=? AND date IN ".$date_list_string1." ORDER BY date ASC";
 	$stmt = $db->prepare($sql);
 	$stmt->execute(array($student['no']));
 	$dates = $stmt->fetchAll(PDO::FETCH_ASSOC);
