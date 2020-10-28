@@ -119,10 +119,10 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 				$header = $sqarray;
 				$name_index = array_search('生徒氏名',$header);
 				$course_index = array_search('コース',$header);
-				$date_index = array_search('希望日',$header);
+				$date_index = array_search('希望日時',$header);
 				$subject_index = array_search('希望授業科目',$header);
 				$place_index = array_search('希望校舎',$header);
-				
+/*				
 //				if ($class_type == 'sat_sun_class') {
 				if (1) {
 					$date_index = array();
@@ -169,9 +169,19 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 					$date_list1 = $date_list;
 					$date_list_string1 = $date_list_string;
 				}
-				
+	*/			
 				continue;
 			}
+			
+		$date_list1=array();
+		foreach($date_list as $key=>$date) {
+			if ($date<'2020/11/01' || $date>'2020/12/31')	{
+				unset($date_list[$key]);
+				continue;
+			}
+			$date_list1[] = $date;
+		}
+		$date_list_string1 = ($date_list1)? "('".implode("','",$date_list1)."')" : "";
 			
 			if (!$header) {
 				echo "CSVファイルの先頭行（見出し行）が不正です。<br>漢字コードがUTF8であることを確認してください。<br>";
@@ -215,22 +225,25 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 			}
 
 //			if ($class_type != 'sat_sun_class') {
-			if (0) {
+//			if (0) {
 				preg_match_all('|\d{1,2}/\d{1,2}|',$sqarray[$date_index],$dates);
-				$dates1 = array();
-				foreach ($dates[0] as $date) {
+				preg_match_all('|(\d{1,2}:\d{1,2})-|',$sqarray[$date_index],$stimes);
+				preg_match_all('|-(\d{1,2}:\d{1,2})|',$sqarray[$date_index],$etimes);
+			$dates1 = array();$stimes1 = array();$etimes1 = array();
+				foreach ($dates[0] as $key=>$date) {
 					$date0 = explode('/',$date);
 					$date0 = sprintf('%02d/%02d',$date0[0],$date0[1]);
 					$flag=0;
 					foreach ($date_list as $date1) { if (substr($date1,5)==$date0) { $flag=1; break; }}
 					if ($flag) {
 						$dates1[] = $date1;
-							$stimes1[] = '11:00';
-							$etimes1[] = '16:00';
+						$stimes1[] = $stimes[1][$key];
+						$etimes1[] = $etimes[1][$key];
 					} else {
 						echo "<font color=\"red\">{$date0}　日付エラー</font><br>"; $errFlag = 1;
 					}
 				}
+/*
 			} else {
 				$dates1 = array(); $stimes1 = array(); $etimes1 = array();
 				foreach ($date_list1 as $key=>$date) {
@@ -264,6 +277,7 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 					$etimes1[] = end($times);
 				}
 			}
+*/			
 			
 			$lesson_length = 60; $season_course_id = LESSON60;
 			if (preg_match('/60/u',$sqarray[$course_index])) { $season_course_id = LESSON60; $lesson_length = 60; }
