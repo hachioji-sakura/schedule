@@ -333,7 +333,11 @@ function tcheck(obj){
 		<th>日付</th><th></th>
 		<th>11:00</th><th>11:30</th><th>12:00</th><th>12:30</th><th>13:00</th><th>13:30</th><th>14:00</th><th>14:30</th>
 		<th>15:00</th><th>15:30</th><th>16:00</th><th>16:30</th><th>17:00</th><th>17:30</th>
+	<?php if ($date_list[0] <= '2020/10/31') { ?>
+		<th>18:00</th><th>18:30</th><th>19:00</th><th>19:30</th><th>20:00</th><th>20:30</th> 
+	<?php } else { ?>
 		<th>18:00</th><th>18:30</th>
+ 	<?php } ?>
 	</tr>
  	<?php
 	} else {
@@ -366,7 +370,30 @@ function tcheck(obj){
 		<td><?= $date ?><?= $youbi ?></td>
 		<td><input type="button" value="通常時間" onclick="normal_select(this,<?= $sat_sun_flag ?>)"></td>
 	<?php
-		if (strpos($youbi,"土")) {
+		if ($date <= '2020/10/31') {
+	?>
+		<td style="<?= $time_array['11:00']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_11:00" onclick="tcheck(this)" <?= $time_array['11:00']?"checked":"" ?>></td>
+		<td style="<?= $time_array['11:30']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_11:30" onclick="tcheck(this)" <?= $time_array['11:30']?"checked":"" ?>></td>
+		<td style="<?= $time_array['12:00']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_12:00" onclick="tcheck(this)" <?= $time_array['12:00']?"checked":"" ?>></td>
+		<td style="<?= $time_array['12:30']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_12:30" onclick="tcheck(this)" <?= $time_array['12:30']?"checked":"" ?>></td>
+		<td style="<?= $time_array['13:00']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_13:00" onclick="tcheck(this)" <?= $time_array['13:00']?"checked":"" ?>></td>
+		<td style="<?= $time_array['13:30']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_13:30" onclick="tcheck(this)" <?= $time_array['13:30']?"checked":"" ?>></td>
+		<td style="<?= $time_array['14:00']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_14:00" onclick="tcheck(this)" <?= $time_array['14:00']?"checked":"" ?>></td>
+		<td style="<?= $time_array['14:30']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_14:30" onclick="tcheck(this)" <?= $time_array['14:30']?"checked":"" ?>></td>
+		<td style="<?= $time_array['15:00']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_15:00" onclick="tcheck(this)" <?= $time_array['15:00']?"checked":"" ?>></td>
+		<td style="<?= $time_array['15:30']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_15:30" onclick="tcheck(this)" <?= $time_array['15:30']?"checked":"" ?>></td>
+		<td style="<?= $time_array['16:00']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_16:00" onclick="tcheck(this)" <?= $time_array['16:00']?"checked":"" ?>></td>
+		<td style="<?= $time_array['16:30']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_16:30" onclick="tcheck(this)" <?= $time_array['16:30']?"checked":"" ?>></td>
+		<td style="<?= $time_array['17:00']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_17:00" onclick="tcheck(this)" <?= $time_array['17:00']?"checked":"" ?>></td>
+		<td style="<?= $time_array['17:30']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_17:30" onclick="tcheck(this)" <?= $time_array['17:30']?"checked":"" ?>></td>
+		<td style="<?= $time_array['18:00']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_18:00" onclick="tcheck(this)" <?= $time_array['18:00']?"checked":"" ?>></td>
+		<td style="<?= $time_array['18:30']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_18:30" onclick="tcheck(this)" <?= $time_array['18:30']?"checked":"" ?>></td>
+		<td style="<?= $time_array['19:00']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_19:00" onclick="tcheck(this)" <?= $time_array['19:00']?"checked":"" ?>></td>
+		<td style="<?= $time_array['19:30']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_19:30" onclick="tcheck(this)" <?= $time_array['19:30']?"checked":"" ?>></td>
+		<td style="<?= $time_array['20:00']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_20:00" onclick="tcheck(this)" <?= $time_array['20:00']?"checked":"" ?>></td>
+		<td style="<?= $time_array['20:30']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_20:30" onclick="tcheck(this)" <?= $time_array['20:30']?"checked":"" ?>></td>
+	<?php
+		} else if (strpos($youbi,"土")) {
 	?>
 		<td></td>
 		<td></td>
