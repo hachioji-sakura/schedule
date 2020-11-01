@@ -4027,40 +4027,11 @@ function get_grade($db, $member, $year, $month, $april_start) {
 }
 
 function get_lesson_count($db, $member_no, $year, $month, $lesson_id, $course_id) {
-	$stmt = $db->query("SELECT DAYOFWEEK(FROM_UNIXTIME(event_start_timestamp)) FROM tbl_event WHERE member_no = '$member_no'".
-//		" AND event_year = '$year' AND event_month = '$month'".
-		" AND event_start_timestamp <= '".strtotime("last day of $year-$month")."'".
-		" AND lesson_id = '$lesson_id' AND course_id = '$course_id'".
-		" AND cal_evt_summary NOT LIKE '%(仮)%' AND cal_evt_summary NOT LIKE '%（仮）%'".
-		" AND recurringEvent = 1".
-		" ORDER BY event_start_timestamp DESC LIMIT 3"
-		);
-	$rslt = $stmt->fetchAll(PDO::FETCH_NUM);
-	if (!$rslt) return null;
-	if (count($rslt)<3) return null;
-	$rslt = array_unique(array_column($rslt,0));
-	return count($rslt);
+	return $db->query("SELECT week_count FROM tbl_member_course WHERE member_no='$member_no' AND lesson_id=$lesson_id AND course_id=$course_id")->fetch(PDO::FETCH_COLUMN);
 }
 
 function get_lesson_length($db, $member_no, $year, $month, $lesson_id, $course_id) {
-	$stmt = $db->query("SELECT SUM((event_end_timestamp-event_start_timestamp)/60),event_start_timestamp,event_year,event_month,event_day,event_start_hour,event_start_minute,event_end_hour,event_end_minute FROM tbl_event WHERE member_no = '$member_no'".
-//		" AND event_year = '$year' AND event_month = '$month'".
-		" AND event_start_timestamp <= '".strtotime("last day of $year-$month")."'".
-		" AND lesson_id = '$lesson_id' AND course_id = '$course_id'".
-		" AND recurringEvent = 1".
-		" AND cal_evt_summary NOT LIKE '%(仮)%' AND cal_evt_summary NOT LIKE '%（仮）%'".
-		" GROUP BY event_year, event_month, event_day".
-		" ORDER BY event_start_timestamp DESC LIMIT 3"
-		);
-	$rslt = $stmt->fetchAll(PDO::FETCH_NUM);
-	if (!$rslt) return null;
-//	$rslt = array_unique(array_column($rslt,0));
-//	if (count($rslt)>1) return null;
-//echo "$member_no    $year/$month/1  '".strtotime("$year/$month/1")."'<BR>";
-//if ($member_no=='001133')	{var_dump($rslt);echo"<BR>";}
-	$rslt = array_column($rslt,0);
-//if ($member_no=='001133')	{echo array_sum($rslt)/count($rslt);echo"<BR>";}
-	return array_sum($rslt)/count($rslt);
+	return $db->query("SELECT length FROM tbl_member_course WHERE member_no='$member_no' AND lesson_id=$lesson_id AND course_id=$course_id")->fetch(PDO::FETCH_COLUMN);
 }
 
 function get_default_fee($db, $member, $year, $month, $lesson_id, $course_id) {
