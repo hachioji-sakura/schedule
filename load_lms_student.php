@@ -43,7 +43,7 @@ try {
 	if ($_POST['update_button'])	$db->beginTransaction();
 
 	foreach ($lms_students as $lms_student) {
-
+		
 		$student_array = array();
 		$student_no 										= $lms_student['student_no'];
 		$student_array["id"]						= $lms_student['user_id'];
@@ -76,6 +76,8 @@ try {
 		$student_array["gender"]				= ($lms_student['gender'] == 1)? 'M': (($lms_student['gender'] == 2)? 'F': 0);
 		$student_array["mail_address"]	= (strpos($lms_student['email'],'@')!==false)? $lms_student['email']: '';
 //		var_dump($student_array);echo'<br>';
+
+		if (str_replace(' ','',$student_array['name']) == '体験生徒')	continue;
 
 		if ($student_no) {
 			
