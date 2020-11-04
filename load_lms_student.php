@@ -58,7 +58,7 @@ try {
 		$student_array["grade"]					= $grade_list[$lms_student['grade']];
 		if (!$student_array["grade"])	$student_array["grade"] = 0;
 //		$student_array["membership_fee"];
-		$student_array["del_flag"]			= ($lms_student['status'] == 'regular')? 0: (($lms_student['status'] == 'unsubscribe')? 2: $lms_student['status']);
+		$student_array["del_flag"]			= ($lms_student['status'] == 'regular')? 0: (($lms_student['status'] == 'unsubscribe')? 2: (($lms_student['status'] == 'trial')? 4: $lms_student['status']));
 		$student_array["jyukensei"]     = (strpos($lms_student['student_type'],'juken')!==false)? 1: 0;
 		$birth_day = explode('-', $lms_student['birth_day']);
 		if ($birth_day[0]!=9999) {
