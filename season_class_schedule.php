@@ -315,7 +315,7 @@ try {
 	}
 
 	$time_start = "11:00";
-	$time_end   = "18:00";
+	$time_end   = "19:00";
 	
 	// スケジュール読み込み
 	$sql = "SELECT * FROM tbl_season_schedule WHERE date IN $date_list_string";

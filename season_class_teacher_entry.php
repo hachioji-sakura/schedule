@@ -196,11 +196,11 @@ function normal_select(obj,sat_sun_flag) {
 	if (obj.value=='通常時間') { 
 		if (sat_sun_flag && dateWOD.indexOf('土')!=-1) {
 			for (var i=0;i<timechecks.length;i++) {
-				if (timechecks[i].value.indexOf(date+'_13')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
 				if (timechecks[i].value.indexOf(date+'_14')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
 				if (timechecks[i].value.indexOf(date+'_15')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
 				if (timechecks[i].value.indexOf(date+'_16')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
 				if (timechecks[i].value.indexOf(date+'_17')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+				if (timechecks[i].value.indexOf(date+'_18')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
 			}
 		} else {
 			for (var i=0;i<timechecks.length;i++) {
