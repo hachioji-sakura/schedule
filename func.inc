@@ -949,7 +949,7 @@ function get_member($db, $param_array=array(), $value_array=array()) {
 	$member_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	$member_list = array();
 	foreach ( $member_array as $row ) {
-		$param_array = array("tbl_fee.member_no = ?", "tbl_teacher.del_flag = '0'");
+		$param_array = array("tbl_fee.member_no = ?", "(tbl_teacher.del_flag = '0' or tbl_teacher.del_flag = '2')");
 		$value_array = array($row["no"]);
 		$row["fee_list"] = get_fee_list($db, $param_array, $value_array);
 		$row["m_fee_list"] = get_m_fee_list($db, array("tbl_monthly_fee.member_no = ?"), array($row["no"]));
@@ -1020,7 +1020,7 @@ function get_member_list($db, $param_array=array(), $value_array=array(), $order
 	$member_list = array();
 	foreach ( $member_array as $row ) {
 		if ($row["name"] == "体験生徒") { continue; }
-		$param_array = array("tbl_fee.member_no = ?", "tbl_teacher.del_flag = '0'");
+		$param_array = array("tbl_fee.member_no = ?", "(tbl_teacher.del_flag = '0' or tbl_teacher.del_flag = '2')");
 		$value_array = array($row["no"]);
 		$row["fee_list"] = get_fee_list($db, $param_array, $value_array);
 		$row["m_fee_list"] = get_m_fee_list($db, array("tbl_monthly_fee.member_no = ?"), array($row["no"]));
@@ -4047,7 +4047,7 @@ function get_default_fee($db, $member, $year, $month, $lesson_id, $course_id) {
 		
 		if ($lesson_id==2 && $course_id==2 && $lesson_length==40)	$lesson_length=60;
 
-//echo "$member_no, $lesson_id, $course_id, $ent_month, $grade, $lesson_count, $lesson_length.";
+//echo "$member_no, $lesson_id, $course_id, $ent_month, $grade, $lesson_count, $lesson_length.<br>";
 
 		$stmt = $db->query("SELECT lesson_fee FROM tbl_lesson_fee".
 			"	WHERE lesson_id = '$lesson_id' AND course_id = '$course_id' ".
@@ -4060,6 +4060,7 @@ function get_default_fee($db, $member, $year, $month, $lesson_id, $course_id) {
 			" ORDER BY lesson_grade DESC"
 			);
 		$rslt = $stmt->fetchAll(PDO::FETCH_NUM);
+//var_dump($rslt);echo"<BR>";
 		
 		$fee = $rslt[0][0];
 		
