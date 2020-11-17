@@ -196,18 +196,18 @@ function passResetCheck() {
 }
 function input_check() {
 	var str, err_char;
-	str = document.forms['staff_form'].elements['bank_no'].value;
-	err_char = str.replace(/[0-9]/g,'');
-	if (str && (err_char || str.length!=4)) { alert("銀行番号は半角数字4ケタで入力してください。"); return false; }
-	str = document.forms['staff_form'].elements['bank_branch_no'].value;
-	err_char = str.replace(/[0-9]/g,'');
-	if (str && (err_char || str.length!=3)) { alert("支店番号は半角数字3ケタで入力してください。"); return false; }
-	str = document.forms['staff_form'].elements['bank_acount_no'].value;
-	err_char = str.replace(/[0-9]/g,'');
-	if (str && (err_char || str.length!=7)) { alert("口座番号は半角数字7ケタで入力してください。"); return false; }
-	str = document.forms['staff_form'].elements['bank_acount_name'].value;
-	err_char = str.replace(/[　１２３４５６７８９０ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヴ（）．－]/g,'');
-	if (err_char) { alert("以下の文字は口座名に使用できません。\n“"+err_char+"”"); return false; }
+//	str = document.forms['staff_form'].elements['bank_no'].value;
+//	err_char = str.replace(/[0-9]/g,'');
+//	if (str && (err_char || str.length!=4)) { alert("銀行番号は半角数字4ケタで入力してください。"); return false; }
+//	str = document.forms['staff_form'].elements['bank_branch_no'].value;
+//	err_char = str.replace(/[0-9]/g,'');
+//	if (str && (err_char || str.length!=3)) { alert("支店番号は半角数字3ケタで入力してください。"); return false; }
+//	str = document.forms['staff_form'].elements['bank_acount_no'].value;
+//	err_char = str.replace(/[0-9]/g,'');
+//	if (str && (err_char || str.length!=7)) { alert("口座番号は半角数字7ケタで入力してください。"); return false; }
+//	str = document.forms['staff_form'].elements['bank_acount_name'].value;
+//	err_char = str.replace(/[　１２３４５６７８９０ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヴ（）．－]/g,'');
+//	if (err_char) { alert("以下の文字は口座名に使用できません。\n“"+err_char+"”"); return false; }
 	return true;
 }
 function transport_zero_set(onoff) {
