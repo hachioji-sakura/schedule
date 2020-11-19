@@ -278,7 +278,7 @@ try{
 		}
 		
 		// 事務兼任講師の事務カレンダーは無視（講師カレンダーの事務作業を使用）
-		if ($user_id>200000 && $teacher_and_staff_list[$teacher_list[$user_id-200000]['name']])
+		if ($user_id>200000 && $teacher_and_staff_list[$staff_list[$user_id-200000]['name']])
 			continue;
 		
 		// 事務兼任講師の事務作業時に講師IDを事務員IDに変換
