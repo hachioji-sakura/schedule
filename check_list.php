@@ -209,7 +209,7 @@ array_push($value_array, "3");
 //}
 // 20150816 ふりがなの50音順にソートする
 $order_array = array("tbl_member.furigana asc");
-$member_list = get_simple_member_list($db, $param_array, $value_array, $order_array);
+$member_list = get_simple_member_list($db, $param_array, $value_array, $order_array,4);
 if (count($member_list) == 0) {
 	$errFlag = 1;
 	throw new Exception('生徒が見つかりませんでした。');
@@ -1702,7 +1702,7 @@ foreach ($tmp_teacher_list as &$teacher) {
 		}
 		$str0 .= "</tr>\n";
 		if ($teacher_and_staff_list[$teacher['name']]) { $teacher_and_staff_list[$teacher['name']]['teacher'] = $teacher; }
-		if (!$yuge_flag) echo $str0; else $yuge_line1 = $str0;
+		if (!$yuge_flag) echo $str0; else $yuge_line1 .= $str0;
 	}
 }
 unset($teacher);
