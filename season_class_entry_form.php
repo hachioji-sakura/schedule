@@ -92,17 +92,20 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 			$errFlag = 0;
 			$line = $line1.fgets( $fp, 4096 );
 			fputs( $fp1, $line );
-			if (ord(substr($line,strlen($line)-1))==10) {
-				if (strlen($line)>1) {
-					if (ord(substr($line,strlen($line)-2))!=13) {
-						$line1 = str_replace("\n",'',$line);
+			if (mb_substr_count($line,'"')%2==1) {
+				if (ord(substr($line,strlen($line)-1))==10) {
+					if (strlen($line)>1) {
+						if (ord(substr($line,strlen($line)-2))!=13) {
+							$line1 = str_replace("\n",'',$line);
+							continue;
+						}
+					} else {
 						continue;
 					}
-				} else {
-					continue;
 				}
 			}
 			$line1 = '';
+//var_dump($line);echo"<br><br>";
 			$dqarray = explode( '"', $line );
 			$i=0; $sqarray = array();
 			while (isset($dqarray[$i])) {
@@ -112,8 +115,8 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 				$sqarray = array_merge($sqarray, $sqarray1);
 				$sqarray[] = $dqarray[$i++];
 			}
-//var_dump($dqarray);echo'<br>';
-//var_dump($sqarray);echo'<br>';
+//var_dump($dqarray);echo'<br><br>';
+//var_dump($sqarray);echo'<br><br>';
 
 			if ($sqarray[0] == 'タイムスタンプ') {
 				$header = $sqarray;
@@ -173,9 +176,10 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 				continue;
 			}
 			
+		$month = date('m');
 		$date_list1=array();
 		foreach($date_list as $key=>$date) {
-			if ($date<'2020/11/01' || $date>'2020/12/31')	{
+			if ($date<"$year/$month")	{
 				unset($date_list[$key]);
 				continue;
 			}
@@ -187,7 +191,7 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 				echo "CSVファイルの先頭行（見出し行）が不正です。<br>漢字コードがUTF8であることを確認してください。<br>";
 				exit();
 			}
-			
+
 			$name = $sqarray[$name_index];
 			$place = $sqarray[$place_index];
 			if (!$name) { continue; }
@@ -227,8 +231,12 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 //			if ($class_type != 'sat_sun_class') {
 //			if (0) {
 				preg_match_all('|\d{1,2}/\d{1,2}|',$sqarray[$date_index],$dates);
-				preg_match_all('|(\d{1,2}:\d{1,2})-|',$sqarray[$date_index],$stimes);
-				preg_match_all('|-(\d{1,2}:\d{1,2})|',$sqarray[$date_index],$etimes);
+				if ($class_type == 'sat_sun_class') {
+					preg_match_all('|(\d{1,2}:\d{1,2})-|',$sqarray[$date_index],$stimes);
+					preg_match_all('|-(\d{1,2}:\d{1,2})|',$sqarray[$date_index],$etimes);
+				} else {
+					foreach ($dates[0] as $key=>$date)	{ $stimes[1][]='11:00';$etimes[1][]='16:00'; }
+				}
 			$dates1 = array();$stimes1 = array();$etimes1 = array();
 				foreach ($dates[0] as $key=>$date) {
 					$date0 = explode('/',$date);
@@ -243,6 +251,9 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 						echo "<font color=\"red\">{$date0}　日付エラー</font><br>"; $errFlag = 1;
 					}
 				}
+//var_dump($dates1);echo"<br><br>";
+//var_dump($stimes1);echo"<br><br>";
+//var_dump($etimes1);echo"<br><br>";
 /*
 			} else {
 				$dates1 = array(); $stimes1 = array(); $etimes1 = array();
