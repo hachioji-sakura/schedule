@@ -393,7 +393,7 @@ function tcheck(obj){
 		<td style="<?= $time_array['20:00']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_20:00" onclick="tcheck(this)" <?= $time_array['20:00']?"checked":"" ?>></td>
 		<td style="<?= $time_array['20:30']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_20:30" onclick="tcheck(this)" <?= $time_array['20:30']?"checked":"" ?>></td>
 	<?php
-		} else if (strpos($youbi,"土")) {
+		} else if (strpos($youbi,"土") && $sat_sun_flag) {
 	?>
 		<td></td>
 		<td></td>
