@@ -28,18 +28,7 @@ if (!$request_startmonth){
 	goto error_label;
 }
 
-if (strlen($request_startmonth) === 1) {	// filling leading zero.
-	$request_startmonth_str = '0'.$request_startmonth;
-} else {
-	$request_startmonth_str = $request_startmonth;
-}
 
-if ($request_startmonth_str == '12') {		// if December then next year.
-	$plusoneyear = (int)($request_startyear) + 1;
-	$request_endyear = $plusoneyear;
-} else {
-	$request_endyear = $request_startyear;
-}
 
 $request_endmonth = $_POST['endmonth'];
 if (!$request_endmonth)	$request_endmonth = $_GET['endmonth'];
@@ -50,6 +39,17 @@ if (!$request_endmonth){
 	goto error_label;
 }
 
+if ($request_startmonth_str == '12' && $request_endmonth != '12') {		// if December then next year.
+	$plusoneyear = (int)($request_startyear) + 1;
+	$request_endyear = $plusoneyear;
+} else {
+	$request_endyear = $request_startyear;
+}
+if (strlen($request_startmonth) === 1) {	// filling leading zero.
+	$request_startmonth_str = '0'.$request_startmonth;
+} else {
+	$request_startmonth_str = $request_startmonth;
+}
 if (strlen($request_endmonth) === 1) {	// filling leading zero.
 	$request_endmonth_str = '0'.$request_endmonth;
 } else {
