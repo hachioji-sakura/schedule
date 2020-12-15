@@ -107,7 +107,7 @@ if ($student_list == false) {
 	throw new Exception('月謝計算中にエラーが発生しました。');
 }
 
-$stmt = $db->query("SELECT fee_no FROM tbl_fee WHERE temp_flag=1 AND teacher_id!=0");
+$stmt = $db->query("SELECT fee_no FROM tbl_fee fee,tbl_member member WHERE temp_flag=1 AND teacher_id!=0 AND fee.member_no=member.no AND member.del_flag=0");
 $rslt = $stmt->fetch(PDO::FETCH_NUM);
 if ($rslt) throw new Exception(
 "仮登録の受講料があります。<br>".
