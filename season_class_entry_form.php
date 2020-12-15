@@ -294,7 +294,8 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 			if (preg_match('/60/u',$sqarray[$course_index])) { $season_course_id = LESSON60; $lesson_length = 60; }
 			if (preg_match('/90/u',$sqarray[$course_index])) { $season_course_id = LESSON90; $lesson_length = 90; }
 			if (preg_match('/120/u',$sqarray[$course_index])) { $season_course_id = LESSON120; $lesson_length = 120; }
-			$subjects = explode( ',', $sqarray[$subject_index] );
+			$subjects = explode( ';', $sqarray[$subject_index] );
+//			$subjects = explode( ',', $sqarray[$subject_index] );
 //			$subjects = explode( ';', $sqarray[10] );
 			$subjects_id = array();
 			foreach ($subjects as $subject) {
