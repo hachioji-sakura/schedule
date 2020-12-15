@@ -949,7 +949,7 @@ foreach($date_list as $date) {
 						$err_st |= TEACHER_SUBJECT_ERROR;
 					}
 					
-					$disp_option = (!$place_select || $members[$schedule['member_no']]['place']==$place_select)? '': 'style="display:none"';
+					$disp_option = (!$place_select || $members[$schedule['member_no']]['place']==$place_select)? '': 'style="visibility:hidden"';
 					$tmpstr .= "<td bgcolor=\"$bgcolor\" colspan=\"$colspan\" $disp_option>";
 					if ($err_st) { $tmpstr .= '<font color=red>'; }
 					$tmpstr .= "<input type=\"checkbox\" name=\"lessons[]\" value=\"{$date}-{$stime}-{$schedule['teacher_no']}-{$schedule['member_no']}\" onclick=\"lclick(this.checked)\">";
