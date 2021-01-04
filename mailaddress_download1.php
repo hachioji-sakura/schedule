@@ -42,6 +42,7 @@ try {
 		$sql = "SELECT name, mail_address FROM tbl_statement_detail, tbl_member ".
 					"WHERE FROM_UNIXTIME(start_timestamp, '%Y') = $year ".
 					"AND  FROM_UNIXTIME(start_timestamp, '%m')+0 = $month ".
+					"AND tbl_member.del_flag in (0,2) ".
 					"AND tbl_member.name <> '体験生徒' ".
 					"AND absent_flag = 0 ".
 					"AND tbl_statement_detail.student_id = tbl_member.no ".
