@@ -220,6 +220,7 @@ try{
 	"repeattimes,".
 	"place_id,".
 	"temporary,".
+	"confirm,".
 	"entrytime,".
 	"updatetime,".
 	"updateuser,".
@@ -242,6 +243,7 @@ try{
 	$stmt->execute();
         $schedule_array = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ( $schedule_array as $row ) {
+if ($row[id]==29344) continue;	//2020/11/20 安田さん削除エラー対応
 		$schedule_id	=	$row[id];
 		$repetition_id	=	$row[repetition_id];
 		$user_id 	=	(int)$row[user_id];
@@ -264,6 +266,7 @@ try{
 		$repeattimes	=	$row[repeattimes];
 		$place_id	=	$row[place_id];
 		$temporary	=	$row[temporary];
+		$confirm	= $row[confirm];
 		$comment	=	$row[comment];
 		$entrytime	=	$row[entrytime];
 		$updated_timestamp	=	$row[updatetime];
@@ -272,14 +275,16 @@ try{
 		$subject_expr 	=	$row[subject_expr];
 		$recurrence_id	=	$row[recurrence_id];
 						// DB データの変換処理
+		if ( !($trial_id > 0 && $confirm == 'f') )
 		if ( $temporary > 0 && $temporary < 110 ) {
 				// temporary. target data should be omitted.
 			continue;
 		}
 		
 		// 事務兼任講師の事務カレンダーは無視（講師カレンダーの事務作業を使用）
-		if ($user_id>200000 && $teacher_and_staff_list[$staff_list[$user_id-200000]['name']])
-			continue;
+//		if ($user_id>200000 && $teacher_and_staff_list[$staff_list[$user_id-200000]['name']])
+//			continue;
+		if ($work_id==9 && $confirm != 'f')	continue;
 		
 		// 事務兼任講師の事務作業時に講師IDを事務員IDに変換
 		if ($user_id>100000 && $user_id<200000) {
