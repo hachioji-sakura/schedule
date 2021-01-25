@@ -10,7 +10,7 @@ require_once("./gennsenn_choushuu_gaku.php");
 $errArray = array();
 $errFlag = 0;
 
-//$log_tid=12;
+//$log_tid=2;
 //$log_date='6月18日';
 
 // 当日休み時給対応
@@ -1153,6 +1153,50 @@ $cmd = "SELECT * FROM tbl_tatekae WHERE year=$year AND month=$month AND status='
 $stmt = $db->query($cmd);
 $tatekae_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+foreach ($staff_list as $key=>&$staff) {
+	
+	$sql = 
+		"SELECT sum(event_diff_hours) FROM tbl_event_staff ".
+		"WHERE event_year=$year AND event_month=$month AND staff_no={$staff['no']} AND absent_flag=0";
+	$stmt = $db->query($sql);
+	$work_times = ($stmt->fetch(PDO::FETCH_NUM))[0];
+	$staff['work_times'] = $work_times;
+	
+	$sql = 
+		"SELECT count(DISTINCT event_day) FROM tbl_event_staff ".
+		"WHERE event_year=$year AND event_month=$month AND staff_no={$staff['no']} AND absent_flag=0";
+	$stmt = $db->query($sql);
+	$work_days = ($stmt->fetch(PDO::FETCH_NUM))[0];
+	$staff['work_days'] = $work_days;
+	
+	$cmd = "SELECT * FROM tbl_wage_staff WHERE staff_id={$staff['no']}";
+	$stmt = $db->query($cmd);
+	$wages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	$staff['wages'] = $wages;
+	if (!$teacher_and_staff_list[$staff['name']]['teacher'] && !$wages[0]['hourly_wage'])	$errArray[] = "事務員時給未登録エラー：　{$staff['name']} ";
+	
+	$pay = floor($work_times * $wages[0]['hourly_wage']);
+	$staff['pay0'] = $pay;
+
+	$payadj_detail   = array_filter($payadj_list, function($item){global $staff; return $item['employee_type']==STAFF && $item['employee_no']==$staff['no'];});
+	$payadj          = array_sum(array_column(array_filter($payadj_detail, function($item){return $item['tax_flag']==1;}), 'price'));
+	$payadj_tax_free = array_sum(array_column(array_filter($payadj_detail, function($item){return $item['tax_flag']==0;}), 'price'));
+	$staff['payadj_detail']   = $payadj_detail;
+	$staff['payadj']          = $payadj ;
+	$staff['payadj_tax_free'] = $payadj_tax_free;
+		
+	$tatekae_detail = array_filter($tatekae_list, function($item){global $staff; return $item['employee_type']==STAFF && $item['employee_no']==$staff['no'];} );
+	$tatekae_total  = array_sum(array_column($tatekae_detail, 'price'));
+	$staff['tatekae_detail'] = $tatekae_detail;
+	$staff['tatekae_total']  = $tatekae_total;
+	
+	if (!$pay && !$tatekae_total && !$payadj && !$payadj_tax_free)
+		unset($staff_list[$key]);
+	else
+		if ($teacher_and_staff_list[$staff['name']])	$teacher_and_staff_list[$staff['name']]['staff'] = $staff;
+}
+unset($staff);
+
 } catch (Exception $e) {
 	// 処理を中断するほどの致命的なエラー
 	array_push($errArray, $e->getMessage());
@@ -1344,49 +1388,6 @@ if (!$pdf_mode) {
 </tr>
 <?php
 try {
-
-foreach ($staff_list as $key=>&$staff) {
-	
-	$sql = 
-		"SELECT sum(event_diff_hours) FROM tbl_event_staff ".
-		"WHERE event_year=$year AND event_month=$month AND staff_no={$staff['no']} AND absent_flag=0";
-	$stmt = $db->query($sql);
-	$work_times = ($stmt->fetch(PDO::FETCH_NUM))[0];
-	$staff['work_times'] = $work_times;
-	
-	$sql = 
-		"SELECT count(DISTINCT event_day) FROM tbl_event_staff ".
-		"WHERE event_year=$year AND event_month=$month AND staff_no={$staff['no']} AND absent_flag=0";
-	$stmt = $db->query($sql);
-	$work_days = ($stmt->fetch(PDO::FETCH_NUM))[0];
-	$staff['work_days'] = $work_days;
-	
-	$cmd = "SELECT * FROM tbl_wage_staff WHERE staff_id={$staff['no']}";
-	$stmt = $db->query($cmd);
-	$wages = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	$staff['wages'] = $wages;
-	
-	$pay = floor($work_times * $wages[0]['hourly_wage']);
-	$staff['pay0'] = $pay;
-
-	$payadj_detail   = array_filter($payadj_list, function($item){global $staff; return $item['employee_type']==STAFF && $item['employee_no']==$staff['no'];});
-	$payadj          = array_sum(array_column(array_filter($payadj_detail, function($item){return $item['tax_flag']==1;}), 'price'));
-	$payadj_tax_free = array_sum(array_column(array_filter($payadj_detail, function($item){return $item['tax_flag']==0;}), 'price'));
-	$staff['payadj_detail']   = $payadj_detail;
-	$staff['payadj']          = $payadj ;
-	$staff['payadj_tax_free'] = $payadj_tax_free;
-		
-	$tatekae_detail = array_filter($tatekae_list, function($item){global $staff; return $item['employee_type']==STAFF && $item['employee_no']==$staff['no'];} );
-	$tatekae_total  = array_sum(array_column($tatekae_detail, 'price'));
-	$staff['tatekae_detail'] = $tatekae_detail;
-	$staff['tatekae_total']  = $tatekae_total;
-	
-	if (!$pay && !$tatekae_total && !$payadj && !$payadj_tax_free)
-		unset($staff_list[$key]);
-	else
-		if ($teacher_and_staff_list[$staff['name']])	$teacher_and_staff_list[$staff['name']]['staff'] = $staff;
-}
-unset($staff);
 
 foreach ($tmp_teacher_list as &$teacher) {
 	
