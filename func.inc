@@ -3967,7 +3967,7 @@ function get_student_join_month($db, $member_no, $lesson_id=0) {
 		return '2019/04';
 	}
 	try {
-		$sql = "SELECT FROM_UNIXTIME(MIN(start_timestamp),'%Y/%m') FROM tbl_statement_detail WHERE student_id = \"$member_no\" ";
+		$sql = "SELECT FROM_UNIXTIME(MIN(start_timestamp),'%Y/%m') FROM tbl_statement_detail WHERE student_id = \"$member_no\" AND comment NOT LIKE '%無料体験%' ";
 		if ($lesson_id != 0)	$sql .= "AND lesson_id = \"$lesson_id\"";
 		$stmt = $db->query($sql);
 		$rslt = $stmt->fetch(PDO::FETCH_NUM);
