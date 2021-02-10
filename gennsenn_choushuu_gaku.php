@@ -1,7 +1,7 @@
 <?php
 
-define('GENNSENN_CHOUSHUU_HYOU_NENNDO','2020');
-define('GENNSENN_CHOUSHUU_HYOU_MEISHOU','令和2年分　源泉徴収税額表');
+define('GENNSENN_CHOUSHUU_HYOU_NENNDO','2021');
+define('GENNSENN_CHOUSHUU_HYOU_MEISHOU','令和3年分　源泉徴収税額表');
 
 $gennsenn_choushuu_table = array(
 
