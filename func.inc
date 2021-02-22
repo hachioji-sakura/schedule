@@ -4138,4 +4138,10 @@ function check_lms_mode() {
 
 check_lms_mode();
 
+function get_statement_timestamp($year, $month) {
+	$stmt = $db->query("SELECT update_timestamp FROM tbl_statement WHERE seikyu_year=$year and seikyu_month=$month");
+	$update_timestamp = $stmt->fetchColumn();
+	return $update_timestamp;
+}
+
 ?>

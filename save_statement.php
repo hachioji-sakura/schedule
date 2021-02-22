@@ -574,9 +574,7 @@ location.href = "all_output_pdf.php?y=<?= $year ?>&m=<?= $month ?>";
 １．先生の授業時間をチェックする場合は、<a href="./check_list.php?y=<?=$year?>&m=<?=$month?>">こちら</a>です。<br><br>
 ２．休み回数をチェックする場合は、<a href="./absent_list.php?y=<?=$year?>&m=<?=$month?>">こちら</a>です。<br><br>
 ３．生徒一覧を表示する場合は、<a href="./student_list.php?y=<?=$year?>&m=<?=$month?>">こちら</a>です。<br><br>
-４．明細書をpdfファイルに出力し、月謝金額お知らせメール送信の準備（明細書をスプレッドシートに出力）をする場合は、<a href="./all_output_pdf.php?y=<?= $year ?>&m=<?= $month ?>" target="_blank">こちら</a>です。<br>
-　　&nbsp;<font color="red">※月謝金額お知らせメール送信の準備には、１分ぐらい時間がかかります。<br>
-　　　　処理が終了しますまでしばらくお待ちください。</font><br><br>
+４．明細書をpdfファイルに出力する場合は、<a href="./all_output_pdf.php?y=<?= $year ?>&m=<?= $month ?>" target="_blank">こちら</a>です。<br><br>
 ５．部門別受講料を出力する場合は、<a href="./total_list.php?y=<?=$year?>&m=<?=$month?>">こちら</a>です。<br><br>
 </div>
 <!--
