@@ -151,7 +151,7 @@ if ($month!=1 && $month!=4 && $month!=8) {
 
 // 先生一覧を取得
 $teacher_list = get_teacher_list($db,array(),array(),array(),1);
-$staff_list   = get_staff_list($db,array(),array(),array(),1);
+$staff_list   = get_staff_list($db,array("tbl_staff.no<>'41'"),array(),array(),1); // 弓削 寛子さんを除外
 
 foreach ($teacher_list as &$teacher) {
 	$teacher['transport_dcost1'][0] = $teacher['transport_dcost1_Sun'];

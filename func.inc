@@ -2918,7 +2918,7 @@ function get_teacher_list($db, $param_array=array(), $value_array=array(), $orde
 		"SELECT * FROM tbl_teacher";
 	switch($all_flag) {
 	case 0:	$cmd .= " where tbl_teacher.del_flag = '0'"; break;
-	case 1:	$cmd .= " where tbl_teacher.del_flag = '0' or tbl_teacher.del_flag = '2'"; break;
+	case 1:	$cmd .= " where (tbl_teacher.del_flag = '0' or tbl_teacher.del_flag = '2')"; break;
 	case 2:	$cmd .= " where tbl_teacher.del_flag >= '0'"; break;
 	case 3:	$cmd .= " where tbl_teacher.del_flag = '2'"; break;
 	}
@@ -3656,7 +3656,7 @@ function get_staff_list($db, $param_array=array(), $value_array=array(), $order_
 		 FROM tbl_staff";
 	switch($all_flag) {
 	case 0:	$cmd .= " where tbl_staff.del_flag = '0'"; break;
-	case 1:	$cmd .= " where tbl_staff.del_flag = '0' or tbl_staff.del_flag = '2'"; break;
+	case 1:	$cmd .= " where (tbl_staff.del_flag = '0' or tbl_staff.del_flag = '2')"; break;
 	case 2:	$cmd .= " where tbl_staff.del_flag >= '0'"; break;
 	case 3:	$cmd .= " where tbl_staff.del_flag = '2'"; break;
 	}
@@ -4137,11 +4137,5 @@ function check_lms_mode() {
 }
 
 check_lms_mode();
-
-function get_statement_timestamp($year, $month) {
-	$stmt = $db->query("SELECT update_timestamp FROM tbl_statement WHERE seikyu_year=$year and seikyu_month=$month");
-	$update_timestamp = $stmt->fetchColumn();
-	return $update_timestamp;
-}
 
 ?>
