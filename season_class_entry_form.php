@@ -122,9 +122,13 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 				$header = $sqarray;
 				$name_index = array_search('生徒氏名',$header);
 				$course_index = array_search('コース',$header);
-				$date_index = array_search('希望日時',$header);
+				$date_index = array_search('希望日',$header);
 				$subject_index = array_search('希望授業科目',$header);
 				$place_index = array_search('希望校舎',$header);
+			if (!$header || !$name_index || !$course_index || !$date_index || !$subject_index || !$place_index) {
+				echo "先頭行（見出し行）が不正です。<br>";
+				exit();
+			}
 /*				
 //				if ($class_type == 'sat_sun_class') {
 				if (1) {
