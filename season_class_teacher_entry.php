@@ -194,21 +194,41 @@ function normal_select(obj,sat_sun_flag) {
 	var dateWOD=obj.parentNode.parentNode.firstElementChild.innerText;
 	var date=dateWOD.substr(0,10);
 	if (obj.value=='通常時間') { 
-		if (sat_sun_flag && dateWOD.indexOf('土')!=-1) {
-			for (var i=0;i<timechecks.length;i++) {
-				if (timechecks[i].value.indexOf(date+'_14')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
-				if (timechecks[i].value.indexOf(date+'_15')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
-				if (timechecks[i].value.indexOf(date+'_16')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
-				if (timechecks[i].value.indexOf(date+'_17')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
-				if (timechecks[i].value.indexOf(date+'_18')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+		if (sat_sun_flag) {
+			if (dateWOD.indexOf('土')!=-1) {
+				for (var i=0;i<timechecks.length;i++) {
+					if (timechecks[i].value.indexOf(date+'_14')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+					if (timechecks[i].value.indexOf(date+'_15')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+					if (timechecks[i].value.indexOf(date+'_16')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+					if (timechecks[i].value.indexOf(date+'_17')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+					if (timechecks[i].value.indexOf(date+'_18')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+				}
+			} else {
+				for (var i=0;i<timechecks.length;i++) {
+					if (timechecks[i].value.indexOf(date+'_11')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+					if (timechecks[i].value.indexOf(date+'_12')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+					if (timechecks[i].value.indexOf(date+'_13')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+					if (timechecks[i].value.indexOf(date+'_14')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+					if (timechecks[i].value.indexOf(date+'_15')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+				}
 			}
 		} else {
-			for (var i=0;i<timechecks.length;i++) {
-				if (timechecks[i].value.indexOf(date+'_11')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
-				if (timechecks[i].value.indexOf(date+'_12')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
-				if (timechecks[i].value.indexOf(date+'_13')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
-				if (timechecks[i].value.indexOf(date+'_14')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
-				if (timechecks[i].value.indexOf(date+'_15')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+			if (dateWOD.indexOf('2021/03/20')==-1 && dateWOD.indexOf('日')==-1) {
+				for (var i=0;i<timechecks.length;i++) {
+					if (timechecks[i].value.indexOf(date+'_14')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+					if (timechecks[i].value.indexOf(date+'_15')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+					if (timechecks[i].value.indexOf(date+'_16')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+					if (timechecks[i].value.indexOf(date+'_17')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+					if (timechecks[i].value.indexOf(date+'_18')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+				}
+			} else {
+				for (var i=0;i<timechecks.length;i++) {
+					if (timechecks[i].value.indexOf(date+'_11')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+					if (timechecks[i].value.indexOf(date+'_12')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+					if (timechecks[i].value.indexOf(date+'_13')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+					if (timechecks[i].value.indexOf(date+'_14')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+					if (timechecks[i].value.indexOf(date+'_15')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
+				}
 			}
 		}
 		obj.value='クリア';
@@ -393,7 +413,9 @@ function tcheck(obj){
 		<td style="<?= $time_array['20:00']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_20:00" onclick="tcheck(this)" <?= $time_array['20:00']?"checked":"" ?>></td>
 		<td style="<?= $time_array['20:30']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_20:30" onclick="tcheck(this)" <?= $time_array['20:30']?"checked":"" ?>></td>
 	<?php
-		} else if (strpos($youbi,"土") && $sat_sun_flag) {
+		} else if ((strpos($youbi,"土") && $sat_sun_flag) ||
+			(!$sat_sun_flag && (!strpos($youbi,"日") && $date!="2021/03/20")))
+		{
 	?>
 		<td></td>
 		<td></td>

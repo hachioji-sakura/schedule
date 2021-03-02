@@ -40,10 +40,18 @@ if ($class_type=='sat_sun_class') {
 }
 if ($class_type == 'sat_sun_class') {
 	$page_title = "土日講習";
+	$default_stime_holiday = $default_stime;
+	$default_etime_holiday = $default_stime;
 } else {
 	$page_title = "$season_class_title";
-	$default_stime_sat = $default_stime;
-	$default_etime_sat = $default_etime;
+//	$default_stime_sat = $default_stime;
+//	$default_etime_sat = $default_etime;
+	$default_stime = 4;
+	$default_etime = 14;
+	$default_stime_sat = 4;
+	$default_etime_sat = 14;
+	$default_stime_holiday = 10;
+	$default_etime_holiday = 20;
 }
 
 if ($class_type=='sat_sun_class') {
@@ -246,12 +254,22 @@ function selectChange(obj,num)
 	var value = obj.options[obj.selectedIndex].value;
 	var dates = document.getElementsByName('dates[]');
 	var default_stime, default_etime;
-	if (dates[num].innerHTML.indexOf('土') < 0) {
-		default_stime = <?= $default_stime+1 ?>;
-		default_etime = <?= $default_etime+1 ?>;
+	if (dates[num].innerHTML.indexOf('2021/03/20') < 0) {
+		if (dates[num].innerHTML.indexOf('土') < 0) {
+			if (dates[num].innerHTML.indexOf('日') < 0) {
+					default_stime = <?= $default_stime+1 ?>;
+					default_etime = <?= $default_etime+1 ?>;
+			} else {
+				default_stime = <?= $default_stime_holiday+1 ?>;
+				default_etime = <?= $default_etime_holiday+1 ?>;
+			}
+		} else {
+			default_stime = <?= $default_stime_sat+1 ?>;
+			default_etime = <?= $default_etime_sat+1 ?>;
+		}
 	} else {
-		default_stime = <?= $default_stime_sat+1 ?>;
-		default_etime = <?= $default_etime_sat+1 ?>;
+		default_stime = <?= $default_stime_holiday+1 ?>;
+		default_etime = <?= $default_etime_holiday+1 ?>;
 	}
 	if (obj.selectedIndex == 0) {
 		document.getElementsByName('stime[]')[num].selectedIndex=0;
@@ -286,12 +304,22 @@ function updateLessonTime()
 	var dates = document.getElementsByName('dates[]');
 	var default_stime, default_etime;
 	for (var i=0;i<entry_flag.length;i++) {
-		if (dates[i].innerHTML.indexOf('土') < 0) {
-			default_stime = <?= $default_stime+1 ?>;
-			default_etime = <?= $default_etime+1 ?>;
+		if (dates[num].innerHTML.indexOf('2021/03/20') < 0) {
+			if (dates[num].innerHTML.indexOf('土') < 0) {
+				if (dates[num].innerHTML.indexOf('日') < 0) {
+						default_stime = <?= $default_stime+1 ?>;
+						default_etime = <?= $default_etime+1 ?>;
+				} else {
+					default_stime = <?= $default_stime_holiday+1 ?>;
+					default_etime = <?= $default_etime_holiday+1 ?>;
+				}
+			} else {
+				default_stime = <?= $default_stime_sat+1 ?>;
+				default_etime = <?= $default_etime_sat+1 ?>;
+			}
 		} else {
-			default_stime = <?= $default_stime_sat+1 ?>;
-			default_etime = <?= $default_etime_sat+1 ?>;
+			default_stime = <?= $default_stime_holiday+1 ?>;
+			default_etime = <?= $default_etime_holiday+1 ?>;
 		}
 		if (entry_flag[i].checked || furikae_flag[i].checked) {
 			if ((stimes[i].selectedIndex!=default_stime) || (etimes[i].selectedIndex!=default_etime)) {
@@ -311,12 +339,22 @@ function entryCheck( obj, num )
 	var t_attend_st = document.getElementsByName('teacher_attend_status[]');
 	var dates = document.getElementsByName('dates[]');
 	var default_stime, default_etime;
-	if (dates[num].innerHTML.indexOf('土') < 0) {
-		default_stime = <?= $default_stime+1 ?>;
-		default_etime = <?= $default_etime+1 ?>;
+	if (dates[num].innerHTML.indexOf('2021/03/20') < 0) {
+		if (dates[num].innerHTML.indexOf('土') < 0) {
+			if (dates[num].innerHTML.indexOf('日') < 0) {
+					default_stime = <?= $default_stime+1 ?>;
+					default_etime = <?= $default_etime+1 ?>;
+			} else {
+				default_stime = <?= $default_stime_holiday+1 ?>;
+				default_etime = <?= $default_etime_holiday+1 ?>;
+			}
+		} else {
+			default_stime = <?= $default_stime_sat+1 ?>;
+			default_etime = <?= $default_etime_sat+1 ?>;
+		}
 	} else {
-		default_stime = <?= $default_stime_sat+1 ?>;
-		default_etime = <?= $default_etime_sat+1 ?>;
+		default_stime = <?= $default_stime_holiday+1 ?>;
+		default_etime = <?= $default_etime_holiday+1 ?>;
 	}
 	if (obj.checked) {
 		furikae_flag[num].style='display:none;';
@@ -346,12 +384,22 @@ function furikaeCheck( obj, num )
 	var furikae_st = document.getElementsByName('furikae_status[]');
 	var dates = document.getElementsByName('dates[]');
 	var default_stime, default_etime;
-	if (dates[num].innerHTML.indexOf('土') < 0) {
-		default_stime = <?= $default_stime+1 ?>;
-		default_etime = <?= $default_etime+1 ?>;
+	if (dates[num].innerHTML.indexOf('2021/03/20') < 0) {
+		if (dates[num].innerHTML.indexOf('土') < 0) {
+			if (dates[num].innerHTML.indexOf('日') < 0) {
+					default_stime = <?= $default_stime+1 ?>;
+					default_etime = <?= $default_etime+1 ?>;
+			} else {
+				default_stime = <?= $default_stime_holiday+1 ?>;
+				default_etime = <?= $default_etime_holiday+1 ?>;
+			}
+		} else {
+			default_stime = <?= $default_stime_sat+1 ?>;
+			default_etime = <?= $default_etime_sat+1 ?>;
+		}
 	} else {
-		default_stime = <?= $default_stime_sat+1 ?>;
-		default_etime = <?= $default_etime_sat+1 ?>;
+		default_stime = <?= $default_stime_holiday+1 ?>;
+		default_etime = <?= $default_etime_holiday+1 ?>;
 	}
 	if (obj.checked) {
 		entry_flag[num].style='display:none;';
@@ -680,6 +728,7 @@ function inputCheck()
 	?>
 	</table>
 	<br>
+<!--
 	<div class="menu_box">
 	<font color="black" size="-1">
 	<span style="background-color:#FFCCCC;">＊ 背景色薄い赤は休みの日です。</span><br>
@@ -687,6 +736,7 @@ function inputCheck()
 	<span style="background-color:#FFFFAA;">＊ 背景色薄い黄色は"11:00～16:00"、"13:00～18:00"以外の時間帯です。</span><br>
 	</font>
 	</div>
+-->
 	<br>
 	<br>
 	<table border="1" id="table1">
