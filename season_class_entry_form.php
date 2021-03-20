@@ -243,7 +243,7 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 						$date0 = explode('/',$date);
 						$date0 = sprintf('%02d/%02d',$date0[0],$date0[1]);
 						foreach ($date_list as $date1) { if (substr($date1,5)==$date0) break; }
-						if (date_format(new DateTime($date1), 'w')!=0 && $date1 !='2021/03/20') {
+						if (date_format(new DateTime($date1), 'w')!=0 && $date1 !='2021/03/20' && $date1<'2021/03/22') {
 							$stimes[1][]='14:00';$etimes[1][]='19:00';
 						} else {
 							$stimes[1][]='11:00';$etimes[1][]='16:00';

@@ -46,12 +46,12 @@ if ($class_type == 'sat_sun_class') {
 	$page_title = "$season_class_title";
 //	$default_stime_sat = $default_stime;
 //	$default_etime_sat = $default_etime;
-	$default_stime = 4;
-	$default_etime = 14;
-	$default_stime_sat = 4;
-	$default_etime_sat = 14;
-	$default_stime_holiday = 10;
-	$default_etime_holiday = 20;
+	$default_stime = 10;
+	$default_etime = 20;
+	$default_stime_sat = 10;
+	$default_etime_sat = 20;
+	$default_stime_holiday = 4;
+	$default_etime_holiday = 14;
 }
 
 if ($class_type=='sat_sun_class') {
@@ -255,8 +255,8 @@ function selectChange(obj,num)
 	var dates = document.getElementsByName('dates[]');
 	var default_stime, default_etime;
 	if (dates[num].innerHTML.indexOf('2021/03/20') < 0) {
-		if (dates[num].innerHTML.indexOf('土') < 0) {
-			if (dates[num].innerHTML.indexOf('日') < 0) {
+		if (dates[num].innerHTML.indexOf('土') < 0 <?= $class_type!='sat_sun_class'?"|| (dates[num].innerHTML.substr(0,10)>='2021/03/22')":"" ?>) {
+			if (dates[num].innerHTML.indexOf('日') < 0 <?= $class_type!='sat_sun_class'?"&& (dates[num].innerHTML.substr(0,10)<'2021/03/22')":"" ?>) {
 					default_stime = <?= $default_stime+1 ?>;
 					default_etime = <?= $default_etime+1 ?>;
 			} else {
@@ -305,8 +305,8 @@ function updateLessonTime()
 	var default_stime, default_etime;
 	for (var i=0;i<entry_flag.length;i++) {
 		if (dates[num].innerHTML.indexOf('2021/03/20') < 0) {
-			if (dates[num].innerHTML.indexOf('土') < 0) {
-				if (dates[num].innerHTML.indexOf('日') < 0) {
+			if (dates[num].innerHTML.indexOf('土') < 0 <?= $class_type!='sat_sun_class'?"|| (dates[num].innerHTML.substr(0,10)>='2021/03/22')":"" ?>) {
+				if (dates[num].innerHTML.indexOf('日') < 0 <?= $class_type!='sat_sun_class'?"&& (dates[num].innerHTML.substr(0,10)<'2021/03/22')":"" ?>) {
 						default_stime = <?= $default_stime+1 ?>;
 						default_etime = <?= $default_etime+1 ?>;
 				} else {
@@ -340,8 +340,8 @@ function entryCheck( obj, num )
 	var dates = document.getElementsByName('dates[]');
 	var default_stime, default_etime;
 	if (dates[num].innerHTML.indexOf('2021/03/20') < 0) {
-		if (dates[num].innerHTML.indexOf('土') < 0) {
-			if (dates[num].innerHTML.indexOf('日') < 0) {
+		if (dates[num].innerHTML.indexOf('土') < 0 <?= $class_type!='sat_sun_class'?"|| (dates[num].innerHTML.substr(0,10)>='2021/03/22')":"" ?>) {
+			if (dates[num].innerHTML.indexOf('日') < 0 <?= $class_type!='sat_sun_class'?"&& (dates[num].innerHTML.substr(0,10)<'2021/03/22')":"" ?>) {
 					default_stime = <?= $default_stime+1 ?>;
 					default_etime = <?= $default_etime+1 ?>;
 			} else {
@@ -385,8 +385,8 @@ function furikaeCheck( obj, num )
 	var dates = document.getElementsByName('dates[]');
 	var default_stime, default_etime;
 	if (dates[num].innerHTML.indexOf('2021/03/20') < 0) {
-		if (dates[num].innerHTML.indexOf('土') < 0) {
-			if (dates[num].innerHTML.indexOf('日') < 0) {
+		if (dates[num].innerHTML.indexOf('土') < 0 <?= $class_type!='sat_sun_class'?"|| (dates[num].innerHTML.substr(0,10)>='2021/03/22')":"" ?>) {
+			if (dates[num].innerHTML.indexOf('日') < 0 <?= $class_type!='sat_sun_class'?"&& (dates[num].innerHTML.substr(0,10)<'2021/03/22')":"" ?>) {
 					default_stime = <?= $default_stime+1 ?>;
 					default_etime = <?= $default_etime+1 ?>;
 			} else {
