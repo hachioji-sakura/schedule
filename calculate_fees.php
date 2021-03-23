@@ -94,6 +94,44 @@ class calculate_fees {
 			$date_list_string = $date_list_string.")";
 		}
 	}
+	
+	// 2021年春期講習前半・後半対応
+	if ($year=2021 && $month=3) {
+		$date_list_array["2021/03"] = array(
+		"2021/03/06",
+		"2021/03/07",
+		"2021/03/08",
+		"2021/03/09",
+		"2021/03/10",
+		"2021/03/11",
+		"2021/03/12",
+		"2021/03/13",
+		"2021/03/14",
+		"2021/03/15",
+		"2021/03/16",
+		"2021/03/17",
+		"2021/03/18",
+		"2021/03/19",
+		"2021/03/20",
+		"2021/03/21",
+
+		"2021/03/22",
+		"2021/03/23",
+		"2021/03/24",
+		"2021/03/25",
+		"2021/03/26",
+		"2021/03/27",
+		"2021/03/28",
+		"2021/03/29",
+		"2021/03/30",
+		"2021/03/31",
+		"2021/04/01",
+		"2021/04/02",
+		"2021/04/03",
+		"2021/04/04",
+		"2021/04/05"
+		);
+	}
 
 try{
 	
@@ -382,7 +420,7 @@ try{
 		//	$this->simple_total_price = $this->simple_total_price + $this->others_price;
 		//}
 		
-		$param_array = array("tbl_others.member_no=?", "tbl_others.year=?", "tbl_others.month=?", "tbl_others.charge=?");
+		$param_array = array("tbl_others.member_no=? and tbl_others.kind<>8", "tbl_others.year=?", "tbl_others.month=?", "tbl_others.charge=?");
 		$value_array = array($this->member_array["no"], $year, $month, 2);
 		$order_array = array("tbl_others.year, tbl_others.month, tbl_others.others_no");
 		foreach ($this->calculate_others($this->db, $param_array, $value_array, $order_array) as $key => $item) {
