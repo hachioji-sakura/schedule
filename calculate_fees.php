@@ -96,7 +96,7 @@ class calculate_fees {
 	}
 	
 	// 2021年春期講習前半・後半対応
-	if ($year=2021 && $month=3) {
+	if ($year==2021 && $month==3) {
 		$date_list_array["2021/03"] = array(
 		"2021/03/06",
 		"2021/03/07",
