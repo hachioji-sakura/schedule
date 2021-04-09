@@ -77,6 +77,7 @@ $place_list[9] = array("no"=>"9","name"=>"子安校","calendar_name_list"=>array
 $place_list[10] = array("no"=>"10","name"=>"国立校","calendar_name_list"=>array("塾_国立校","English_Kunitachi"));
 $place_list[11] = array("no"=>"11","name"=>"北口校２Ｆ","calendar_name_list"=>array("塾_八王子_2F","塾_北口校_2F"));
 $place_list[12] = array("no"=>"12","name"=>"三鷹校","calendar_name_list"=>array("塾_三鷹校"));
+$place_list[13] = array("no"=>"13","name"=>"吉祥寺校","calendar_name_list"=>array("塾_吉祥寺校"));
 
 $tatekae_item_list = array("備品・消耗品費","書籍費","交際費","支払手数料","荷造運賃費","その他");
 
