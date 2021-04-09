@@ -65,7 +65,8 @@ if ($class_type=='sat_sun_class') {
 	if (is_null($year) === true || empty($year) === true)   { 
 		$year = date("Y");
 		$month = date("n");
-		if ($month%2 == 0) {
+//		if ($month%2 == 0) {
+		if ($month%2 == 1) {
 			$year = date("Y",strtotime("first day of last month"));
 			$month = date("n",strtotime("first day of last month"));
 		}
@@ -75,7 +76,8 @@ if ($class_type=='sat_sun_class') {
 		$str0 = sprintf('%04d/%02d',$year,$month);
 		$date_list = array_values(array_filter( $date_list, function($s)use($str0){$v=substr($s,0,7);return ($v==$str0);} ));
 	} else {
-		if ($month%2==0) $month--;
+//		if ($month%2==0) $month--;
+		if ($month%2==1) $month--;
 	if ($_POST['button'] == '前月') {
 		$y1=$year; $m1=$month-2; if ($m1<1) { $y1--; $m1=11; }
 		$year = $y1; $month = $m1;

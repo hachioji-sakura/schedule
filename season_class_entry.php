@@ -5,7 +5,8 @@ require_once("./func.inc");
 require_once("./const/login_func.inc");
 $result = check_user($db, "1");
 
-$places_array = array("八王子北口校舎","国立校舎","豊田校舎","三鷹校舎");
+//$places_array = array("八王子北口校舎","国立校舎","豊田校舎","三鷹校舎");
+$places_array = array("八王子北口校舎","国立校舎","三鷹校舎");
 
 $errFlag = 0;
 $errArray = array();
@@ -17,7 +18,8 @@ if (is_null($month) === true || empty($month) === true) { $month = $_GET['m']; }
 if (is_null($year) === true || empty($year) === true)   { 
 	$year = date("Y");
 	$month = date("n");
-	if ($month%2 == 0) {
+//	if ($month%2 == 0) {
+	if ($month%2 == 1) {
 		$year = date("Y",strtotime("first day of last month"));
 		$month = date("n",strtotime("first day of last month"));
 	}
@@ -41,7 +43,7 @@ if ($class_type=='sat_sun_class') {
 if ($class_type == 'sat_sun_class') {
 	$page_title = "土日講習";
 	$default_stime_holiday = $default_stime;
-	$default_etime_holiday = $default_stime;
+	$default_etime_holiday = $default_etime;
 } else {
 	$page_title = "$season_class_title";
 //	$default_stime_sat = $default_stime;

@@ -94,7 +94,7 @@ $season_course_list = array(
 	);
 */
 $season_course_list = array(
-	"1"=>array("course_id"=>"1","course_name"=>"個別60分コース"),
+//	"1"=>array("course_id"=>"1","course_name"=>"個別60分コース"),
 	"2"=>array("course_id"=>"2","course_name"=>"個別90分コース"),
 	"3"=>array("course_id"=>"3","course_name"=>"個別120分コース")
 	);
@@ -368,7 +368,6 @@ $sat_sun_class_date_list = array(
 "2021/02/27",
 "2021/02/28",
 
-"2021/04/10",
 "2021/04/11",
 "2021/04/17",
 "2021/04/18",
@@ -388,15 +387,8 @@ $sat_sun_class_date_list = array(
 "2021/05/22",
 "2021/05/23",
 "2021/05/29",
-"2021/05/30",
-"2021/06/05",
-"2021/06/06",
-"2021/06/12",
-"2021/06/13",
-"2021/06/19",
-"2021/06/20",
-"2021/06/26",
-"2021/06/27"
+"2021/05/30"
+
 );
 foreach ($sat_sun_class_date_list as $i=>$item) { if ($i==0) { $sat_sun_class_date_list_string = "('$item'"; } else { $sat_sun_class_date_list_string = $sat_sun_class_date_list_string.",'$item'"; } }
 $sat_sun_class_date_list_string = $sat_sun_class_date_list_string.")";
@@ -733,8 +725,8 @@ $time_list = array(
 	);
 $default_stime=4;
 $default_etime=14;
-$default_stime_sat=8;
-$default_etime_sat=18;
+$default_stime_sat=10;
+$default_etime_sat=20;
 
 
 $jyuku_wage_type_list = array(

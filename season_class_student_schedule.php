@@ -35,7 +35,8 @@ if ($class_type == 'sat_sun_class') {
 		
 	} else {
 		
-		if ($month%2==0) $month--;
+//		if ($month%2==0) $month--;
+		if ($month%2==1) $month--;
 		if ($_POST['button'] == '前月') {
 			$y1=$year; $m1=$month-2; if ($m1<1) { $y1--; $m1=11; }
 			$year = $y1; $month = $m1;
