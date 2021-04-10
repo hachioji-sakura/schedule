@@ -123,6 +123,7 @@ if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
 				$name_index = array_search('生徒氏名',$header);
 				$course_index = array_search('コース',$header);
 				$date_index = array_search('希望日',$header);
+				if (!$date_index)	$date_index = array_search('希望日時',$header);
 				$subject_index = array_search('希望授業科目',$header);
 				$place_index = array_search('希望校舎',$header);
 			if (!$header || !$name_index || !$course_index || !$date_index || !$subject_index || !$place_index) {
