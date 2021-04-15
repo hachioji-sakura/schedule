@@ -1552,13 +1552,13 @@ foreach ($tmp_teacher_list as &$teacher) {
 		$ret = $stmt->fetch(PDO::FETCH_NUM);
 		$teacher['total_transport_status'] = $ret[0];
 		if ($ret[0] == 2) {
-//			if ($total_transport_cost > 0 || $teacher['transport_zero']) {
+			if ($total_transport_cost > 0 || $teacher['transport_zero']) {
 				$divide_transport_cost = prop_divide($key1, $total_transport_cost, $pay1, $pay2, $pay3, $teacher, $staff);
 				$str0 .= "<td align=\"right\">".number_format($divide_transport_cost)."</td>";
-//			} else {
-//				$str0 .= "<td><font color=\"red\">未登録</font></td>";
-//				$errFlag = 1;
-//			}
+			} else {
+				$str0 .= "<td><font color=\"red\">未登録</font></td>";
+				$errFlag = 1;
+			}
 		} else {
 			$str0 .= "<td><font color=\"red\">未確定</font></td>";
 			$errFlag = 1;
@@ -1829,12 +1829,12 @@ foreach ($staff_list as &$staff) {
 			}
 			$total_transport_cost += $total_transport_cost_unlimit;
 			$teacher_and_staff_list[$staff['name']]['teacher']['total_transport_cost'] = $total_transport_cost;
-//			if ($total_transport_cost > 0 || $teacher['transport_zero']) {
+			if ($total_transport_cost > 0 || $teacher['transport_zero']) {
 				echo "<td align=\"right\">".number_format($total_transport_cost)."</td>";
-//			} else {
-//				echo "<td><font color=\"red\">未登録</font></td>";
-//				$errFlag = 1;
-//			}
+			} else {
+				echo "<td><font color=\"red\">未登録</font></td>";
+				$errFlag = 1;
+			}
 			
 			$total_pay = $pay + $payadj_tax_free + $total_transport_cost + $tatekae_total;
 			echo "<td align=\"right\">".number_format($total_pay)."</td>";
@@ -1859,12 +1859,12 @@ foreach ($staff_list as &$staff) {
 			if ($staff['transport_limit'] && $total_transport_cost > $total_transport_cost_limit) {
 				$total_transport_cost = $total_transport_cost_limit;
 			}
-//			if ($total_transport_cost > 0 || $staff['transport_zero']) {
+			if ($total_transport_cost > 0 || $staff['transport_zero']) {
 				echo "<td align=\"right\">".number_format($total_transport_cost)."</td>";
-//			} else {
-//				echo "<td><font color=\"red\">未登録</font></td>";
-//				$errFlag = 1;
-//			}
+			} else {
+				echo "<td><font color=\"red\">未登録</font></td>";
+				$errFlag = 1;
+			}
 			
 			$total_pay = $pay + $payadj_tax_free + $total_transport_cost + $tatekae_total;
 			echo "<td align=\"right\">".number_format($total_pay)."</td>";
@@ -1974,13 +1974,13 @@ foreach ($staff_list as &$staff) {
 		$divide_transport_cost = 0;
 		$total_transport_cost = $teacher['total_transport_cost'];
 		if ($teacher['total_transport_status'] == 2) {
-//			if ($total_transport_cost > 0 || $teacher['transport_zero']) {
+			if ($total_transport_cost > 0 || $teacher['transport_zero']) {
 				$divide_transport_cost = prop_divide(2, $total_transport_cost, $teacher['pay0'], 0, $staff['pay0'], $teacher, $staff);
 				echo "<td align=\"right\">".number_format($divide_transport_cost)."</td>";
-//			} else {
-//				echo "<td><font color=\"red\">未登録</font></td>";
-//				$errFlag = 1;
-//			}
+			} else {
+				echo "<td><font color=\"red\">未登録</font></td>";
+				$errFlag = 1;
+			}
 		} else {
 			echo "<td><font color=\"red\">未確定</font></td>";
 			$errFlag = 1;
@@ -2088,12 +2088,12 @@ foreach ($teacher_and_staff_list as $key_name=>&$teacher_and_staff) {
 	
 	$total_transport_cost = $teacher['total_transport_cost'];
 	if ($teacher['total_transport_status'] == 2) {
-//		if ($total_transport_cost > 0 || $teacher['transport_zero']) {
+		if ($total_transport_cost > 0 || $teacher['transport_zero']) {
 			echo "<td align=\"right\">".number_format($total_transport_cost)."</td>";
-//		} else {
-//			echo "<td><font color=\"red\">未登録</font></td>";
-//			$errFlag = 1;
-//		}
+		} else {
+			echo "<td><font color=\"red\">未登録</font></td>";
+			$errFlag = 1;
+		}
 	} else {
 		echo "<td><font color=\"red\">未確定</font></td>";
 		$errFlag = 1;
