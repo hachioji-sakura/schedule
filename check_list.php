@@ -2087,7 +2087,7 @@ foreach ($teacher_and_staff_list as $key_name=>&$teacher_and_staff) {
 	if (!$yuge_flag) $total_payadj_tax_free += $payadj_tax_free;
 	
 	$total_transport_cost = $teacher['total_transport_cost'];
-	if ($teacher['total_transport_status'] == 2) {
+	if ($teacher['total_transport_status'] == 2 || !$teacher['pay0']) {
 		if ($total_transport_cost > 0 || $teacher['transport_zero']) {
 			echo "<td align=\"right\">".number_format($total_transport_cost)."</td>";
 		} else {
