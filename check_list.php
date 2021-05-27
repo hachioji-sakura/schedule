@@ -149,6 +149,8 @@ if ($month!=1 && $month!=4 && $month!=8) {
 }
 }
 
+	$db->query("DELETE FROM tbl_pay WHERE year=$year AND month=$month");
+
 // 先生一覧を取得
 $teacher_list = get_teacher_list($db,array(),array(),array(),1);
 $staff_list   = get_staff_list($db,array("tbl_staff.no<>'41'"),array(),array(),1); // 弓削 寛子さんを除外
@@ -1678,6 +1680,17 @@ foreach ($tmp_teacher_list as &$teacher) {
 					fclose($fp);
 				}
 				
+				if (!$teacher_and_staff_list[$teacher['name']]) {
+					$person_id = $teacher['no']+'100000';
+					$work_days = count($teacher["working_days"]);
+					$work_hours = floor($working_hours*100)/100;
+					$tax3 = $tax1+$tax2;
+					$db->query("INSERT INTO tbl_pay VALUES ($person_id,'{$teacher['name']}',$year,$month,$work_days,$work_hours,".
+							"{$teacher['pay0']},$tatekae_total,$payadj,$payadj_tax_free,$total_transport_cost,$total_pay,".
+							"$tax1,$tax2,$tax3,{$teacher['net_payments']},now()".
+							")");
+				}
+
 			} else {
 				$str0 .= "<td colspan=\"4\" $str1>兼任表参照</td>";
 			}
@@ -1999,6 +2012,16 @@ foreach ($staff_list as &$staff) {
 
 	echo "</tr>\n";
 	if ($teacher_and_staff_list[$staff['name']]) { $teacher_and_staff_list[$staff['name']]['staff'] = $staff; }
+
+	if (!$teacher_and_staff_list[$staff['name']]) {
+		$person_id = $staff['no']+'200000';
+		$work_hours = floor($work_times*100)/100;
+		$tax3 = $tax1+$tax2;
+		$db->query("INSERT INTO tbl_pay VALUES ($person_id,'{$staff['name']}',$year,$month,$work_days,$work_hours,".
+				"{$staff['pay0']},$tatekae_total1,$payadj,$payadj_tax_free,$total_transport_cost,$total_pay,".
+				"$tax1,$tax2,$tax3,{$staff['net_payments']},now()".
+				")");
+	}
 	
 	if ($yuge_flag) {
 		$output1 = ob_get_contents();
@@ -2222,6 +2245,15 @@ foreach ($teacher_and_staff_list as $key_name=>&$teacher_and_staff) {
 		fclose($fp);
 	}
 
+	$person_id = $teacher['no']+'100000';
+	$work_hours = floor(($work_times)*100)/100;
+	$pay4 = $teacher['pay0']+$staff['pay0'];
+	$tax3 = $tax1+$tax2;
+	$db->query("INSERT INTO tbl_pay VALUES ($person_id,'{$teacher['name']}',$year,$month,$work_days,$work_hours,".
+			"$pay4,$tatekae_total1,$payadj,$payadj_tax_free,$total_transport_cost,$total_pay,".
+			"$tax1,$tax2,$tax3,{$teacher_and_staff['net_payments']},now()".
+			")");
+
 	echo "</tr>\n";
 	if ($yuge_flag) {
 		$output1 = ob_get_contents();
@@ -2318,6 +2350,8 @@ foreach ($teacher_and_staff_list as $teacher_and_staff) {
 }
 fclose ($fp);
 echo "</table>";
+
+$db->commit();
 
 } catch (Exception $e) {
 	echo $e->getMessage().'<br>';
