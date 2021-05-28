@@ -878,8 +878,8 @@ if ($teacher_id==$log_tid) {var_dump($event);echo"<BR>";}
 				if (!$event['absent_flag']) {
 					if (!($event['course_id'] == 2 && $event["trial_flag"])) { $member_count++; }
 				} else {
+					if (!($event['course_id'] == 2 && $event["trial_flag"])) { $member_count++; }
 					if (preg_match('/(当日|today)/iu', $attendStatusCal[$event["date"]][$event["time"]][$name])) {
-						if (!($event['course_id'] == 2 && $event["trial_flag"])) { $member_count++; }
 						$todayFlag = 1;
 					}
 				}
