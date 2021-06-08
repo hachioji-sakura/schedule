@@ -579,6 +579,9 @@ if ($row[id]==29344) continue;	//2020/11/20 安田さん削除エラー対応
 		case '12':		// 吉祥寺
 			$new_place_id = 13 ;
 			break;
+		case '13':		// 立川
+			$new_place_id = 14 ;
+			break;
 		}
 
 		if ($user_id > 200000 ) {	// スタッフの場合
