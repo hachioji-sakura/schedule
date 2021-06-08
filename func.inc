@@ -388,7 +388,16 @@ $sat_sun_class_date_list = array(
 "2021/05/22",
 "2021/05/23",
 "2021/05/29",
-"2021/05/30"
+"2021/05/30",
+
+"2021/06/05",
+"2021/06/06",
+"2021/06/12",
+"2021/06/13",
+"2021/06/19",
+"2021/06/20",
+"2021/06/26",
+"2021/06/27"
 
 );
 foreach ($sat_sun_class_date_list as $i=>$item) { if ($i==0) { $sat_sun_class_date_list_string = "('$item'"; } else { $sat_sun_class_date_list_string = $sat_sun_class_date_list_string.",'$item'"; } }
