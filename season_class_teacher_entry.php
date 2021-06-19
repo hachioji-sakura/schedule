@@ -213,7 +213,8 @@ function normal_select(obj,sat_sun_flag) {
 				}
 			}
 		} else {
-			if (dateWOD.indexOf('2021/03/20')==-1 && dateWOD.indexOf('日')==-1 && date<'2021/03/22') {
+			if ((dateWOD.indexOf('2021/03/20')==-1 && dateWOD.indexOf('日')==-1 && date<'2021/03/22') || 
+					(date=='2021/07/03' || date=='2021/07/10')) {
 				for (var i=0;i<timechecks.length;i++) {
 					if (timechecks[i].value.indexOf(date+'_14')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
 					if (timechecks[i].value.indexOf(date+'_15')!=-1) {timechecks[i].checked=true;timechecks[i].parentNode.style='background-color:#ddddff';}
@@ -414,7 +415,9 @@ function tcheck(obj){
 		<td style="<?= $time_array['20:30']?"background-color:#ddddff":"" ?>"><input type="checkbox" name="timecheck[]" value="<?= $date ?>_20:30" onclick="tcheck(this)" <?= $time_array['20:30']?"checked":"" ?>></td>
 	<?php
 		} else if ((strpos($youbi,"土") && $sat_sun_flag) ||
-			(!$sat_sun_flag && (!strpos($youbi,"日") && $date!="2021/03/20" && $date<'2021/03/22')))
+			(!$sat_sun_flag && (!strpos($youbi,"日") && $date!="2021/03/20" && $date<'2021/03/22')) ||
+			($date=='2021/07/03' || $date=='2021/07/10')
+			)
 		{
 	?>
 		<td></td>

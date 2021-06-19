@@ -46,6 +46,7 @@ if ($class_type == 'sat_sun_class') {
 	$default_etime_holiday = $default_etime;
 } else {
 	$page_title = "$season_class_title";
+/*
 //	$default_stime_sat = $default_stime;
 //	$default_etime_sat = $default_etime;
 	$default_stime = 10;
@@ -54,6 +55,16 @@ if ($class_type == 'sat_sun_class') {
 	$default_etime_sat = 20;
 	$default_stime_holiday = 4;
 	$default_etime_holiday = 14;
+*/
+// 2021夏期講習対応
+	$default_stime = 4;
+	$default_etime = 14;
+	$default_stime_sat = 4;
+	$default_etime_sat = 14;
+	$default_stime_holiday = 4;
+	$default_etime_holiday = 14;
+	$default_stime1 = 10;
+	$default_etime1 = 20;
 }
 
 if ($class_type=='sat_sun_class') {
@@ -256,7 +267,14 @@ function selectChange(obj,num)
 	var value = obj.options[obj.selectedIndex].value;
 	var dates = document.getElementsByName('dates[]');
 	var default_stime, default_etime;
-	if (dates[num].innerHTML.indexOf('2021/03/20') < 0) {
+	if (dates[num].innerHTML.indexOf('2021/03/20') >= 0) {
+		// 2021/03/20
+		default_stime = <?= $default_stime_holiday+1 ?>;
+		default_etime = <?= $default_etime_holiday+1 ?>;
+	} else if ((dates[num].innerHTML.indexOf('2021/07/03') >= 0) || (dates[num].innerHTML.indexOf('2021/07/10') >= 0)) {
+		default_stime = <?= $default_stime1+1 ?>;
+		default_etime = <?= $default_etime1+1 ?>;
+	} else {
 		if (dates[num].innerHTML.indexOf('土') < 0 <?= $class_type!='sat_sun_class'?"|| (dates[num].innerHTML.substr(0,10)>='2021/03/22')":"" ?>) {
 			if (dates[num].innerHTML.indexOf('日') < 0 <?= $class_type!='sat_sun_class'?"&& (dates[num].innerHTML.substr(0,10)<'2021/03/22')":"" ?>) {
 					default_stime = <?= $default_stime+1 ?>;
@@ -269,9 +287,6 @@ function selectChange(obj,num)
 			default_stime = <?= $default_stime_sat+1 ?>;
 			default_etime = <?= $default_etime_sat+1 ?>;
 		}
-	} else {
-		default_stime = <?= $default_stime_holiday+1 ?>;
-		default_etime = <?= $default_etime_holiday+1 ?>;
 	}
 	if (obj.selectedIndex == 0) {
 		document.getElementsByName('stime[]')[num].selectedIndex=0;
@@ -306,7 +321,14 @@ function updateLessonTime()
 	var dates = document.getElementsByName('dates[]');
 	var default_stime, default_etime;
 	for (var i=0;i<entry_flag.length;i++) {
-		if (dates[num].innerHTML.indexOf('2021/03/20') < 0) {
+		if (dates[num].innerHTML.indexOf('2021/03/20') >= 0) {
+			// 2021/03/20
+			default_stime = <?= $default_stime_holiday+1 ?>;
+			default_etime = <?= $default_etime_holiday+1 ?>;
+		} else if ((dates[num].innerHTML.indexOf('2021/07/03') >= 0) || (dates[num].innerHTML.indexOf('2021/07/10') >= 0)) {
+			default_stime = <?= $default_stime1+1 ?>;
+			default_etime = <?= $default_etime1+1 ?>;
+		} else {
 			if (dates[num].innerHTML.indexOf('土') < 0 <?= $class_type!='sat_sun_class'?"|| (dates[num].innerHTML.substr(0,10)>='2021/03/22')":"" ?>) {
 				if (dates[num].innerHTML.indexOf('日') < 0 <?= $class_type!='sat_sun_class'?"&& (dates[num].innerHTML.substr(0,10)<'2021/03/22')":"" ?>) {
 						default_stime = <?= $default_stime+1 ?>;
@@ -319,9 +341,6 @@ function updateLessonTime()
 				default_stime = <?= $default_stime_sat+1 ?>;
 				default_etime = <?= $default_etime_sat+1 ?>;
 			}
-		} else {
-			default_stime = <?= $default_stime_holiday+1 ?>;
-			default_etime = <?= $default_etime_holiday+1 ?>;
 		}
 		if (entry_flag[i].checked || furikae_flag[i].checked) {
 			if ((stimes[i].selectedIndex!=default_stime) || (etimes[i].selectedIndex!=default_etime)) {
@@ -341,7 +360,14 @@ function entryCheck( obj, num )
 	var t_attend_st = document.getElementsByName('teacher_attend_status[]');
 	var dates = document.getElementsByName('dates[]');
 	var default_stime, default_etime;
-	if (dates[num].innerHTML.indexOf('2021/03/20') < 0) {
+	if (dates[num].innerHTML.indexOf('2021/03/20') >= 0) {
+		// 2021/03/20
+		default_stime = <?= $default_stime_holiday+1 ?>;
+		default_etime = <?= $default_etime_holiday+1 ?>;
+	} else if ((dates[num].innerHTML.indexOf('2021/07/03') >= 0) || (dates[num].innerHTML.indexOf('2021/07/10') >= 0)) {
+		default_stime = <?= $default_stime1+1 ?>;
+		default_etime = <?= $default_etime1+1 ?>;
+	} else {
 		if (dates[num].innerHTML.indexOf('土') < 0 <?= $class_type!='sat_sun_class'?"|| (dates[num].innerHTML.substr(0,10)>='2021/03/22')":"" ?>) {
 			if (dates[num].innerHTML.indexOf('日') < 0 <?= $class_type!='sat_sun_class'?"&& (dates[num].innerHTML.substr(0,10)<'2021/03/22')":"" ?>) {
 					default_stime = <?= $default_stime+1 ?>;
@@ -354,9 +380,6 @@ function entryCheck( obj, num )
 			default_stime = <?= $default_stime_sat+1 ?>;
 			default_etime = <?= $default_etime_sat+1 ?>;
 		}
-	} else {
-		default_stime = <?= $default_stime_holiday+1 ?>;
-		default_etime = <?= $default_etime_holiday+1 ?>;
 	}
 	if (obj.checked) {
 		furikae_flag[num].style='display:none;';
@@ -386,7 +409,14 @@ function furikaeCheck( obj, num )
 	var furikae_st = document.getElementsByName('furikae_status[]');
 	var dates = document.getElementsByName('dates[]');
 	var default_stime, default_etime;
-	if (dates[num].innerHTML.indexOf('2021/03/20') < 0) {
+	if (dates[num].innerHTML.indexOf('2021/03/20') >= 0) {
+		// 2021/03/20
+		default_stime = <?= $default_stime_holiday+1 ?>;
+		default_etime = <?= $default_etime_holiday+1 ?>;
+	} else if ((dates[num].innerHTML.indexOf('2021/07/03') >= 0) || (dates[num].innerHTML.indexOf('2021/07/10') >= 0)) {
+		default_stime = <?= $default_stime1+1 ?>;
+		default_etime = <?= $default_etime1+1 ?>;
+	} else {
 		if (dates[num].innerHTML.indexOf('土') < 0 <?= $class_type!='sat_sun_class'?"|| (dates[num].innerHTML.substr(0,10)>='2021/03/22')":"" ?>) {
 			if (dates[num].innerHTML.indexOf('日') < 0 <?= $class_type!='sat_sun_class'?"&& (dates[num].innerHTML.substr(0,10)<'2021/03/22')":"" ?>) {
 					default_stime = <?= $default_stime+1 ?>;
@@ -399,9 +429,6 @@ function furikaeCheck( obj, num )
 			default_stime = <?= $default_stime_sat+1 ?>;
 			default_etime = <?= $default_etime_sat+1 ?>;
 		}
-	} else {
-		default_stime = <?= $default_stime_holiday+1 ?>;
-		default_etime = <?= $default_etime_holiday+1 ?>;
 	}
 	if (obj.checked) {
 		entry_flag[num].style='display:none;';
