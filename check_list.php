@@ -10,7 +10,7 @@ require_once("./gennsenn_choushuu_gaku.php");
 $errArray = array();
 $errFlag = 0;
 
-//$log_tid=2;
+//$log_tid=12;
 //$log_date='6月18日';
 
 // 当日休み時給対応
@@ -1830,7 +1830,7 @@ foreach ($staff_list as &$staff) {
 				$stmt = $db->query($sql);
 				$rslt = $stmt->fetchAll(PDO::FETCH_NUM);
 				foreach ($rslt as $date0) {
-					$DOW = date_format(date_create($year.'-'.$month.'-'.$date0),'w');
+					$DOW = date_format(date_create($year.'-'.$month.'-'.$date0[0]),'w');
 					$total_transport_cost += $teacher['transport_dcost1'][$DOW];
 					$total_transport_cost_unlimit += $teacher['transport_dcost2'][$DOW];
 				}
