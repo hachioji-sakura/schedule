@@ -1522,6 +1522,21 @@ foreach ($tmp_teacher_list as &$teacher) {
 				$ret = $stmt->fetch(PDO::FETCH_NUM);
 				$total_transport_cost = $ret[0];
 				$total_transport_cost += $teacher['transport_mcost'];
+				
+				$sql = 
+					"SELECT DISTINCT CONCAT(event_year, '-', event_month, '-', event_day) FROM tbl_event_staff ".
+					"WHERE event_year=$year AND event_month=$month AND staff_no={$staff['no']} ".
+					"AND absent_flag=0";
+				$stmt = $db->query($sql);
+				$staff_dates = $stmt->fetchAll(PDO::FETCH_COLUMN);
+				$sql = "SELECT DISTINCT DATE_FORMAT(date,'%Y-%c-%e') FROM tbl_transport_cost WHERE teacher_id='{$teacher['no']}' AND DATE_FORMAT(date,'%Y-%c')='$year-$month'";
+				$stmt = $db->query($sql);
+				$teacher_dates = $stmt->fetchAll(PDO::FETCH_COLUMN);
+				foreach ($staff_dates as $date0) {
+					if (in_array($date0,$teacher_dates)) continue;
+					$DOW = date_format(date_create(str_replace('/','-',$date0)),'w');
+					$total_transport_cost += $teacher['transport_dcost1'][$DOW];
+				}
 /*
 				$sql = 
 					"SELECT CONCAT(event_year, '-', event_month, '-', event_day) FROM tbl_event_staff ".
