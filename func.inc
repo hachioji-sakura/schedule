@@ -70,8 +70,8 @@ $place_list[2] = array("no"=>"2","name"=>"南口校","calendar_name_list"=>array
 $place_list[3] = array("no"=>"3","name"=>"北口校３Ｆ","calendar_name_list"=>array("English_north_3F","塾_北口校_3F","習い事_北口校_3F"));
 $place_list[4] = array("no"=>"4","name"=>"北口校４Ｆ","calendar_name_list"=>array("English_north_4F","塾_北口校_4F"));
 $place_list[5] = array("no"=>"5","name"=>"北口校","calendar_name_list"=>array("English_north","塾_北口校"));
-$place_list[6] = array("no"=>"6","name"=>"アローレ校","calendar_name_list"=>array("塾_アローレ校"));
-$place_list[7] = array("no"=>"7","name"=>"ダットッチ校","calendar_name_list"=>array("English_dattochi","習い事_dattochi"));
+//$place_list[6] = array("no"=>"6","name"=>"アローレ校","calendar_name_list"=>array("塾_アローレ校"));
+//$place_list[7] = array("no"=>"7","name"=>"ダットッチ校","calendar_name_list"=>array("English_dattochi","習い事_dattochi"));
 $place_list[8] = array("no"=>"8","name"=>"豊田校","calendar_name_list"=>array("English_toyoda","塾_豊田校"));
 $place_list[9] = array("no"=>"9","name"=>"子安校","calendar_name_list"=>array("ピアノ","習い事_子安校","塾_子安校","English_koyasu"));
 $place_list[10] = array("no"=>"10","name"=>"国立校","calendar_name_list"=>array("塾_国立校","English_Kunitachi"));
