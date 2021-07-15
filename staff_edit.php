@@ -466,7 +466,7 @@ function transport_zero_set(onoff) {
 <br <?=$staff_display?>>
 
 <?php if ($lms_mode) { ?>
-<br><input type="button" onclick="document.location='staff_list.php?staff_id=<?='2'.str_pad(($staff_id>48?$staff_id--:$staff_id), 5, 0, STR_PAD_LEFT)?>'" value="戻る">
+<br><input type="button" onclick="document.location='staff_list.php?staff_id=<?='2'.str_pad(($staff_id>48?--$staff_id:$staff_id), 5, 0, STR_PAD_LEFT)?>'" value="戻る">
 		<input type="button" onclick="window.close()" value="閉じる">
 <?php 
 }
