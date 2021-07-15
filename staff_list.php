@@ -33,6 +33,7 @@ if ($lms_mode) {
 		$staff_id = preg_replace('/^20*/', '', $_GET['staff_id']);
 	else
 		$staff_id = '';
+	if ($staff_id>200047) $staff_id++;
 	array_push($param_array," tbl_staff.no = '$staff_id' ");
 }
 
