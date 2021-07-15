@@ -33,6 +33,8 @@ try {
 		
 		$staff_no 										= ($lms_staff['staff_no'][0]=='2')? substr($lms_staff['staff_no'],1)+0: 0;
 		
+		if ($staff_no>47)	$staff_no = $staff_no+1;
+		
 		if ($staff_no)
 			$staff_array = $current_staff_list[$staff_no];
 		else
