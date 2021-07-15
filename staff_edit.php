@@ -96,6 +96,7 @@ if ($action == 'add') {
 			$db->commit();
 			if (!$staff_acount) {
 				if ($lms_mode) {
+					if ($staff_id>200048)	$staff_id--;
 					header("Location: staff_list.php?staff_id={$staff_id}");
 				} else {
 					header('Location: staff_list.php?sort_type=1');
@@ -465,7 +466,7 @@ function transport_zero_set(onoff) {
 <br <?=$staff_display?>>
 
 <?php if ($lms_mode) { ?>
-<br><input type="button" onclick="document.location='staff_list.php?staff_id=<?='2'.str_pad($staff_id, 5, 0, STR_PAD_LEFT)?>'" value="戻る">
+<br><input type="button" onclick="document.location='staff_list.php?staff_id=<?='2'.str_pad(($staff_id>48?$staff_id--:$staff_id), 5, 0, STR_PAD_LEFT)?>'" value="戻る">
 		<input type="button" onclick="window.close()" value="閉じる">
 <?php 
 }

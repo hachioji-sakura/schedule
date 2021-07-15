@@ -122,6 +122,7 @@ if ($employee_no) {
 	if ($employee_type == STAFF) {
 		$employee = (get_staff_list  ($db,null,null,null,2))[$employee_no];
 		$staff_id = '2'.str_pad($employee_no, 5, 0, STR_PAD_LEFT);
+		if ($staff_id>200048)	$staff_id--;
 	}
 }
 
